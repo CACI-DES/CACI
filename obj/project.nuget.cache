@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "zFMKyyn+NCg=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\dseib\\.gemini\\antigravity\\scratch\\CACI\\CACI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\dseib\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.5\\microsoft.aspnetcore.app.internal.assets.10.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
