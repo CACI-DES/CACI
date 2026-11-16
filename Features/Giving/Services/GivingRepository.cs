@@ -88,6 +88,8 @@ namespace CACI_Life.Features.Giving.Services
             parameters.Add("@Memo", giving.Memo);
             parameters.Add("@CoversFee", giving.CoversFee);
             parameters.Add("@FeeAmount", giving.FeeAmount);
+            parameters.Add("@ChurchId", giving.ChurchId);
+            parameters.Add("@ChurchSlug", giving.ChurchSlug);
 
             return await connection.QuerySingleAsync<int>(
                 "dbo.Giving_usp_CreateGiving",

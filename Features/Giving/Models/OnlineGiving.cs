@@ -20,6 +20,8 @@ namespace CACI_Life.Features.Giving.Models
         public string? Memo { get; set; }
         public bool CoversFee { get; set; }
         public decimal FeeAmount { get; set; }
+        public int? ChurchId { get; set; }
+        public string? ChurchSlug { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
     }

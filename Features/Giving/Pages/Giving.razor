@@ -7,20 +7,58 @@
 @using CACI_Life.Features.Giving.Models
 @using CACI_Life.Features.Giving.Services
 @using CACI_Life.Features.Identity.Services
+@using CACI_Life.Core.Domain.Congregations
 
 @inject AuthenticationStateProvider AuthStateProvider
 @inject IGivingRepository GivingRepo
 @inject IGivingStripeService GivingStripeService
 @inject GivingReportService GivingReportService
 @inject IAuthRepository AuthRepo
+@inject ICongregationService CongregationService
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
-<PageTitle>Online Giving | CACI</PageTitle>
+<PageTitle>@(_targetCongregation != null ? $"{_targetCongregation.CongregationName} Giving | CACI" : "Online Giving | CACI")</PageTitle>
 
 <div class="min-h-screen bg-[#001F5C] text-white py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-7xl mx-auto space-y-12">
+    <div class="max-w-7xl mx-auto space-y-8">
         
+        <!-- Congregation Custom Giving Banner (when church param is passed) -->
+        @if (_targetCongregation != null)
+        {
+            <div class="bg-slate-900/80 border border-amber-400/30 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-4 text-center md:text-left">
+                    <img src="@_targetCongregation.EffectiveLogo" alt="@_targetCongregation.CongregationName" 
+                         class="h-16 w-auto max-w-[120px] object-contain drop-shadow" 
+                         onerror="this.src='/logos/KCA_Logo.png';" />
+                    <div>
+                        <span class="text-[10px] uppercase font-bold tracking-widest text-amber-400 block mb-1">
+                            Congregational Giving
+                        </span>
+                        <h1 class="text-2xl sm:text-3xl font-heading font-bold text-white italic">
+                            @_targetCongregation.CongregationName
+                        </h1>
+                        @if (!string.IsNullOrWhiteSpace(_targetCongregation.PastorName))
+                        {
+                            <p class="text-xs text-blue-200 mt-0.5">Pastor: @_targetCongregation.PastorName</p>
+                        }
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(_targetCongregation.GivingUrl) && !_targetCongregation.GivingUrl.Contains("caci.life/giving"))
+                {
+                    <div class="flex flex-col items-center md:items-end gap-1.5">
+                        <a href="@_targetCongregation.GivingUrl" target="_blank" 
+                           class="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition duration-200 shadow-lg inline-flex items-center gap-2">
+                            <span>Use Congregation Portal (ChurchTrac)</span>
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        <span class="text-[10px] text-slate-400 italic">Or give securely below via Card</span>
+                    </div>
+                }
+            </div>
+        }
+
         <!-- Welcome Header (if logged in) -->
         @if (_isAuthenticated)
         {
@@ -29,14 +67,17 @@
                     <h1 class="text-3xl font-heading font-bold italic text-amber-400">Welcome, @_donorName</h1>
                     <p class="text-xs text-blue-200 mt-1">Manage your contributions, track history, and download statements.</p>
                 </div>
-                <div class="mt-4 md:mt-0">
-                    <a href="https://caci.churchtrac.com/give" target="_blank" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider rounded-xl transition duration-200 shadow-md inline-flex items-center">
-                        <i class="fas fa-external-link-alt me-1"></i> Use Churchtrac
-                    </a>
-                </div>
+                @if (_targetCongregation == null)
+                {
+                    <div class="mt-4 md:mt-0">
+                        <a href="https://caci.churchtrac.com/give" target="_blank" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider rounded-xl transition duration-200 shadow-md inline-flex items-center">
+                            <i class="fas fa-external-link-alt me-1"></i> Use Churchtrac
+                        </a>
+                    </div>
+                }
             </div>
         }
-        else
+        else if (_targetCongregation == null)
         {
             <div class="text-center py-6">
                 <h1 class="text-4xl sm:text-5xl font-heading font-bold italic mb-2">CACI Online Giving</h1>
@@ -346,6 +387,11 @@
 </div>
 
 @code {
+    [SupplyParameterFromQuery(Name = "church")]
+    public string? ChurchSlug { get; set; }
+
+    private CongregationProfile? _targetCongregation;
+
     private List<GivingAccount> _availableAccounts = new();
 
     public class SelectedGiftItem
@@ -404,6 +450,25 @@
     private DateTime _startDate = new DateTime(DateTime.Now.Year, 1, 1);
     private DateTime _endDate = DateTime.Today;
     private string _quickDateRange = "ThisYear";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(ChurchSlug))
+        {
+            try
+            {
+                _targetCongregation = await CongregationService.GetBySlugAsync(ChurchSlug);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading congregation for giving: {ex.Message}");
+            }
+        }
+        else
+        {
+            _targetCongregation = null;
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -752,16 +817,23 @@
                 Memo = _memoText,
                 CoversFee = _coversFee,
                 FeeAmount = _feeAmount,
+                ChurchId = _targetCongregation?.Id,
+                ChurchSlug = _targetCongregation?.UrlSlug,
                 CreatedAt = DateTime.UtcNow
             };
 
             var successUrl = Nav.BaseUri + "giving/success";
-            var cancelUrl = Nav.BaseUri + "giving";
+            var cancelUrl = Nav.BaseUri + "giving" + (!string.IsNullOrWhiteSpace(ChurchSlug) ? $"?church={ChurchSlug}" : "");
 
             int id = await GivingRepo.CreateGivingAsync(giving);
             giving.Id = id;
 
-            var session = await GivingStripeService.CreateGivingSessionAsync(giving, successUrl, cancelUrl);
+            var session = await GivingStripeService.CreateGivingSessionAsync(
+                giving, 
+                successUrl, 
+                cancelUrl,
+                destinationStripeAccountId: _targetCongregation?.StripeAccountId,
+                churchSlug: _targetCongregation?.UrlSlug);
             await GivingRepo.UpdateStripeSessionIdAsync(id, session.Id);
 
             if (!string.IsNullOrEmpty(session.Url))

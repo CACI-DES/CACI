@@ -38,10 +38,31 @@ namespace CACI_Life.Features.Giving.Services
             }
         }
 
-        public async Task<Session> CreateGivingSessionAsync(OnlineGiving model, string successUrl, string cancelUrl)
+        public async Task<Session> CreateGivingSessionAsync(OnlineGiving model, string successUrl, string cancelUrl, string? destinationStripeAccountId = null, string? churchSlug = null)
         {
             var apiKey = await GetSettingValueAsync("StripeSecretKey", _configuration["Stripe:SecretKey"] ?? string.Empty);
             var requestOptions = new RequestOptions { ApiKey = apiKey };
+
+            // When a congregation has their own Stripe Account, route payment directly to them
+            if (!string.IsNullOrWhiteSpace(destinationStripeAccountId))
+            {
+                requestOptions.StripeAccount = destinationStripeAccountId.Trim();
+            }
+
+            var metadata = new Dictionary<string, string>
+            {
+                { "giving_id", model.Id.ToString() }
+            };
+
+            if (!string.IsNullOrWhiteSpace(churchSlug))
+            {
+                metadata["church_slug"] = churchSlug.Trim();
+            }
+
+            if (!string.IsNullOrWhiteSpace(destinationStripeAccountId))
+            {
+                metadata["destination_stripe_account"] = destinationStripeAccountId.Trim();
+            }
 
             var options = new SessionCreateOptions
             {
@@ -51,10 +72,7 @@ namespace CACI_Life.Features.Giving.Services
                 SuccessUrl = successUrl + "?session_id={CHECKOUT_SESSION_ID}",
                 CancelUrl = cancelUrl,
                 CustomerEmail = model.UserEmail,
-                Metadata = new Dictionary<string, string>
-                {
-                    { "giving_id", model.Id.ToString() }
-                }
+                Metadata = metadata
             };
 
             if (!string.IsNullOrEmpty(model.AllocationsJson))

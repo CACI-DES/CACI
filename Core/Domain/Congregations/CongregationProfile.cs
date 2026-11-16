@@ -28,6 +28,7 @@ public sealed class CongregationProfile
     public string? ContactPhone { get; init; }
     public string? GoogleAnalyticsId { get; init; }
     public string? GoogleSearchVerification { get; init; }
+    public string? StripeAccountId { get; init; }
 
     public bool LinkStudiesToCaciLife { get; set; } = true;
     public string CaciBaseUrl { get; set; } = "https://caci.life";
