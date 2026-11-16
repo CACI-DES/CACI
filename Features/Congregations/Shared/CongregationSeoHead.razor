@@ -16,6 +16,10 @@
     <meta name="twitter:title" content="@FullTitle" />
     <meta name="twitter:description" content="@Description" />
     <meta name="twitter:image" content="@ImageUrl" />
+    @if (!string.IsNullOrWhiteSpace(_profile.GoogleSearchVerification))
+    {
+        <meta name="google-site-verification" content="@_profile.GoogleSearchVerification" />
+    }
     @if (!string.IsNullOrWhiteSpace(_profile.State))
     {
         <meta name="geo.region" content="US-@_profile.State" />
@@ -78,7 +82,20 @@
     private string SiteName => _profile.CongregationName;
     private string FullTitle => Title.Contains(SiteName, StringComparison.OrdinalIgnoreCase) ? Title : $"{Title} | {SiteName}";
     private string CanonicalUrl => BaseUrl + (Path.StartsWith('/') ? Path : "/" + Path);
-    private string ImageUrl => BaseUrl + "/" + (ImagePath ?? _profile.EffectiveLogo).TrimStart('/');
+    private string ImageUrl
+    {
+        get
+        {
+            var raw = ImagePath ?? _profile.EffectiveLogo;
+            if (string.IsNullOrWhiteSpace(raw)) return "";
+            if (raw.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                raw.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            {
+                return raw;
+            }
+            return $"{_profile.CaciBaseUrl.TrimEnd('/')}/{raw.TrimStart('/')}";
+        }
+    }
     private bool IsArticle => PublishedUtc is not null;
 
     private string ChurchJson => JsonSerializer.Serialize(new Dictionary<string, object?>
@@ -87,8 +104,8 @@
         ["@type"] = new[] { "Church", "PlaceOfWorship" },
         ["name"] = SiteName,
         ["url"] = BaseUrl,
-        ["logo"] = BaseUrl + "/" + _profile.EffectiveLogo.TrimStart('/'),
-        ["image"] = BaseUrl + "/" + _profile.EffectiveLogo.TrimStart('/'),
+        ["logo"] = ImageUrl,
+        ["image"] = ImageUrl,
         ["description"] = !string.IsNullOrWhiteSpace(_profile.WelcomeMessage) ? _profile.WelcomeMessage : $"{SiteName} is an Apostolic Sabbath-keeping congregation affiliated with CACI.",
         ["address"] = new Dictionary<string, object?>
         {

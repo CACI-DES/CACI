@@ -81,6 +81,62 @@ if (!app.Environment.IsDevelopment())
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
 
+// Crawler HEAD request handling
+app.Use(async (context, next) =>
+{
+    if (HttpMethods.IsHead(context.Request.Method))
+    {
+        context.Response.StatusCode = StatusCodes.Status200OK;
+        return;
+    }
+    await next();
+});
+
+// Short church slug 301 redirect: /clcmobile -> /congregation/clcmobile
+app.Use(async (context, next) =>
+{
+    var path = context.Request.Path.Value?.Trim('/');
+    if (!string.IsNullOrEmpty(path) && !path.Contains('/'))
+    {
+        var reserved = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "login", "logout", "register", "contact", "give", "giving", "events", 
+            "sabbath", "ministry", "pillars", "foundations", "4keys", "4keysinfo", 
+            "4pillarsinfo", "12foundations", "study-with-us", "request-bible-study",
+            "feast-dates", "feastevent", "meet-the-caci", "what-we-believe", "our-history",
+            "discovery", "churches", "congregations", "sitemap.xml", "robots.txt", "not-found", "error"
+        };
+
+        if (!reserved.Contains(path))
+        {
+            var config = context.RequestServices.GetRequiredService<IConfiguration>();
+            var connStr = config.GetConnectionString("DefaultConnection");
+            if (!string.IsNullOrWhiteSpace(connStr))
+            {
+                try
+                {
+                    using var conn = new Microsoft.Data.SqlClient.SqlConnection(connStr);
+                    var matchedSlug = await Dapper.SqlMapper.ExecuteScalarAsync<string>(
+                        conn,
+                        "SELECT TOP 1 Slug FROM CACI.Churches WHERE IsActive = 1 AND Slug = @slug",
+                        new { slug = path });
+
+                    if (!string.IsNullOrWhiteSpace(matchedSlug))
+                    {
+                        context.Response.Redirect($"/congregation/{matchedSlug}", permanent: true);
+                        return;
+                    }
+                }
+                catch
+                {
+                    // Fall through to regular pipeline
+                }
+            }
+        }
+    }
+    await next();
+});
+
 app.UseAntiforgery();
 
 app.UseAuthentication();
@@ -208,12 +264,28 @@ app.MapGet("/sitemap.xml", async (IConfiguration configuration) =>
     foreach (var rawSlug in activeSlugs)
     {
         var slug = rawSlug.Trim().Trim('/');
-        // Consolidated subfolder route (https://caci.life/{Slug})
+        // Canonical congregation subfolder routes (https://caci.life/congregation/{slug})
         sb.AppendLine("  <url>");
-        sb.AppendLine($"    <loc>{System.Security.SecurityElement.Escape($"https://caci.life/{slug}")}</loc>");
+        sb.AppendLine($"    <loc>{System.Security.SecurityElement.Escape($"https://caci.life/congregation/{slug}")}</loc>");
         sb.AppendLine("    <changefreq>weekly</changefreq>");
         sb.AppendLine("    <priority>0.9</priority>");
         sb.AppendLine("  </url>");
+        sb.AppendLine("  <url>");
+        sb.AppendLine($"    <loc>{System.Security.SecurityElement.Escape($"https://caci.life/congregation/{slug}/what-we-believe")}</loc>");
+        sb.AppendLine("    <changefreq>monthly</changefreq>");
+        sb.AppendLine("    <priority>0.8</priority>");
+        sb.AppendLine("  </url>");
+        sb.AppendLine("  <url>");
+        sb.AppendLine($"    <loc>{System.Security.SecurityElement.Escape($"https://caci.life/congregation/{slug}/sabbath")}</loc>");
+        sb.AppendLine("    <changefreq>monthly</changefreq>");
+        sb.AppendLine("    <priority>0.8</priority>");
+        sb.AppendLine("  </url>");
+        sb.AppendLine("  <url>");
+        sb.AppendLine($"    <loc>{System.Security.SecurityElement.Escape($"https://caci.life/congregation/{slug}/bible-studies")}</loc>");
+        sb.AppendLine("    <changefreq>weekly</changefreq>");
+        sb.AppendLine("    <priority>0.8</priority>");
+        sb.AppendLine("  </url>");
+
         // Subdomain route (https://{Slug}.caci.life/)
         sb.AppendLine("  <url>");
         sb.AppendLine($"    <loc>{System.Security.SecurityElement.Escape($"https://{slug}.caci.life/")}</loc>");

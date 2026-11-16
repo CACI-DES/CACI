@@ -78,11 +78,22 @@
     private string _metaRobots = "index, follow";
     private string? _jsonLdSchema;
 
-    private string _absoluteImageUrl => string.IsNullOrWhiteSpace(_imageUrl)
-        ? ""
-        : _imageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
-            ? _imageUrl
-            : $"{NavigationManager.BaseUri.TrimEnd('/')}/{_imageUrl.TrimStart('/')}";
+    private string _absoluteImageUrl
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(_imageUrl)) return "";
+            var url = _imageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                ? _imageUrl
+                : $"{NavigationManager.BaseUri.TrimEnd('/')}/{_imageUrl.TrimStart('/')}";
+
+            if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) && !url.Contains("localhost"))
+            {
+                url = "https://" + url.Substring("http://".Length);
+            }
+            return url;
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
