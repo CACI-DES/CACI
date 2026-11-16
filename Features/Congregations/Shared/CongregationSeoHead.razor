@@ -1,0 +1,158 @@
+@using System.Text.Json
+@using CACI_Life.Core.Domain.Congregations
+@inject ICongregationService CongregationService
+
+<HeadContent>
+    <title>@FullTitle</title>
+    <meta name="description" content="@Description" />
+    <link rel="canonical" href="@CanonicalUrl" />
+    <meta property="og:site_name" content="@_profile.CongregationName" />
+    <meta property="og:type" content="@OgType" />
+    <meta property="og:title" content="@FullTitle" />
+    <meta property="og:description" content="@Description" />
+    <meta property="og:url" content="@CanonicalUrl" />
+    <meta property="og:image" content="@ImageUrl" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@FullTitle" />
+    <meta name="twitter:description" content="@Description" />
+    <meta name="twitter:image" content="@ImageUrl" />
+    @if (!string.IsNullOrWhiteSpace(_profile.State))
+    {
+        <meta name="geo.region" content="US-@_profile.State" />
+    }
+    @if (!string.IsNullOrWhiteSpace(_profile.City))
+    {
+        <meta name="geo.placename" content="@_profile.City, @_profile.State" />
+    }
+
+    @if (IsArticle)
+    {
+        <meta property="article:published_time" content="@PublishedUtc!.Value.ToString("o")" />
+        @if (ModifiedUtc is not null)
+        {
+            <meta property="article:modified_time" content="@ModifiedUtc.Value.ToString("o")" />
+        }
+    }
+
+    @((MarkupString)JsonLdTag(ChurchJson))
+    @if (IsArticle)
+    {
+        @((MarkupString)JsonLdTag(ArticleJson))
+    }
+    @if (!string.IsNullOrWhiteSpace(VideoId))
+    {
+        @((MarkupString)JsonLdTag(VideoJson))
+    }
+    @if (Faqs is { Count: > 0 })
+    {
+        @((MarkupString)JsonLdTag(FaqPageJson))
+    }
+</HeadContent>
+
+@code {
+    public record FaqItem(string Question, string Answer);
+
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Description { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Path { get; set; } = "/";
+    [Parameter] public string OgType { get; set; } = "website";
+    [Parameter] public string? ImagePath { get; set; }
+
+    [Parameter] public DateTime? PublishedUtc { get; set; }
+    [Parameter] public DateTime? ModifiedUtc { get; set; }
+    [Parameter] public string? Author { get; set; }
+    [Parameter] public string? VideoId { get; set; }
+    [Parameter] public IReadOnlyList<FaqItem>? Faqs { get; set; }
+
+    private CongregationProfile _profile = new();
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = false };
+
+    protected override async Task OnInitializedAsync()
+    {
+        _profile = await CongregationService.GetCurrentAsync();
+    }
+
+    private static string JsonLdTag(string json) => "<script type=\"application/ld+json\">" + json + "</script>";
+
+    private string BaseUrl => _profile.CanonicalBaseUrl.TrimEnd('/');
+    private string SiteName => _profile.CongregationName;
+    private string FullTitle => Title.Contains(SiteName, StringComparison.OrdinalIgnoreCase) ? Title : $"{Title} | {SiteName}";
+    private string CanonicalUrl => BaseUrl + (Path.StartsWith('/') ? Path : "/" + Path);
+    private string ImageUrl => BaseUrl + "/" + (ImagePath ?? _profile.EffectiveLogo).TrimStart('/');
+    private bool IsArticle => PublishedUtc is not null;
+
+    private string ChurchJson => JsonSerializer.Serialize(new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = new[] { "Church", "PlaceOfWorship" },
+        ["name"] = SiteName,
+        ["url"] = BaseUrl,
+        ["logo"] = BaseUrl + "/" + _profile.EffectiveLogo.TrimStart('/'),
+        ["image"] = BaseUrl + "/" + _profile.EffectiveLogo.TrimStart('/'),
+        ["description"] = !string.IsNullOrWhiteSpace(_profile.WelcomeMessage) ? _profile.WelcomeMessage : $"{SiteName} is an Apostolic Sabbath-keeping congregation affiliated with CACI.",
+        ["address"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "PostalAddress",
+            ["streetAddress"] = _profile.StreetAddress ?? "",
+            ["addressLocality"] = _profile.City ?? "",
+            ["addressRegion"] = _profile.State ?? "",
+            ["postalCode"] = _profile.Zip ?? "",
+            ["addressCountry"] = "US"
+        },
+        ["parentOrganization"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "Organization",
+            ["name"] = "Covenant Apostolic Congregations International",
+            ["alternateName"] = "CACI",
+            ["url"] = "https://caci.life"
+        },
+        ["sameAs"] = new[] { _profile.FacebookUrl, _profile.YouTubeUrl }.Where(u => !string.IsNullOrWhiteSpace(u)).ToArray()
+    }, JsonOptions);
+
+    private string ArticleJson => JsonSerializer.Serialize(new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "Article",
+        ["headline"] = Title,
+        ["description"] = Description,
+        ["mainEntityOfPage"] = CanonicalUrl,
+        ["image"] = ImageUrl,
+        ["datePublished"] = PublishedUtc!.Value.ToString("o"),
+        ["dateModified"] = (ModifiedUtc ?? PublishedUtc!.Value).ToString("o"),
+        ["author"] = new Dictionary<string, object?> { ["@type"] = "Person", ["name"] = Author ?? _profile.PastorName ?? SiteName },
+        ["publisher"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "Organization",
+            ["name"] = SiteName,
+            ["logo"] = new Dictionary<string, object?> { ["@type"] = "ImageObject", ["url"] = BaseUrl + "/" + _profile.EffectiveLogo.TrimStart('/') }
+        }
+    }, JsonOptions);
+
+    private string VideoJson => JsonSerializer.Serialize(new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "VideoObject",
+        ["name"] = Title,
+        ["description"] = Description,
+        ["thumbnailUrl"] = $"https://img.youtube.com/vi/{VideoId}/hqdefault.jpg",
+        ["uploadDate"] = (PublishedUtc ?? DateTime.UtcNow).ToString("o"),
+        ["embedUrl"] = $"https://www.youtube.com/embed/{VideoId}",
+        ["contentUrl"] = $"https://www.youtube.com/watch?v={VideoId}"
+    }, JsonOptions);
+
+    private string FaqPageJson => JsonSerializer.Serialize(new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "FAQPage",
+        ["mainEntity"] = (Faqs ?? Array.Empty<FaqItem>()).Select(f => new Dictionary<string, object?>
+        {
+            ["@type"] = "Question",
+            ["name"] = f.Question,
+            ["acceptedAnswer"] = new Dictionary<string, object?>
+            {
+                ["@type"] = "Answer",
+                ["text"] = f.Answer
+            }
+        }).ToArray()
+    }, JsonOptions);
+}

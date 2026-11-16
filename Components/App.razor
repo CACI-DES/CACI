@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <!-- Standard SEO Meta Tags -->
+    <meta name="description" content="Covenant Apostolic Congregations International (CACI) is a contemporary, Spirit-filled Apostolic fellowship dedicated to restoring the original Apostolic faith and preaching the Gospel of the Kingdom." />
+    <meta name="keywords" content="CACI, Covenant Apostolic Congregations International, Apostolic Faith, Bible Study, Sabbath, Biblical Feasts, Tabernacles" />
+    <meta name="author" content="Covenant Apostolic Congregations International" />
+
+    <!-- Open Graph (Facebook / LinkedIn) Meta Tags -->
+    <meta property="og:title" content="Covenant Apostolic Congregations International | CACI" />
+    <meta property="og:description" content="A contemporary, Spirit-filled Apostolic fellowship dedicated to restoring the original Apostolic faith and preaching the Gospel of the Kingdom." />
+    <meta property="og:image" content="https://caci.life/images/brand-standards/AllTheWord_TextLogo.png" />
+    <meta property="og:url" content="https://caci.life" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="CACI Life" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Covenant Apostolic Congregations International | CACI" />
+    <meta name="twitter:description" content="A contemporary, Spirit-filled Apostolic fellowship dedicated to restoring the original Apostolic faith and preaching the Gospel of the Kingdom." />
+    <meta name="twitter:image" content="https://caci.life/images/brand-standards/AllTheWord_TextLogo.png" />
+
+    <link rel="stylesheet" href="css/app.css?v=1.0.3" />
+    <link rel="stylesheet" href="CACI_Life.styles.css?v=1.0.3" />
+    <link rel="icon" type="image/png" href="images/logos/AllTheWord_NOTextLogo.png" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" sizes="192x192" href="images/logos/AllTheWord_NOTextLogo.png" />
+    <HeadOutlet />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/admin.css" />
+    
+    <!-- Google Analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2SHSMFY8W6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-2SHSMFY8W6');
+    </script>
+    <!-- Tailwind CSS CDN (Global, preflight disabled to isolate styles) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: false,
+            },
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#174477',
+                        'member-white': '#FFFFFF',
+                        'minister-blue': '#001F5C',
+                        'elder-red': '#C8102E',
+                        'bishop-purple': '#47306D',
+                        'standard-gray': '#5A5A5A',
+                        'tone-1': '#174477',
+                        'tone-2': '#6696C5',
+                        'tone-3': '#A4BDDD',
+                        'dark': '#174477',
+                        'medium': '#6696C5',
+                        'light': '#A4BDDD',
+                        caci: { 
+                            blue: '#174477', 
+                            minister: '#001F5C', 
+                            purple: '#47306D', 
+                            red: '#C8102E', 
+                            gray: '#5A5A5A', 
+                            tone2: '#6696C5', 
+                            tone3: '#A4BDDD' 
+                        },
+                        parchment: '#f8fafc'
+                    },
+                    fontFamily: {
+                        head: ['Playfair Display', 'Georgia', 'Times New Roman', 'serif'],
+                        body: ['Montserrat', 'Helvetica Neue', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <Routes />
+    <script src="js/site.js?v=1.0.3"></script>
+    <script src="_framework/blazor.web.js"></script>
+    <script>
+        Blazor.addEventListener('enhancedload', () => {
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            if (typeof initMobileNav === 'function') {
+                initMobileNav();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+@using CACI_Life.Core.Domain.Congregations
+@inject ICongregationService CongregationService
+
+<header class="bg-white border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <a href="@($"/congregation/{_profile.UrlSlug}")" aria-label="@(_profile.CongregationName) home" class="flex items-center gap-3 no-underline">
+            <img src="@(_profile.EffectiveLogo)" alt="@(_profile.CongregationName), @(_profile.Subtitle)" width="120" height="100" class="h-16 sm:h-20 w-auto" />
+            <div class="hidden sm:block">
+                <span class="block font-head font-bold text-caci-blue text-lg lg:text-xl">@(_profile.CongregationName)</span>
+                <span class="block font-head text-caci-tone2 text-xs italic">@(_profile.Subtitle)</span>
+            </div>
+        </a>
+
+        <div class="flex items-center gap-3">
+            <a href="https://caci.life" class="hidden sm:inline-flex items-center text-xs text-caci-minister hover:text-caci-blue font-semibold no-underline">
+                <span class="mr-1">&larr;</span> CACI.life Mother Site
+            </a>
+            @if (!string.IsNullOrWhiteSpace(_profile.EffectiveGivingUrl))
+            {
+                <a href="@(_profile.EffectiveGivingUrl)" target="_blank" rel="noopener" class="btn-primary !bg-amber-500 hover:!bg-amber-600 !text-slate-900 font-bold text-xs py-2 px-4 shadow-sm">
+                    Giving
+                </a>
+            }
+        </div>
+    </div>
+</header>
+<nav class="bg-caci-blue text-white sticky top-0 z-40 shadow-md" aria-label="Primary">
+    <div class="max-w-6xl mx-auto px-4">
+        <input type="checkbox" id="nav-toggle" class="peer hidden" />
+        <label for="nav-toggle" class="md:hidden flex items-center justify-between py-3 font-semibold cursor-pointer">
+            Menu
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z" /></svg>
+        </label>
+        <ul class="hidden peer-checked:flex md:flex flex-col md:flex-row md:items-center md:justify-center gap-1 md:gap-2 lg:gap-3 pb-3 md:pb-0 font-semibold text-sm lg:text-base">
+            <li><a class="block px-3 lg:px-4 py-3 text-white hover:text-white hover:bg-caci-tone2 rounded-md no-underline" href="@($"/congregation/{_profile.UrlSlug}")">Home</a></li>
+            <li><a class="block px-3 lg:px-4 py-3 text-white hover:text-white hover:bg-caci-tone2 rounded-md no-underline" href="@($"/congregation/{_profile.UrlSlug}/what-we-believe")">What We Believe</a></li>
+            <li><a class="block px-3 lg:px-4 py-3 text-white hover:text-white hover:bg-caci-tone2 rounded-md no-underline" href="@($"/congregation/{_profile.UrlSlug}/sabbath")">Sabbath</a></li>
+            <li><a class="block px-3 lg:px-4 py-3 text-white hover:text-white hover:bg-caci-tone2 rounded-md no-underline" href="@($"/congregation/{_profile.UrlSlug}/bible-studies")">Bible Studies</a></li>
+            <li><a class="block px-3 lg:px-4 py-3 text-white hover:text-white hover:bg-caci-tone2 rounded-md no-underline" href="@($"/congregation/{_profile.UrlSlug}/teachings")">Teachings</a></li>
+            <li><a class="block px-3 lg:px-4 py-3 text-white hover:text-white hover:bg-caci-tone2 rounded-md no-underline" href="@($"/congregation/{_profile.UrlSlug}/feasts")">Biblical Feasts</a></li>
+            <li><a class="block px-3 lg:px-4 py-3 text-white hover:text-white hover:bg-caci-tone2 rounded-md no-underline" href="@($"/congregation/{_profile.UrlSlug}/calendar")">Calendar</a></li>
+            <li><a class="block px-3 lg:px-4 py-3 text-white hover:text-white hover:bg-caci-tone2 rounded-md no-underline" href="@($"/congregation/{_profile.UrlSlug}/connect")">Connect</a></li>
+        </ul>
+    </div>
+</nav>
+
+@code {
+    private CongregationProfile _profile = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _profile = await CongregationService.GetCurrentAsync();
+    }
+}

@@ -1,0 +1,256 @@
+﻿@page "/congregation/{Slug}/bible-studies"
+@page "/congregation/{Slug}/biblestudies"
+@layout CongregationLayout
+@using CACI_Life.Core.Domain.Congregations
+@using CACI_Life.Features.Congregations.Queries
+@inject ICongregationService CongregationService
+@inject TenantContext TenantContext
+@inject GetFoundationsQueries FoundationsQueries
+
+<CongregationSeoHead Title="@($"Apostolic Bible Studies | The 12 Foundations, 4 Keys & 4 Pillars | {_profile.CongregationName}")"
+         Description="Explore authentic first-century Apostolic discipleship: The 12 Foundations to understanding your Bible, The 4 Keys of the Coming Kingdom, and The 4 Apostolic Pillars of Acts 2:42."
+         Path="@($"/congregation/{_profile.UrlSlug}/bible-studies")" />
+
+<!-- 1. HERO SECTION -->
+<section class="hero relative overflow-hidden py-16 md:py-24 text-center text-white">
+    <div class="max-w-5xl mx-auto px-4 relative z-10">
+        <span class="badge uppercase tracking-widest mb-4 bg-white/20 text-white border border-white/30 text-xs py-1.5 px-4 rounded-full">
+            Apostolic Discipleship &amp; Scripture Curriculum
+        </span>
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight mb-4">
+            Apostolic Bible Studies
+        </h1>
+        <p class="text-xl md:text-2xl text-caci-tone3 font-head italic mb-4">
+            &ldquo;Study to shew thyself approved unto God... rightly dividing the word of truth.&rdquo;
+        </p>
+        <p class="text-xs font-semibold text-amber-300 uppercase tracking-widest mb-6">&mdash; 2 Timothy 2:15 (KJV)</p>
+        <p class="text-base sm:text-lg text-slate-100 max-w-3xl mx-auto leading-relaxed mb-10">
+            Proclaiming the authentic First-Century Apostolic faith through structured, Scripture-centered studies. 
+            Discover the 12 Foundations timeline, unlock the 4 Keys of the Kingdom, and build your life upon the 4 Pillars of Acts 2:42.
+        </p>
+
+        <!-- Topic Jump Navigation -->
+        <nav aria-label="Bible Study Tracks" class="flex flex-wrap justify-center gap-2 md:gap-3 text-xs md:text-sm">
+            <a href="#foundations" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition font-semibold">1. The 12 Foundations</a>
+            <a href="#keys" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition font-semibold">2. The 4 Keys (Our Message)</a>
+            <a href="#pillars" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition font-semibold">3. The 4 Pillars (Our Mission)</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/teachings")" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition font-semibold">Topical Teachings &nearr;</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/connect?topic=Bible+Study")" class="px-4 py-2 rounded-full bg-amber-400 text-slate-900 font-bold border border-amber-300 no-underline hover:bg-amber-300 transition">Request Guided Study &rarr;</a>
+        </nav>
+    </div>
+</section>
+
+<div class="max-w-6xl mx-auto px-4 py-12 md:py-16 space-y-20">
+
+    <!-- TRACK 1: THE 12 FOUNDATIONS BIBLE STUDY -->
+    <section id="foundations" class="scroll-mt-24 space-y-8">
+        <div class="text-center max-w-3xl mx-auto">
+            <span class="badge uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-200 mb-2">
+                Core Discipleship Curriculum
+            </span>
+            <h2 class="text-3xl md:text-5xl font-extrabold text-caci-blue">
+                The 12 Foundations Bible Study
+            </h2>
+            <div class="section-rule mx-auto my-4"></div>
+            <p class="text-slate-600 text-base md:text-lg leading-relaxed">
+                Before building a house, you need a blueprint. All 66 books from Genesis to Revelation fit between these twelve pivotal prophetic milestones. 
+                No human creeds, no denominational slant—just the pure Word of God.
+            </p>
+        </div>
+
+        <div class="card p-6 md:p-8 bg-gradient-to-br from-slate-50 via-white to-amber-50/30 border border-slate-200 shadow-md">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-200">
+                <div>
+                    <h3 class="text-2xl font-bold text-caci-blue">God's Kingdom Blueprint</h3>
+                    <p class="text-sm text-slate-600 mt-1">Available as a self-paced online course and an elder-guided small group or in-home study.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <a href="@($"{_profile.CaciBaseUrl}/foundations/lesson/1?ref={_profile.UrlSlug}")" target="_blank" rel="noopener" class="btn-primary !bg-[#C8102E] font-bold text-xs py-2.5 px-4 shadow">
+                        Take Lessons 1–3 Online Free &nearr;
+                    </a>
+                    <a href="@($"/congregation/{_profile.UrlSlug}/foundations")" class="btn-primary font-bold text-xs py-2.5 px-4 shadow">
+                        View 12 Foundations Syllabus &rarr;
+                    </a>
+                    <a href="@($"/congregation/{_profile.UrlSlug}/connect?topic=12+Foundations+Bible+Study")" class="btn-secondary text-xs py-2.5 px-4">
+                        Request Study With An Elder
+                    </a>
+                </div>
+            </div>
+
+            <!-- Foundations Grid -->
+            @if (_foundations.Count > 0)
+            {
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                    @foreach (var f in _foundations.OrderBy(x => x.SeriesOrder ?? 999))
+                    {
+                        <a href="@($"/congregation/{_profile.UrlSlug}/foundations/{f.Slug}")" class="no-underline block p-4 rounded-xl bg-white border border-slate-200 hover:border-caci-blue hover:-translate-y-0.5 hover:shadow-md transition">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="badge text-[10px] py-0.5 px-2">Foundation @(f.SeriesOrder?.ToString() ?? "—")</span>
+                                @if (f.SeriesOrder <= 3)
+                                {
+                                    <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Free Online (CACI)</span>
+                                }
+                            </div>
+                            <h4 class="text-base font-bold text-caci-blue mt-1">@f.Title</h4>
+                            <p class="text-xs text-caci-gray mt-0.5">@f.ScriptureReference</p>
+                            <p class="text-xs text-slate-600 mt-1.5 line-clamp-2">@f.LeadSummary</p>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-8">
+                    <p class="text-slate-600 text-sm">Explore all 12 modules covering the Creation, Covenants, Prophecy, and the Coming Kingdom.</p>
+                    <a href="@($"/congregation/{_profile.UrlSlug}/foundations")" class="btn-primary text-xs py-2.5 px-5 mt-4 inline-block">Explore 12 Foundations Overview &rarr;</a>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- TRACK 2: THE 4 KEYS OF THE KINGDOM (OUR MESSAGE) -->
+    <section id="keys" class="scroll-mt-24 space-y-8">
+        <div class="text-center max-w-3xl mx-auto">
+            <span class="badge mb-2">Our Message &middot; Matthew 6:10</span>
+            <h2 class="text-3xl md:text-5xl font-extrabold text-caci-blue">
+                Preaching the Kingdom — The 4 Keys
+            </h2>
+            <div class="section-rule mx-auto my-4"></div>
+            <p class="text-slate-600 text-base md:text-lg leading-relaxed">
+                Jesus came to fulfill what the prophets declared: not merely an escape from earth, but God’s righteous Kingdom restored over all the Earth.
+            </p>
+            <div class="bg-white rounded-2xl p-4 border border-slate-200 border-l-4 border-l-[#C8102E] shadow-sm max-w-2xl mx-auto text-left mt-4">
+                <blockquote class="italic text-slate-800 text-sm">
+                    &ldquo;Thy kingdom come. Thy will be done in earth, as it is in heaven.&rdquo; &mdash; Matthew 6:10
+                </blockquote>
+            </div>
+        </div>
+
+        <div class="preaching-grid">
+            @foreach (var key in CaciCardPresets.Keys)
+            {
+                <a href="@($"/congregation/{_profile.UrlSlug}/4keys#keys-grid")" class="preaching-card group">
+                    <div class="card-icon">
+                        <i class="@key.IconClass"></i>
+                    </div>
+                    <div class="preaching-overlay">
+                        <h3>
+                            <span class="key-word">@key.KeyWord</span>
+                            <span class="key-subtitle">@key.KeySubtitle</span>
+                        </h3>
+                        @if (!string.IsNullOrWhiteSpace(key.Description))
+                        {
+                            <p class="key-description">@key.Description</p>
+                        }
+                    </div>
+                </a>
+            }
+        </div>
+
+        <div class="text-center pt-2 flex flex-wrap justify-center gap-4">
+            <a href="@($"/congregation/{_profile.UrlSlug}/4keys")" class="btn-primary font-bold px-8 py-3.5 shadow-lg">
+                Explore the 4 Keys Full Study &rarr;
+            </a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/connect?topic=4+Keys+of+the+Kingdom")" class="btn-secondary font-bold px-6 py-3.5">
+                Request 4 Keys Guided Study
+            </a>
+        </div>
+    </section>
+
+    <!-- TRACK 3: THE 4 APOSTOLIC PILLARS (OUR MISSION) -->
+    <section id="pillars" class="scroll-mt-24 p-8 md:p-12 rounded-2xl bg-[#001F5C] text-white space-y-8">
+        <div class="text-center max-w-3xl mx-auto">
+            <span class="badge uppercase tracking-wider bg-white/10 text-[#A4BDDD] border border-white/20 mb-3">
+                Our Mission &middot; Acts 2:42 Pattern
+            </span>
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-white mb-4">
+                The 4 Apostolic Pillars
+            </h2>
+            <div class="section-rule mx-auto my-4 bg-amber-400"></div>
+            <p class="text-slate-200 text-base md:text-lg leading-relaxed mb-6">
+                Foundational principles that guide our worship, our structure, and our discipleship walk.
+            </p>
+            <blockquote class="bg-white/10 rounded-2xl p-4 border-l-4 border-l-amber-400 text-left max-w-2xl mx-auto">
+                <p class="italic text-xs sm:text-sm text-slate-100">
+                    &ldquo;And they continued stedfastly in the apostles' doctrine and fellowship, and in breaking of bread, and in prayers.&rdquo;
+                </p>
+                <footer class="mt-1 text-[11px] font-bold text-amber-300 not-italic uppercase tracking-widest">&mdash; Acts 2:42</footer>
+            </blockquote>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach (var pillar in CaciCardPresets.Pillars)
+            {
+                <div class="pillar-card p-6 bg-white text-slate-800 border-t-4 @pillar.BorderClass hover:-translate-y-1 transition-all">
+                    <div class="card-body !p-0">
+                        <div class="card-icon">
+                            <i class="@pillar.IconClass"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-caci-blue mb-2">@pillar.Title</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            @pillar.Description
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="text-center pt-2">
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe#why-apostolic")" class="btn-primary !bg-amber-400 !text-slate-900 hover:!bg-amber-300 font-bold px-8 py-3.5 shadow-lg">
+                Learn More About the 4 Pillars in What We Believe &rarr;
+            </a>
+        </div>
+    </section>
+
+    <!-- DEDICATED TEACHINGS BANNER -->
+    <section class="card p-6 md:p-8 bg-gradient-to-r from-slate-50 via-white to-blue-50/50 border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-2">
+            <span class="badge uppercase tracking-wider bg-blue-100 text-blue-900 border border-blue-200">
+                Topical Expositions &amp; Articles
+            </span>
+            <h3 class="text-2xl font-bold text-caci-blue">Looking for Our Topical Teachings?</h3>
+            <p class="text-sm text-slate-600 max-w-xl leading-relaxed">
+                Explore our standalone library of in-depth biblical teachings on the Sabbath, the Biblical Feasts of Leviticus 23, prophecy, and whole-Bible truth.
+            </p>
+        </div>
+        <a href="@($"/congregation/{_profile.UrlSlug}/teachings")" class="btn-primary whitespace-nowrap font-bold text-xs py-3 px-6 shadow">
+            Browse All Teachings &rarr;
+        </a>
+    </section>
+
+    <!-- GUIDED STUDY INTAKE BANNER -->
+    <section class="scripture-card text-center p-8 md:p-12">
+        <span class="label">PERSONAL &amp; GROUP DISCIPLESHIP</span>
+        <h3 class="text-2xl md:text-4xl font-bold font-head text-white mt-2 mb-4">Request a Free Guided Bible Study</h3>
+        <p class="text-slate-200 max-w-2xl mx-auto text-sm md:text-base mb-6 leading-relaxed">
+            Whether in-home across @_profile.RegionDescription or online worldwide via video call, our elders provide personalized, peaceful discipleship free of charge. All study materials provided.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="@($"/congregation/{_profile.UrlSlug}/connect?topic=Bible+Study")" class="btn-primary !bg-[#C8102E] !text-white hover:!bg-red-700 font-bold px-8 py-3.5 shadow-lg text-base">
+                Request Bible Study With An Elder
+            </a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe")" class="btn-secondary px-6 py-3.5 text-base">
+                Explore What We Believe
+            </a>
+        </div>
+    </section>
+
+</div>
+
+@code {
+    [Parameter] public string Slug { get; set; } = string.Empty;
+
+    private CongregationProfile _profile = new();
+    private IReadOnlyList<FoundationSummaryDto> _foundations = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Slug))
+        {
+            TenantContext.SetSlug(Slug);
+        }
+        _profile = await CongregationService.GetCurrentAsync();
+        _foundations = await FoundationsQueries.ListAsync();
+    }
+}
+

@@ -1,0 +1,465 @@
+@page "/foundations/lesson/{LessonNumber:int}"
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Authorization
+@using CACI_Life.Features.Communication.Services
+@inject NavigationManager Navigation
+@inject ICommunicationService CommunicationService
+@inject ILogger<LessonReader> Logger
+
+<PageTitle>Lesson @LessonNumber: @CurrentLessonTitle - CACI 12 Foundations</PageTitle>
+
+<div class="lesson-reader min-h-screen bg-[#F8FAFC] text-[#333333] pb-24">
+    <!-- Top Bar Navigation -->
+    <div class="bg-[#001F5C] text-white py-4 px-4 sm:px-6 lg:px-8 border-b border-[#174477] shadow-sm">
+        <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <a href="/12Foundations" class="inline-flex items-center text-xs font-bold uppercase tracking-wider text-[#A4BDDD] hover:text-white transition-colors">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                    All 12 Foundations
+                </a>
+                <span class="text-white/30">|</span>
+                <span class="text-xs font-semibold text-white/90">Introductory Discipleship Series</span>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="flex items-center gap-2">
+                @for (int i = 1; i <= 3; i++)
+                {
+                    var step = i;
+                    var isActive = LessonNumber == step;
+                    var isPassed = LessonNumber > step;
+                    <a href="@GetLessonLink(step)" 
+                       class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all @(isActive ? "bg-[#C8102E] text-white ring-2 ring-white/50" : isPassed ? "bg-[#174477] text-white border border-white/30" : "bg-white/10 text-white/60 hover:bg-white/20")"
+                       title="Lesson @step">
+                        @step
+                    </a>
+                }
+                <span class="text-xs text-[#A4BDDD] ml-1">of 3 Free</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referral / Assembly Banner if coming from a local congregation like KCA -->
+    @if (!string.IsNullOrWhiteSpace(Ref))
+    {
+        <div class="bg-[#EBF2FA] border-b border-[#CBD5E1] py-3 px-4 sm:px-6 lg:px-8 text-center">
+            <div class="max-w-5xl mx-auto flex items-center justify-center gap-2 text-xs sm:text-sm text-[#174477] font-semibold">
+                <svg class="w-4 h-4 text-[#C8102E] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg>
+                <span>Studying with <strong>@GetReferralName(Ref)</strong></span>
+                <span class="text-[#64748B] hidden sm:inline">&middot; Your progress and inquiries connect directly to your local elder</span>
+            </div>
+        </div>
+    }
+
+    @if (LessonNumber >= 1 && LessonNumber <= 3)
+    {
+        <!-- Main Lesson Content -->
+        <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+            <!-- Header Card -->
+            <div class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm p-6 sm:p-10 mb-8 border-t-4 border-t-[#174477]">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono font-bold tracking-widest uppercase bg-[#EBF2FA] text-[#174477] border border-[#CBD5E1]">
+                        Foundation 0@LessonNumber of 12
+                    </span>
+                    <span class="text-xs font-semibold text-[#059669] bg-[#ECFDF5] px-2.5 py-1 rounded-full border border-[#A7F3D0]">
+                        Open Access Lesson
+                    </span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#001F5C] mb-3 leading-tight" style="font-family: var(--font-heading, 'Playfair Display', Georgia, serif);">
+                    @CurrentLessonTitle
+                </h1>
+                <p class="text-base sm:text-lg text-[#5A5A5A] leading-relaxed mb-6" style="font-family: var(--font-body, 'Montserrat', sans-serif);">
+                    @CurrentLessonSubtitle
+                </p>
+
+                <!-- Scripture Anchor Box -->
+                <div class="rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] border-l-4 border-l-[#C8102E] p-4 sm:p-5 shadow-sm">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#64748B] block mb-2">Key Scripture Anchor</span>
+                    <blockquote class="italic text-sm sm:text-base text-[#1E293B] font-medium leading-relaxed">
+                        @CurrentKeyScripture
+                    </blockquote>
+                    <p class="text-xs font-bold text-[#001F5C] mt-2 not-italic">— @CurrentKeyReference</p>
+                </div>
+
+                @if (LessonNumber == 1)
+                {
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <a href="/pdfs/Lesson_1_Editable.pdf" download class="inline-flex items-center px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider bg-[#174477] hover:bg-[#6696C5] text-white shadow transition-all">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                            Download Lesson 1 Student Guide (PDF)
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <!-- Lesson Body Content -->
+            <article class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm p-6 sm:p-10 mb-10 prose prose-slate max-w-none prose-headings:font-bold prose-headings:text-[#001F5C] prose-h2:text-2xl prose-h3:text-xl prose-p:leading-relaxed prose-p:text-[#475569] prose-li:text-[#475569]">
+                @if (LessonNumber == 1)
+                {
+                    <h2>Understanding God's Kingdom Blueprint</h2>
+                    <p>
+                        Most modern churchgoers are taught that salvation is simply about "dying and floating away to heaven." But when you open your Bible to Genesis 1–3, you discover a startling truth: <strong>God created man for the earth, and gave him dominion over the earth.</strong>
+                    </p>
+                    <p>
+                        God walked and talked with Adam and Eve in the Garden of Eden—a tangible, physical paradise on this earth. The tragedy of the Fall was not merely individual guilt; <strong>it was the loss of the Kingdom of God on earth.</strong>
+                    </p>
+
+                    <h3>The Three Options: Heaven, Hell, or the Kingdom?</h3>
+                    <p>You have heard of Heaven. You have heard of Hell. But have you ever examined the <strong>3rd Option</strong> that Jesus and the holy prophets proclaimed?</p>
+                    <ul>
+                        <li><strong>Matthew 5:5</strong> — <em>"Blessed are the meek: for they shall inherit the earth."</em></li>
+                        <li><strong>Luke 11:2</strong> — <em>"Thy kingdom come, Thy will be done on earth, as it is in heaven."</em></li>
+                        <li><strong>Zechariah 14:9</strong> — <em>"Yahweh shall be king over all the earth: in that day there shall be one Lord, and his name one."</em></li>
+                    </ul>
+                    <p>
+                        Salvation in the Holy Scriptures is never an evacuation from the earth; it is the <strong>redemption and restoration of the earth</strong> back to God's original sovereign design!
+                    </p>
+
+                    <h3>What Happened in the Garden of Eden?</h3>
+                    <ol>
+                        <li><strong>Divine Creation & Dominion:</strong> God created Adam and Eve in His divine image and gave them authority to steward the earth under His eternal Law.</li>
+                        <li><strong>The Deception & Rebellion:</strong> Satan questioned God's Word (<em>"Has God really said?"</em>) and introduced autonomous human morality. Adam abdicated his kingly authority.</li>
+                        <li><strong>Paradise Lost:</strong> The ground was cursed, physical death entered the race, and humanity was driven out from the Tree of Life.</li>
+                        <li><strong>The Promise of the Seed:</strong> Genesis 3:15 promises that the Seed of the woman will crush the serpent's head. The entire remaining 65 books of your Bible tell the story of how that Seed—Yeshua the Messiah—crushes the serpent and restores the Kingdom!</li>
+                    </ol>
+
+                    <div class="my-8 rounded-xl bg-[#EBF2FA] p-5 border-l-4 border-l-[#174477]">
+                        <h4 class="font-bold text-[#001F5C] mb-1">Key Takeaway for Foundation 01</h4>
+                        <p class="text-sm text-[#334155] mb-0">
+                            The Garden of Eden was not a myth or a temporary holding station. It was the physical headquarters of God's Kingdom on earth. What Adam lost in Genesis 3 is exactly what King Messiah restores in Revelation 21 and 22!
+                        </p>
+                    </div>
+                }
+                else if (LessonNumber == 2)
+                {
+                    <h2>The Global Flood: The First Cleansing of the Earth</h2>
+                    <p>
+                        Modern culture often reduces Noah's Ark to a cute children's story with cartoon animals. But the Holy Scriptures present the Global Flood as a solemn, terrifying legal judgment: <strong>the first global cleansing of the earth.</strong>
+                    </p>
+                    <p>
+                        Sin and corruption had filled the earth with violence. God did not annihilate the planet; He cleansed it with water, wiping away the wicked generation while preserving a righteous covenant family through the Ark.
+                    </p>
+
+                    <h3>The Divine Pattern of Cleansing</h3>
+                    <p>The Scriptures reveal that God works through consistent spiritual patterns:</p>
+                    <ul>
+                        <li><strong>First Cleansing (Water):</strong> The ancient world was cleansed by water at the Flood (Genesis 6–9; 1 Peter 3:20).</li>
+                        <li><strong>Individual Cleansing (Water & Spirit):</strong> Every believer enters the New Covenant by being buried with Messiah in water baptism and filled with the Holy Spirit (Acts 2:38; John 3:5).</li>
+                        <li><strong>Final Cleansing (Fire & Spirit):</strong> The present earth will undergo its final purification by fire at Messiah's return (2 Peter 3:10–13), consuming the works of wickedness before the New Heavens and New Earth are unveiled.</li>
+                    </ul>
+
+                    <h3>As It Was in the Days of Noah</h3>
+                    <p>Jesus explicitly warned that His return would mirror the generation of Noah (Matthew 24:37):</p>
+                    <ul>
+                        <li>Total moral breakdown and normalized violence.</li>
+                        <li>Widespread denial of God's coming judgment.</li>
+                        <li><strong>Notice who was taken and who was left:</strong> The wicked were swept away in judgment, while Noah and his family were preserved <em>on the cleansed earth</em> to inherit it!</li>
+                    </ul>
+
+                    <div class="my-8 rounded-xl bg-[#EBF2FA] p-5 border-l-4 border-l-[#174477]">
+                        <h4 class="font-bold text-[#001F5C] mb-1">Key Takeaway for Foundation 02</h4>
+                        <p class="text-sm text-[#334155] mb-0">
+                            The Ark is a type of Messiah Jesus. God's judgment cleanses wickedness from the earth, and those sheltered in covenant inherit the renewed creation.
+                        </p>
+                    </div>
+                }
+                else if (LessonNumber == 3)
+                {
+                    <h2>The Rise of Babylon: The Origin of the False Worship System</h2>
+                    <p>
+                        Following the Flood, humanity once again unified in rebellion against God under Nimrod at the Tower of Babel (Genesis 10–11). This was not merely an architectural project; it was the origin of organized religious apostasy and humanistic political tyranny.
+                    </p>
+                    <p>
+                        Babel (Babylon) represents man's attempt to achieve unity, salvation, and righteousness without submitting to God's sovereign Law and King.
+                    </p>
+
+                    <h3>Two Cities, Two Kingdoms, One War</h3>
+                    <p>Throughout your entire Bible, two spiritual cities compete for the allegiance of human hearts:</p>
+                    <ul>
+                        <li><strong>Babylon:</strong> The harlot system characterized by religious tradition replacing God's Law, commercial greed, and spiritual idolatry.</li>
+                        <li><strong>Zion (New Jerusalem):</strong> The holy bride characterized by the Commandments of God and the faith of Jesus (Revelation 14:12).</li>
+                    </ul>
+                    <p>
+                        The urgent apostolic call echoed in Revelation 18:4 is: <em>"Come out of her, my people, that ye be not partakers of her sins, and that ye receive not of her plagues."</em>
+                    </p>
+
+                    <div class="my-8 rounded-xl bg-[#FEF2F2] p-5 border-l-4 border-l-[#C8102E]">
+                        <h4 class="font-bold text-[#991B1B] mb-1">Milestone: You Have Completed the 3 Introductory Lessons!</h4>
+                        <p class="text-sm text-[#7F1D1D] mb-0">
+                            You have unlocked the big picture of Scripture: Paradise Given & Lost (Lesson 1), The Cleansing of the Earth (Lesson 2), and The Separation from Babylon (Lesson 3). 
+                            Foundations 4 through 12 walk through the Abrahamic Covenant, the Law of God, the Sabbath, the Holy Feasts, and the Coming Reign of King Jesus.
+                        </p>
+                    </div>
+                }
+            </article>
+
+            <!-- Navigation Buttons between Lessons -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-14">
+                @if (LessonNumber > 1)
+                {
+                    <a href="@GetLessonLink(LessonNumber - 1)" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-white border border-[#CBD5E1] text-[#174477] hover:bg-[#EBF2FA] shadow-sm transition-all">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                        Previous: Lesson @(LessonNumber - 1)
+                    </a>
+                }
+                else
+                {
+                    <div></div>
+                }
+
+                @if (LessonNumber < 3)
+                {
+                    <a href="@GetLessonLink(LessonNumber + 1)" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-[#174477] hover:bg-[#6696C5] text-white shadow-md transition-all">
+                        Next: Lesson @(LessonNumber + 1)
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    </a>
+                }
+                else
+                {
+                    <a href="#connect-elder" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-[#C8102E] hover:bg-red-700 text-white shadow-md transition-all">
+                        Complete Series & Connect with Elder &darr;
+                    </a>
+                }
+            </div>
+
+            <!-- Local Elder Connection & Next Steps Section -->
+            <section id="connect-elder" class="rounded-2xl bg-white border border-[#E2E8F0] shadow-xl overflow-hidden mb-16 scroll-mt-24">
+                <div class="bg-gradient-to-r from-[#001F5C] via-[#174477] to-[#47306D] text-white p-6 sm:p-8">
+                    <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/20 text-white mb-3">
+                        Continue to Lessons 4 – 12
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2" style="font-family: var(--font-heading, 'Playfair Display', Georgia, serif);">
+                        Ready for the Next Level of Discipleship?
+                    </h2>
+                    <p class="text-sm sm:text-base text-slate-200 leading-relaxed max-w-2xl">
+                        Foundations 4 through 12 explore the Abrahamic Covenant, the Law written on hearts, the Sabbath, the Biblical Feasts, and the Apostles' Doctrine. 
+                        Connect with an elder for a free, personal in-home or online study.
+                    </p>
+                </div>
+
+                <div class="p-6 sm:p-10">
+                    @if (isSubmitted)
+                    {
+                        <div class="text-center py-8">
+                            <div class="w-16 h-16 rounded-full bg-[#ECFDF5] text-[#059669] flex items-center justify-center mx-auto mb-4 text-2xl border border-[#A7F3D0]">
+                                ✓
+                            </div>
+                            <h3 class="text-2xl font-bold text-[#001F5C] mb-2">Request Received!</h3>
+                            <p class="text-sm text-[#475569] max-w-md mx-auto mb-4">
+                                Thank you, <strong>@model.Name</strong>. An elder from @(string.IsNullOrWhiteSpace(Ref) ? "our ministry team" : GetReferralName(Ref)) will reach out to you shortly at <strong>@model.Email</strong>.
+                            </p>
+                            <a href="/12Foundations" class="inline-flex items-center px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider bg-[#174477] text-white hover:bg-[#6696C5] transition-all">
+                                Return to Foundations Overview
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <EditForm Model="@model" OnValidSubmit="@HandleSubmit" class="space-y-4">
+                            <DataAnnotationsValidator />
+                            
+                            @if (!string.IsNullOrWhiteSpace(Ref))
+                            {
+                                <div class="rounded-xl bg-[#F8FAFC] border border-[#CBD5E1] p-4 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-[#174477] text-white flex items-center justify-center font-bold text-sm">
+                                            KCA
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-bold uppercase tracking-wider text-[#174477]">Assigned Local Congregation</p>
+                                            <p class="text-sm font-bold text-[#001F5C]">@GetReferralName(Ref)</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-[#059669] font-bold bg-[#ECFDF5] px-2.5 py-1 rounded-md border border-[#A7F3D0]">Direct Routing</span>
+                                </div>
+                            }
+
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1">Full Name <span class="text-[#C8102E]">*</span></label>
+                                    <InputText @bind-Value="model.Name" class="w-full px-4 py-2.5 rounded-lg border border-[#CBD5E1] focus:ring-2 focus:ring-[#174477] focus:outline-none text-sm" placeholder="Your Name" />
+                                    <ValidationMessage For="@(() => model.Name)" class="text-xs text-[#C8102E] mt-1" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1">Email Address <span class="text-[#C8102E]">*</span></label>
+                                    <InputText @bind-Value="model.Email" class="w-full px-4 py-2.5 rounded-lg border border-[#CBD5E1] focus:ring-2 focus:ring-[#174477] focus:outline-none text-sm" placeholder="email@example.com" />
+                                    <ValidationMessage For="@(() => model.Email)" class="text-xs text-[#C8102E] mt-1" />
+                                </div>
+                            </div>
+
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1">Phone Number (Optional)</label>
+                                    <InputText @bind-Value="model.Phone" class="w-full px-4 py-2.5 rounded-lg border border-[#CBD5E1] focus:ring-2 focus:ring-[#174477] focus:outline-none text-sm" placeholder="(555) 000-0000" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1">City, State / Region</label>
+                                    <InputText @bind-Value="model.CityState" class="w-full px-4 py-2.5 rounded-lg border border-[#CBD5E1] focus:ring-2 focus:ring-[#174477] focus:outline-none text-sm" placeholder="e.g. Springfield, MO" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-[#475569] mb-1">Questions, Comments, or Spiritual Background</label>
+                                <InputTextArea @bind-Value="model.Notes" rows="3" class="w-full px-4 py-2.5 rounded-lg border border-[#CBD5E1] focus:ring-2 focus:ring-[#174477] focus:outline-none text-sm" placeholder="Tell us what you enjoyed about the first 3 lessons..." />
+                            </div>
+
+                            <button type="submit" disabled="@isSubmitting" class="w-full py-3.5 px-6 rounded-xl font-bold text-xs uppercase tracking-wider bg-[#C8102E] hover:bg-red-700 text-white shadow-lg transition-all disabled:opacity-50">
+                                @(isSubmitting ? "Connecting..." : "Connect with Local Elder & Request Study")
+                            </button>
+                        </EditForm>
+                    }
+
+                    <!-- Member / Minister Portal Notice -->
+                    <div class="mt-8 pt-6 border-t border-[#E2E8F0] text-center text-xs text-[#64748B]">
+                        <span>Are you an ordained Minister or CACI Member?</span>
+                        <a href="/login?returnUrl=/portal/foundations" class="font-bold text-[#174477] hover:underline ml-1">
+                            Log in to Member/Minister Portal to access all 12 lessons &rarr;
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    }
+    else
+    {
+        <!-- Lessons 4 - 12 Gated View -->
+        <main class="max-w-3xl mx-auto px-4 py-20 text-center">
+            <div class="bg-white rounded-2xl border border-[#E2E8F0] shadow-xl p-8 sm:p-12 border-t-4 border-t-[#47306D]">
+                <div class="w-16 h-16 rounded-full bg-[#EBF2FA] text-[#001F5C] flex items-center justify-center mx-auto mb-4 text-2xl">
+                    🔒
+                </div>
+                <h1 class="text-3xl font-bold text-[#001F5C] mb-3" style="font-family: var(--font-heading, 'Playfair Display', Georgia, serif);">
+                    Lessons 4 through 12: Advanced Covenant Studies
+                </h1>
+                <p class="text-base text-[#475569] leading-relaxed max-w-xl mx-auto mb-8">
+                    Lessons 1 through 3 are freely accessible to all seekers. Lessons 4 through 12 require guided instruction through your local fellowship or an active Minister / Member account.
+                </p>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="/login?returnUrl=/portal/foundations" class="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-[#174477] hover:bg-[#6696C5] text-white shadow-md transition-all">
+                        Minister / Member Login &nearr;
+                    </a>
+                    <a href="/foundations/lesson/3?ref=@Ref#connect-elder" class="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-white border border-[#CBD5E1] text-[#174477] hover:bg-[#EBF2FA] transition-all">
+                        Connect with Local Elder
+                    </a>
+                </div>
+            </div>
+        </main>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int LessonNumber { get; set; } = 1;
+
+    [SupplyParameterFromQuery(Name = "ref")]
+    public string? Ref { get; set; }
+
+    private SeekerStudyForm model = new();
+    private bool isSubmitting;
+    private bool isSubmitted;
+
+    protected override void OnInitialized()
+    {
+        if (LessonNumber < 1) LessonNumber = 1;
+        if (!string.IsNullOrWhiteSpace(Ref))
+        {
+            model.Referral = Ref;
+        }
+    }
+
+    private string CurrentLessonTitle => LessonNumber switch
+    {
+        1 => "The Kingdom Blueprint: Paradise Given & Paradise Lost",
+        2 => "The Global Flood: The First Cleansing of the Earth",
+        3 => "The Rise of Babylon: The Origin of False Worship Systems",
+        _ => $"Foundation {LessonNumber}"
+    };
+
+    private string CurrentLessonSubtitle => LessonNumber switch
+    {
+        1 => "Understanding Genesis 1–3, the mandate of earthly dominion, and the promise of the Seed.",
+        2 => "Why God judged the earth with water, the pattern of cleansing, and Jesus' warning for the last days.",
+        3 => "The Tower of Babel, humanistic rebellion, and the apostolic call to separate from Babylon.",
+        _ => "Advanced Covenant Discipleship"
+    };
+
+    private string CurrentKeyScripture => LessonNumber switch
+    {
+        1 => "Blessed are the meek: for they shall inherit the earth. (Matthew 5:5)",
+        2 => "For as the days of Noah were, so shall also the coming of the Son of man be. (Matthew 24:37)",
+        3 => "Come out of her, my people, that ye be not partakers of her sins, and that ye receive not of her plagues. (Revelation 18:4)",
+        _ => ""
+    };
+
+    private string CurrentKeyReference => LessonNumber switch
+    {
+        1 => "Matthew 5:5 & Genesis 1:26-28",
+        2 => "Matthew 24:37 & Genesis 6:5-8",
+        3 => "Revelation 18:4 & Genesis 11:1-9",
+        _ => ""
+    };
+
+    private string GetLessonLink(int step)
+    {
+        var link = $"/foundations/lesson/{step}";
+        if (!string.IsNullOrWhiteSpace(Ref))
+        {
+            link += $"?ref={Uri.EscapeDataString(Ref)}";
+        }
+        return link;
+    }
+
+    private static string GetReferralName(string? code)
+    {
+        if (string.IsNullOrWhiteSpace(code)) return "CACI Ecclesiastical Body";
+        return code.ToLowerInvariant() switch
+        {
+            "kca" or "kingdom-covenant" => "Kingdom Covenant Apostolic (Southwest MO / Ozarks)",
+            _ => code
+        };
+    }
+
+    private async Task HandleSubmit()
+    {
+        isSubmitting = true;
+        try
+        {
+            var noteContent = $"Completed Lesson 3 online. City/State: {model.CityState}. Referral: {model.Referral}. Notes: {model.Notes}. Phone: {model.Phone}";
+            await CommunicationService.SubmitBibleStudyAsync(new BibleStudySubmission
+            {
+                Name = model.Name,
+                Email = model.Email,
+                CityState = model.CityState ?? "Online",
+                Interest = $"12 Foundations - Lesson {LessonNumber} Complete",
+                AboutYou = noteContent,
+                Source = string.IsNullOrWhiteSpace(Ref) ? "CACI Online Lessons" : $"Local Ref: {Ref}"
+            });
+
+            isSubmitted = true;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to submit lesson seeker form");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    public class SeekerStudyForm
+    {
+        [Required(ErrorMessage = "Name is required")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
+        public string Email { get; set; } = string.Empty;
+
+        public string? Phone { get; set; }
+        public string? CityState { get; set; }
+        public string? Notes { get; set; }
+        public string? Referral { get; set; }
+    }
+}

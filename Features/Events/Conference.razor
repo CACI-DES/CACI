@@ -1,0 +1,258 @@
+@using CACI_Life.Features.Events.Models
+@using CACI_Life.Features.Events
+@inject IEventsRepository EventsRepo
+
+<PageTitle>@(ActiveConference?.Title ?? "Exodus Family Conference 2026")</PageTitle>
+
+<HeadContent>
+    <style>
+        /* Smooth transition for buttons */
+        .cta-button {
+        transition: all 0.3s ease;
+        background-color: #C8102E; /* elder-red */
+        color: #FFFFFF;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+    }
+
+    .cta-button:hover {
+    background-color: #6696C5; /* tone-2 */
+    color: #C8102E;
+}
+
+/* Hero section background */
+.hero-bg {
+background-color: #174477;
+}
+
+/* Overlay to darken the image and make text pop */
+.hero-overlay {
+background-color: rgba(23, 68, 119, 0.65);
+}
+
+.title-font {
+font-family: 'Playfair Display', serif;
+letter-spacing: 0.05em;
+}
+
+/* Custom theme colors mapped as utility classes to make the copied HTML markup work */
+.bg-dark { background-color: #174477 !important; }
+.bg-medium { background-color: #6696C5 !important; }
+.bg-light { background-color: #A4BDDD !important; }
+.text-dark { color: #174477 !important; }
+.text-medium { color: #6696C5 !important; }
+.text-light { color: #A4BDDD !important; }
+.border-dark { border-color: #174477 !important; }
+.border-medium { border-color: #6696C5 !important; }
+.border-light { border-color: #A4BDDD !important; }
+</style>
+</HeadContent>
+
+<div class="min-h-screen bg-gray-50 font-sans">
+
+    <!-- 1. Hero Section - The Main Call to Action -->
+    <main class="hero-bg">
+        <div class="hero-overlay flex min-h-[100vh] items-start justify-center p-2 sm:p-4">
+            <div class="max-w-4xl space-y-6 rounded-xl px-4 py-6 text-center text-white shadow-2xl backdrop-blur-sm sm:px-10 sm:py-8">
+                <img src="@(ActiveConference?.ImageUrl ?? "/images/EFC2026/Kingdom Gospel 3B FINAL.png")" alt="Kingdom Gospel" class="w-full max-w-[560px] h-auto rounded-xl shadow-lg" style="margin: auto;">
+                <br />
+
+                <!-- Theme Tagline -->
+                <p class="mb-1 pb-0 text-xl font-bold sm:text-3xl md:text-4xl">
+                    @(ActiveConference?.Title ?? "EXODUS FAMILY CONFERENCE 2026")
+                </p>
+                <p class="pt-0 text-lg font-light sm:text-xl md:text-2xl">
+                    @(ActiveConference?.Description ?? "Join us for an unforgettable experience!")
+                </p>
+                <iframe class="w-full aspect-video rounded-xl shadow-md"
+                src="@(ActiveConference?.YoutubeLink ?? "https://www.youtube.com/embed/R03FJjwq0aM?si=lw1IM5AIHM9yAJRZ")"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+                muted>
+            </iframe>
+
+            <!-- Key Dates & Location -->
+            <div class="space-y-2 pt-2">
+                <div class="inline-block rounded-lg bg-medium p-2 shadow-xl">
+                    <p class="text-2xl font-bold sm:text-3xl">
+                        @if (ActiveConference != null)
+                        {
+                            @($"{ActiveConference.StartDate:MMMM dd} - {ActiveConference.EndDate:MMMM dd, yyyy}")
+                        }
+                        else
+                        {
+                            @("April 22 - 25, 2026")
+                        }
+                    </p>
+                </div>
+                <p class="text-xl font-semibold">
+                    @(ActiveConference?.Location ?? "MOBILE, ALABAMA")
+                </p>
+            </div>
+
+            <!-- Registration Call to Action Area -->
+            <div class="pt-0" id="cta">
+                @if (ActiveConference?.RegistrationOpen ?? true)
+                {
+                    <!-- Registration Button pointing to events.caci.life registration page -->
+                    <a href="https://events.caci.life/Registration" target="_blank" class="cta-button w-full transform rounded-full bg-light px-10 py-4 text-xl font-extrabold text-dark shadow-lg transition duration-300 ease-in-out hover:scale-[1.02] hover:bg-white hover:shadow-2xl sm:w-auto">
+                        Register Now
+                    </a>
+                }
+                else
+                {
+                    <span class="cta-button w-full inline-block rounded-full bg-gray-400 px-10 py-4 text-xl font-extrabold text-white shadow-lg text-center cursor-default sm:w-auto">
+                        Registration Opens July 19th
+                    </span>
+                }
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<!-- 2. Full Schedule Section -->
+@* <ConferenceSchedule /> *@
+
+<!-- 3. Registration and Pricing Information -->
+@* <section class="bg-light py-16 text-dark" id="registration">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h3 class="mb-12 text-center text-4xl font-extrabold text-dark">
+            Registration Information & Pricing
+        </h3>
+
+        <div class="mx-auto grid max-w-5xl gap-8 md:grid-cols-3">
+
+            <!-- Card 1: REGISTRATION ONLY -->
+            <div class="flex h-full flex-col rounded-xl border-t-4 border-dark bg-white p-6 shadow-2xl">
+                <h4 class="mb-3 text-2xl font-bold text-dark">1. REGISTRATION ONLY</h4>
+                <p class="mb-4 text-gray-600">Access to all conference services and sessions.</p>
+                <ul class="flex-grow space-y-2">
+                    <li class="flex justify-between text-lg font-semibold"><span>Adult</span> <span class="text-medium">$75</span></li>
+                    <li class="flex justify-between text-lg font-semibold"><span>Child (Ages 4-12)</span> <span class="text-medium">$40*</span></li>
+                </ul>
+            </div>
+
+            <!-- Card 2: REGISTRATION + KINGDOM BANQUET -->
+            <div class="flex h-full flex-col rounded-xl border-t-4 border-medium bg-white p-6 shadow-2xl">
+                <h4 class="mb-3 text-2xl font-bold text-dark">2. REGISTRATION + KINGDOM BANQUET</h4>
+                <p class="mb-4 text-gray-600">Includes all conference services and a formal plated dinner on Sabbath evening.</p>
+                <ul class="flex-grow space-y-2">
+                    <li class="flex justify-between text-lg font-semibold"><span>Adult</span> <span class="text-medium">$119</span></li>
+                    <li class="flex justify-between text-lg font-semibold"><span>Child (Ages 4-12)</span> <span class="text-medium">$59*</span></li>
+                </ul>
+            </div>
+
+            <!-- Card 3: MINISTERS LUNCHEON -->
+            <div class="flex h-full flex-col rounded-xl border-t-4 border-dark bg-white p-6 shadow-2xl">
+                <h4 class="mb-3 text-2xl font-bold text-dark">3. MINISTERS LUNCHEON (Thursday)</h4>
+                <p class="mb-4 font-bold text-gray-600 text-red-600">~All Ministry expected to attend and spouses are invited to attend as well~</p>
+                <ul class="flex-grow space-y-2">
+                    <li class="flex justify-between text-lg font-semibold"><span>Per Attendee</span> <span class="text-medium">$35</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="pt-8 text-center">
+            @if (ActiveConference?.RegistrationOpen ?? true)
+            {
+                <!-- Registration Button pointing to events.caci.life registration page -->
+                <a href="https://events.caci.life/registration" target="_blank" class="cta-button w-full transform rounded-full bg-light px-10 py-4 text-xl font-extrabold text-dark shadow-lg transition duration-300 ease-in-out hover:scale-[1.02] hover:bg-white hover:shadow-2xl sm:w-auto">
+                    Register Now
+                </a>
+            }
+            else
+            {
+                <span class="cta-button w-full inline-block rounded-full bg-gray-400 px-10 py-4 text-xl font-extrabold text-white shadow-lg text-center cursor-default sm:w-auto">
+                    Open soon
+                </span>
+            }
+        </div>
+
+        <!-- Footer Notes -->
+        <div class="mt-10 space-y-3 text-center">
+            <p class="text-xl font-extrabold text-red-600">***Deadline for registration is March 31, 2026***</p>
+            <p class="text-sm text-gray-700">All prices include tax and gratuity. Children's tickets are for kids ages 4 to 12.</p>
+            <p class="text-sm text-gray-700">Kingdom Banquet will be a formal plated dinner.</p>
+        </div>
+    </div>
+</section> *@
+
+<!-- 5. Sponsorship Packages Section -->
+<section class="bg-dark py-16 text-white" id="sponsorship">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h3 class="mb-6 text-center text-4xl font-extrabold text-white">
+            Business Sponsorship Packages
+        </h3>
+        <p class="mx-auto mb-12 max-w-3xl text-center text-lg font-medium text-gray-200">
+            Your partnership enables CACI to keep event costs affordable, and helps individuals and families to attend. These sponsorships are vital to the overall success and spiritual outcomes of our Conferences!
+        </p>
+
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            @if (Packages != null)
+            {
+                foreach (var pkg in Packages)
+                {
+                    <SponsorCard Level="@pkg.PackageName"
+                    Price="@pkg.PackagePrice"
+                    Benefits="@pkg.DescriptionPoints"
+                    ShowCta="false" />
+                }
+            }
+        </div>
+
+        <!-- Call to Action pointing to events.caci.life sponsorship page -->
+        <div class="mt-12 text-center">
+            <a href="https://cacievents.com/sponsorship" target="_blank" class="inline-block transform rounded-full bg-yellow-400 px-10 py-4 text-xl font-extrabold text-gray-900 shadow-lg transition duration-300 ease-in-out hover:scale-105 hover:bg-yellow-300 hover:shadow-2xl">
+                Sponsor This Event
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- 6. Contact Section -->
+<section class="bg-gray-100 py-16">
+    <div class="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+        <h3 class="mb-8 text-4xl font-extrabold text-dark">
+            Questions? Contact Us.
+        </h3>
+
+        <div class="mx-auto grid max-w-2xl gap-8 md:grid-cols-2">
+            <!-- Contact 1 -->
+            <div class="rounded-xl border-l-4 border-medium bg-white p-6 shadow-lg">
+                <p class="mb-2 text-xl font-bold text-dark">Elder Jason Humphreys</p>
+                <a href="tel:9379025726" class="text-lg text-gray-700 transition hover:text-medium">Phone: 937.902.5726</a>
+            </div>
+            <!-- Contact 2 -->
+            <div class="rounded-xl border-l-4 border-medium bg-white p-6 shadow-lg">
+                <p class="mb-2 text-xl font-bold text-dark">Bishop Mark Jackson</p>
+                <a href="tel:2512669862" class="text-lg text-gray-700 transition hover:text-medium">Phone: 251.266.9862</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+</div>
+
+@code {
+    private IEnumerable<SponsorPackageModel>? Packages { get; set; }
+    private ConferenceModel? ActiveConference { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            ActiveConference = await EventsRepo.GetActiveConferenceAsync();
+            Packages = await EventsRepo.GetSponsorPackagesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching conference details: {ex.Message}");
+        }
+    }
+}

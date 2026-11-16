@@ -1,0 +1,872 @@
+﻿@page "/congregation/{Slug}/sabbath"
+@page "/congregation/{Slug}/Sabbath"
+@layout CongregationLayout
+@using CACI_Life.Core.Domain.Congregations
+@inject ICongregationService CongregationService
+@inject TenantContext TenantContext
+
+<CongregationSeoHead Title="Why The Sabbath? | Seventh Day Biblical Sabbath & Church History"
+         Description="@($"Comprehensive biblical and historical evidence for the Seventh-Day Sabbath (Saturday). From Genesis creation to the Apostles and the New Earth. Apostolic Sabbath fellowship {_profile.RegionDescription}.")"
+         Path="@($"/congregation/{_profile.UrlSlug}/sabbath")"
+         Faqs="@SabbathFaqs" />
+
+<!-- HERO SECTION -->
+<section class="hero py-16 md:py-20">
+    <div class="max-w-5xl mx-auto px-4 text-center">
+        <span class="badge uppercase tracking-wider mb-4">Biblical Foundations &amp; Church History</span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">Why The Sabbath?</h1>
+        <div class="max-w-3xl mx-auto">
+            <p class="text-xl md:text-2xl text-slate-100 font-head italic mb-4">
+                What does the Bible and history say about the Seventh Day Sabbath?
+            </p>
+            <p class="text-sm text-slate-200 leading-relaxed">
+                All Hebrew and Greek definitions are cited from Strong's Concordance, Brown-Driver-Briggs Hebrew &amp; English Lexicon, Thayer's Greek-English Lexicon, and Webster's 1611 KJV Dictionary.
+            </p>
+        </div>
+
+        <!-- Jump Navigation Pills -->
+        <nav aria-label="Sabbath Topics" class="mt-10 flex flex-wrap justify-center gap-2 md:gap-3 text-xs md:text-sm">
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")creation" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">1. Creation Pattern</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")obedience" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">2. Proving Obedience</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")commandment" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">3. The 4th Commandment</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")sign-covenant" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">4. Perpetual Sign</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")feasts" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">5. Feasts of the LORD</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")all-nations" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">6. For All Nations</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")future-kingdom" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">7. Millennial Kingdom</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")yeshua" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">8. Jesus &amp; The Sabbath</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")apostles" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">9. Apostles in Acts</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")first-day" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">10. "First Day" Texts</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")paul-letters" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">11. Romans, Galatians, Colossians</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")hebrews" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">12. Hebrews 4 Rest</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")history" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">13. Constantine &amp; Rome</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")warnings" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">14. Prophetic Warnings</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")practical-guide" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">Practical Guide</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/sabbath#")what-is-truth" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">15. What Is Truth?</a>
+        </nav>
+    </div>
+</section>
+
+<!-- MAIN CONTENT CONTAINER -->
+<div class="max-w-5xl mx-auto px-4 py-12 space-y-16">
+
+    <!-- 1. THE FIRST SABBATH -->
+    <section id="creation" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-blue">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">Creation Week</span>
+            <h2 class="text-2xl md:text-3xl font-bold">1. The First Sabbath</h2>
+        </div>
+
+        <div class="bg-blue-50/50 p-5 rounded-lg border border-blue-100 mb-6">
+            <span class="font-bold text-caci-minister font-head text-lg block mb-1">
+                <a href="https://www.blueletterbible.org/kjv/gen/2/2" target="_blank" rel="noopener noreferrer">Genesis 2:2&ndash;3 (KJV) &nearr;</a>
+            </span>
+            <blockquote class="scripture-quote text-slate-800 text-sm md:text-base leading-relaxed">
+                And on the <strong>seventh day</strong> God ended his <strong>work</strong> which he had made; and he <strong>rested</strong> on the seventh day from all his <strong>work</strong> which he had made.
+                <strong class="font-bold text-caci-blue">3</strong> And God <strong>blessed</strong> the seventh day, and <strong>sanctified</strong> it: because that in it he had <strong>rested</strong> from all his <strong>work</strong> which God created and made.
+            </blockquote>
+        </div>
+
+        <!-- Hebrew Lexicon Cards -->
+        <h3 class="text-xs font-bold text-caci-gray uppercase tracking-wider mb-3">Original Hebrew Word Studies</h3>
+        <div class="grid md:grid-cols-3 gap-3 mb-6">
+            <div class="bg-parchment p-3.5 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Seventh &mdash; H7637 שְׁבִיעִי (shbi'iy)</p>
+                <p class="text-slate-700 mt-1">Seventh (time); the 7th ordinal.</p>
+            </div>
+            <div class="bg-parchment p-3.5 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Day &mdash; H3117 יוֹם (yowm)</p>
+                <p class="text-slate-700 mt-1">A day (from sunset to sunset or sunrise to sunset); an appointed period.</p>
+            </div>
+            <div class="bg-parchment p-3.5 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Work &mdash; H4399 מְלָאכָה (mla'kah)</p>
+                <p class="text-slate-700 mt-1">Deputyship, ministry, employment, occupation, regular labor.</p>
+            </div>
+            <div class="bg-parchment p-3.5 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Rested &mdash; H7673 שָׁבַת (shabath)</p>
+                <p class="text-slate-700 mt-1">To repose, desist from exertion, cease, celebrate, keep sabbath.</p>
+            </div>
+            <div class="bg-parchment p-3.5 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Blessed &mdash; H1288 בָּרַךְ (barak)</p>
+                <p class="text-slate-700 mt-1">To pronounce beneficial, endue with special divine favor.</p>
+            </div>
+            <div class="bg-parchment p-3.5 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Sanctified &mdash; H6942 קָדַשׁ (qadash)</p>
+                <p class="text-slate-700 mt-1">To consecrate, dedicate, hallow, set apart as sacred and distinct.</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-blue p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            During the week of creation, God ended His labors on the seventh day; He rested from all of His labors. He set the seventh day apart from the rest of the days and He blessed it. God ceased from creating and rested. He set the pattern for all of mankind.
+        </div>
+    </section>
+
+    <!-- 2. THE SABBATH WILL PROVE OBEDIENCE -->
+    <section id="obedience" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-purple">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">Wilderness of Sin (Before Sinai)</span>
+            <h2 class="text-2xl md:text-3xl font-bold">2. The Sabbath Will Prove Obedience</h2>
+        </div>
+
+        <div class="bg-purple-50/50 p-5 rounded-lg border border-purple-100 mb-6">
+            <span class="font-bold text-caci-minister font-head text-lg block mb-1">
+                <a href="https://www.blueletterbible.org/kjv/exo/16/4" target="_blank" rel="noopener noreferrer">Exodus 16:4&ndash;5, 21&ndash;30 (KJV) &nearr;</a>
+            </span>
+            <blockquote class="scripture-quote text-slate-800 text-xs md:text-sm leading-relaxed space-y-2">
+                <p>
+                    Then said the LORD unto Moses, Behold, I will rain bread from heaven for you; and the people shall go out and <strong>gather</strong> a certain rate every day, <strong class="text-caci-minister">that I may prove them, whether they will walk in my law, or no.</strong>
+                    <strong>5</strong> And it shall come to pass, that on the sixth day they shall prepare that which they bring in; and it shall be twice as much as they gather daily...
+                </p>
+                <p>
+                    <strong>23</strong> And he said unto them, This is that which the LORD hath said, <strong class="text-caci-purple">To morrow is the rest of the holy sabbath unto the LORD</strong>...
+                    <strong>26</strong> Six days ye shall gather it; but on the seventh day, which is the sabbath, in it there shall be none.
+                    <strong>27</strong> And it came to pass, that there went out some of the people on the seventh day for to gather, and they found none.
+                    <strong>28</strong> And the LORD said unto Moses, <strong class="text-caci-red">How long refuse ye to keep my commandments and my laws?</strong>
+                    <strong>29</strong> See, for that the LORD hath given you the sabbath, therefore he giveth you on the sixth day the bread of two days...
+                    <strong>30</strong> So the people rested on the seventh day.
+                </p>
+            </blockquote>
+        </div>
+
+        <h3 class="text-xs font-bold text-caci-gray uppercase tracking-wider mb-3">Key Lexicon Terms</h3>
+        <div class="grid md:grid-cols-4 gap-3 mb-6">
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Law &mdash; H8451 תּוֹרָה (Torah)</p>
+                <p class="text-slate-700 mt-1">Divine direction, instruction, legal code, body of prophetic teaching.</p>
+            </div>
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Sabbath &mdash; H7676 שַׁבָּת (Shabbath)</p>
+                <p class="text-slate-700 mt-1">Intermission, cessation, the seventh day of weekly rest.</p>
+            </div>
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Rest &mdash; H7677 שַׁבָּתוֹן (Shabbathown)</p>
+                <p class="text-slate-700 mt-1">A sabbatism, sacred rest, or special holiday unto God.</p>
+            </div>
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Commandments &mdash; H4687 מִצְוָה (Mitsvah)</p>
+                <p class="text-slate-700 mt-1">Divine ordinance, precept, collective statute of the King.</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-purple p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            After God took the children of Israel out of Egypt, to make for Himself a nation called by Him, He commanded them to gather manna on days one through six, but on the seventh day, the Sabbath, they would rest. On the sixth day they gathered double to prepare for the Sabbath rest. Notice this was <em>before</em> the Ten Commandments were given on stone at Sinai! God was doing this to prove whether they would walk in His ways or not. He knows whether we are obedient to Him by whether we keep His Sabbath rest.
+        </div>
+    </section>
+
+    <!-- 3. GOD TELLS US TO MARK THE SABBATH -->
+    <section id="commandment" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-tone2">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">The Decalogue (Mount Sinai)</span>
+            <h2 class="text-2xl md:text-3xl font-bold">3. God Tells Us to Mark the Sabbath</h2>
+        </div>
+
+        <div class="bg-blue-50/50 p-5 rounded-lg border border-blue-100 mb-6">
+            <span class="font-bold text-caci-minister font-head text-lg block mb-1">
+                <a href="https://www.blueletterbible.org/kjv/exo/20/8" target="_blank" rel="noopener noreferrer">Exodus 20:8&ndash;11 (KJV) &nearr;</a>
+            </span>
+            <blockquote class="scripture-quote text-slate-800 text-sm md:text-base leading-relaxed">
+                <strong class="text-caci-minister font-bold">Remember the sabbath day, to keep it holy.</strong>
+                <strong class="font-bold text-caci-blue">9</strong> Six days shalt thou labour, and do all thy work:
+                <strong class="font-bold text-caci-blue">10</strong> But the seventh day is the sabbath of the LORD thy God: in it thou shalt not do any work, thou, nor thy son, nor thy daughter, thy manservant, nor thy maidservant, nor thy cattle, nor thy stranger that is within thy gates:
+                <strong class="font-bold text-caci-blue">11</strong> For in six days the LORD made heaven and earth, the sea, and all that in them is, and rested the seventh day: wherefore the LORD blessed the sabbath day, and hallowed it.
+            </blockquote>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-3 mb-6">
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Remember &mdash; H2142 זָכַר (zakar)</p>
+                <p class="text-slate-700 mt-1">To mark (so as to be recognized), to be mindful of, recount, record, call to remembrance.</p>
+            </div>
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Labour &mdash; H5647 עָבַד ('abad)</p>
+                <p class="text-slate-700 mt-1">To serve, work, till, produce occupationally.</p>
+            </div>
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Hallowed &mdash; H6942 קָדַשׁ (qadash)</p>
+                <p class="text-slate-700 mt-1">To pronounce clean, consecrate, dedicate, keep separate from common use.</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-tone2 p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            God commands us to mark the seventh day as a dedicated day. The first six days of the week are the days we labor, but the seventh is the Sabbath day unto Him. He explicitly roots our weekly cycle in His creation week: He created for six days and ceased on the seventh. He blessed the Sabbath day and declared it separate from all other days.
+        </div>
+    </section>
+
+    <!-- 4. GOD SAYS THE SABBATH IS A SIGN OF HIS PEOPLE -->
+    <section id="sign-covenant" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-red">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge badge-urgent mb-1">Perpetual Covenant</span>
+            <h2 class="text-2xl md:text-3xl font-bold">4. The Sabbath Is an Everlasting Sign</h2>
+        </div>
+
+        <div class="bg-red-50/50 p-5 rounded-lg border border-red-100 mb-6">
+            <span class="font-bold text-caci-minister font-head text-lg block mb-1">
+                <a href="https://www.blueletterbible.org/kjv/exo/31/12" target="_blank" rel="noopener noreferrer">Exodus 31:12&ndash;17 (KJV) &nearr;</a>
+            </span>
+            <blockquote class="scripture-quote text-slate-800 text-xs md:text-sm leading-relaxed space-y-2">
+                <p>
+                    And the LORD spake unto Moses, saying, Speak thou also unto the children of Israel, saying,
+                    <strong class="text-caci-minister">Verily my sabbaths ye shall keep: for it is a sign between me and you throughout your generations; that ye may know that I am the LORD that doth sanctify you.</strong>
+                    <strong>14</strong> Ye shall keep the sabbath therefore; for it is holy unto you...
+                    <strong>16</strong> Wherefore the children of Israel shall keep the sabbath, to observe the sabbath throughout their generations, for a <strong class="text-caci-red">perpetual covenant</strong>.
+                    <strong>17</strong> It is a <strong class="text-caci-red">sign between me and the children of Israel for ever</strong>: for in six days the LORD made heaven and earth, and on the seventh day he rested, and was refreshed.
+                </p>
+            </blockquote>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-3 mb-6">
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Sign &mdash; H226 אוֹת ('owth)</p>
+                <p class="text-slate-700 mt-1">A signal, flag, beacon, pledge of covenant, monument, token of ownership.</p>
+            </div>
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Shall Keep &mdash; H8104 שָׁמַר (shamar)</p>
+                <p class="text-slate-700 mt-1">To hedge about with thorns, guard, protect, attend to, preserve circumspectly.</p>
+            </div>
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Perpetual &mdash; H5769 עוֹלָם ('owlam)</p>
+                <p class="text-slate-700 mt-1">Concealed horizon, time out of mind, eternity, always, unending.</p>
+            </div>
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Covenant &mdash; H1285 בְּרִית (briyth)</p>
+                <p class="text-slate-700 mt-1">A divine compact, alliance, pledge of binding fellowship.</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-red p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            Observing God's Sabbath is the signature mark that we belong to Him and that He is the One who sanctifies us. The Sabbath is a perpetual, never-ending covenant. It is a sign between Him and His people because in six days He created heaven and earth and rested.
+        </div>
+    </section>
+
+    <!-- 5. LEVITICUS 19 & LEVITICUS 23: THE FEASTS OF THE LORD -->
+    <section id="feasts" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-blue">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">Leviticus 23 &amp; Leviticus 19</span>
+            <h2 class="text-2xl md:text-3xl font-bold">5. The Sabbath as a Feast of the LORD (Moed)</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">
+                    <a href="https://www.blueletterbible.org/kjv/lev/19/1" target="_blank" rel="noopener noreferrer">Leviticus 19:1&ndash;4 (KJV) &nearr;</a>
+                </span>
+                <p class="text-xs text-slate-700 italic">
+                    Ye shall be holy: for I the LORD your God am holy. Ye shall fear every man his mother, and his father, and <strong>keep my sabbaths: I am the LORD your God</strong>. Turn ye not unto idols...
+                </p>
+            </div>
+
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">
+                    <a href="https://www.blueletterbible.org/kjv/lev/23/1" target="_blank" rel="noopener noreferrer">Leviticus 23:1&ndash;3 (KJV) &nearr;</a>
+                </span>
+                <p class="text-xs text-slate-700 italic">
+                    Concerning the <strong>feasts of the LORD</strong>, which ye shall proclaim to be <strong>holy convocations, even these are my feasts</strong>. Six days shall work be done: but the seventh day is the sabbath of rest, an holy convocation; ye shall do no work therein: it is the sabbath of the LORD in all your dwellings.
+                </p>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-3 mb-6">
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Feasts of the LORD &mdash; H4150 מוֹעֵד (Mow'ed)</p>
+                <p class="text-slate-700 mt-1">An appointed time, divine appointment, fixed festival, meeting place, sacred assembly.</p>
+            </div>
+            <div class="bg-parchment p-3 rounded border border-slate-200 text-xs">
+                <p class="font-bold text-caci-minister">Holy Convocation &mdash; H4744 מִקְרָא (Miqra)</p>
+                <p class="text-slate-700 mt-1">A public called-out meeting, an assembly of the congregation, a rehearsal.</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-blue p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            Not only is the Sabbath one of the Ten Commandments, it is the <strong>very first of the Feasts of the LORD</strong> in Leviticus 23! It is a weekly divine appointment (<em>Moed</em>) and a Holy Convocation (<em>Miqra</em>)—a dress rehearsal for the 7th-millennium reign of Messiah.
+        </div>
+    </section>
+
+    <!-- 6. FOR ALL NATIONS: ISAIAH 56 & 58 -->
+    <section id="all-nations" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-purple">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">Prophetic Ingathering</span>
+            <h2 class="text-2xl md:text-3xl font-bold">6. Is the Sabbath Only for Israelites?</h2>
+        </div>
+
+        <div class="space-y-4 mb-6">
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">
+                    <a href="https://www.blueletterbible.org/kjv/isa/56/1" target="_blank" rel="noopener noreferrer">Isaiah 56:1&ndash;8 (KJV) &nearr;</a>
+                </span>
+                <blockquote class="scripture-quote text-slate-700 text-xs leading-relaxed">
+                    <strong class="text-caci-minister">Thus saith the LORD, Keep ye judgment, and do justice: for my salvation is near to come, and my righteousness to be revealed.</strong>
+                    <strong class="font-bold text-caci-blue">2</strong> Blessed is the man that doeth this, and the son of man that layeth hold on it; <strong>that keepeth the sabbath from polluting it</strong>, and keepeth his hand from doing any evil.
+                    <strong class="font-bold text-caci-blue">3</strong> <strong class="text-caci-minister">Neither let the son of the stranger, that hath joined himself to the LORD, speak, saying, The LORD hath utterly separated me from his people...</strong>
+                    <strong class="font-bold text-caci-blue">6</strong> Also the sons of the stranger, that join themselves to the LORD, to serve him, and to love the name of the LORD... every one that keepeth the sabbath from polluting it, and taketh hold of my covenant;
+                    <strong class="font-bold text-caci-blue">7</strong> <strong class="text-caci-blue">Even them will I bring to my holy mountain, and make them joyful in my house of prayer... for mine house shall be called an house of prayer for all people.</strong>
+                </blockquote>
+            </div>
+
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">
+                    <a href="https://www.blueletterbible.org/kjv/isa/58/13" target="_blank" rel="noopener noreferrer">Isaiah 58:13&ndash;14 (KJV) &nearr;</a>
+                </span>
+                <blockquote class="scripture-quote text-slate-700 text-xs leading-relaxed">
+                    If thou turn away thy foot from the sabbath, from doing thy pleasure on my holy day; <strong>and call the sabbath a delight, the holy of the LORD, honourable</strong>; and shalt honour him, not doing thine own ways, nor finding thine own pleasure, nor speaking thine own words:
+                    Then shalt thou delight thyself in the LORD; and I will cause thee to ride upon the high places of the earth...
+                </blockquote>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-purple p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            Many claim the Sabbath was only given to physical Israel and does not apply to Christians. Yet God clearly declared that the <em>stranger</em> (Gentile) joins himself to the LORD by taking hold of His covenant and guarding His Sabbath. God's people are a covenant people from every tribe, nation, and tongue.
+        </div>
+    </section>
+
+    <!-- 7. SCATTERED FOR BREAKING SABBATH & MILLENNIAL KINGDOM OBSERVED -->
+    <section id="future-kingdom" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-tone2">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">Prophecy &amp; The World to Come</span>
+            <h2 class="text-2xl md:text-3xl font-bold">7. Israel's Dispersion &amp; The Sabbath in the Millennial Kingdom</h2>
+        </div>
+
+        <div class="space-y-4 mb-6">
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">
+                    <a href="https://www.blueletterbible.org/kjv/eze/20/10" target="_blank" rel="noopener noreferrer">Ezekiel 20:10&ndash;26; Ezekiel 22:8, 26; 23:38 (KJV) &nearr;</a>
+                </span>
+                <p class="text-xs text-slate-700 italic">
+                    &ldquo;Moreover also I gave them my sabbaths, to be a sign between me and them, that they might know that I am the LORD that sanctify them... but my sabbaths they greatly polluted... I lifted up mine hand unto them also in the wilderness, that I would scatter them among the heathen, and disperse them through the countries... Her priests have violated my law... and have hid their eyes from my sabbaths, and I am profaned among them.&rdquo;
+                </p>
+            </div>
+
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">
+                    <a href="https://www.blueletterbible.org/kjv/isa/66/22" target="_blank" rel="noopener noreferrer">Isaiah 66:22&ndash;23 &amp; Ezekiel 46:1&ndash;3 (KJV) &nearr;</a>
+                </span>
+                <blockquote class="scripture-quote text-slate-700 text-xs leading-relaxed">
+                    &ldquo;For as the new heavens and the new earth, which I will make, shall remain before me, saith the LORD, so shall your seed and your name remain.
+                    <strong class="text-caci-minister font-bold">And it shall come to pass, that from one new moon to another, and from one sabbath to another, shall all flesh come to worship before me, saith the LORD.</strong>&rdquo;
+                </blockquote>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-tone2 p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            Scripture proves God never abolished His Sabbath. He instituted it at creation, gave it to His redeemed nation, judged them for despising it, and prophesied that in the Millennial Kingdom, <strong>all flesh</strong> will worship before Him on His Sabbath!
+        </div>
+    </section>
+
+    <!-- 8. JESUS & THE SABBATH -->
+    <section id="yeshua" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-blue">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">The Gospels</span>
+            <h2 class="text-2xl md:text-3xl font-bold">8. What Did Jesus / Yeshua Teach About the Sabbath?</h2>
+        </div>
+
+        <div class="space-y-4 mb-6">
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded border border-slate-200">
+                    <span class="font-bold text-caci-minister text-sm block mb-1">His Custom to Teach &amp; Read</span>
+                    <p class="text-xs text-slate-700 italic">
+                        <strong>Luke 4:16:</strong> &ldquo;And he came to Nazareth, where he had been brought up: and, <strong class="text-caci-minister">as his custom was, he went into the synagogue on the sabbath day</strong>, and stood up for to read.&rdquo; (Also Mark 1:21, Mark 6:2, Luke 4:31).
+                    </p>
+                </div>
+                <div class="bg-white p-4 rounded border border-slate-200">
+                    <span class="font-bold text-caci-minister text-sm block mb-1">Lord of the Sabbath</span>
+                    <p class="text-xs text-slate-700 italic">
+                        <strong>Mark 2:27&ndash;28:</strong> &ldquo;And he said unto them, <strong class="text-caci-blue">The sabbath was made for man, and not man for the sabbath: Therefore the Son of man is Lord also of the sabbath.</strong>&rdquo; (Matthew 12:1&ndash;8, Luke 6:1&ndash;5).
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">Lawful to Do Good and Heal on the Sabbath</span>
+                <p class="text-xs text-slate-700 italic mb-2">
+                    Luke 6:6&ndash;10 (withered hand), Matthew 12:9&ndash;13 (sheep in a pit), John 5:9&ndash;18 (man at Bethesda), Luke 13:10&ndash;16 (woman bowed with infirmity), Luke 14:1&ndash;6, John 7:22&ndash;23, John 9:14&ndash;16.
+                </p>
+                <p class="text-xs text-slate-600">
+                    Jesus never broke the biblical Sabbath. He confronted man-made rabbinic traditions that turned God's day of joy and mercy into a heavy burden.
+                </p>
+            </div>
+
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">Looking Decades Forward to the Future</span>
+                <p class="text-xs text-slate-700 italic">
+                    <strong>Matthew 24:20:</strong> &ldquo;But pray ye that your flight be not in the winter, <strong class="text-caci-minister">neither on the sabbath day</strong>.&rdquo;
+                    Speaking of the destruction of Jerusalem in 70 AD—nearly 40 years after His resurrection—Jesus assumed His disciples would still be honoring the Sabbath!
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-blue p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            Yeshua is Lord of the Sabbath. The Sabbath was made as a gift to man for rest and worship, not as a legalistic bondage. He showed that it is always lawful to do good, preserve life, and bring healing on the Sabbath.
+        </div>
+    </section>
+
+    <!-- 9. APOSTLES & ACTS -->
+    <section id="apostles" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-purple">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">The Early Assembly</span>
+            <h2 class="text-2xl md:text-3xl font-bold">9. Did the Apostles Observe the Sabbath?</h2>
+        </div>
+
+        <div class="space-y-4 mb-6">
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">
+                    <a href="https://www.blueletterbible.org/kjv/act/13/14" target="_blank" rel="noopener noreferrer">Acts 13:14, 42&ndash;44 (KJV) &nearr;</a>
+                </span>
+                <p class="text-xs text-slate-700 italic leading-relaxed">
+                    &ldquo;...they came to Antioch in Pisidia, and went into the synagogue on the sabbath day, and sat down... And when the Jews were gone out of the synagogue, <strong class="text-caci-minister">the Gentiles besought that these words might be preached to them the next sabbath... And the next sabbath day came almost the whole city together to hear the word of God.</strong>&rdquo;
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded border border-slate-200">
+                    <span class="font-bold text-caci-minister text-sm block mb-1">The Jerusalem Council (Acts 15:19&ndash;21)</span>
+                    <p class="text-xs text-slate-700 italic">
+                        &ldquo;For Moses of old time hath in every city them that preach him, <strong class="text-caci-blue">being read in the synagogues every sabbath day</strong>.&rdquo;
+                        Gentile converts heard the scriptures taught week by week on the Sabbath.
+                    </p>
+                </div>
+                <div class="bg-white p-4 rounded border border-slate-200">
+                    <span class="font-bold text-caci-minister text-sm block mb-1">Thessalonica &amp; Corinth (Acts 17:2; 18:4, 11)</span>
+                    <p class="text-xs text-slate-700 italic">
+                        &ldquo;And Paul, as his manner was, went in unto them, and three sabbath days reasoned with them... And <strong class="text-caci-blue">he reasoned in the synagogue every sabbath</strong>, and persuaded the Jews and the Greeks... and he continued there a year and six months.&rdquo;
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">James: Faith and the Law of Liberty (James 1:22&ndash;25; 2:8&ndash;12, 14&ndash;26)</span>
+                <p class="text-xs text-slate-700 italic">
+                    &ldquo;For whosoever shall keep the whole law, and yet offend in one point, he is guilty of all... Even so faith, if it hath not works, is dead, being alone. Shew me thy faith without thy works, and I will shew thee my faith by my works.&rdquo;
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-purple p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            Over 80 Sabbaths across the Book of Acts (including 18 months every Sabbath in Corinth alone — Acts 18:4, 11), Paul and the apostles are recorded worshiping, reasoning, and preaching in synagogues on the Sabbath to both Jews and Gentiles. When the Gentiles asked Paul to preach to them, he didn't tell them to come back Sunday—he met them the following Sabbath!
+        </div>
+    </section>
+
+    <!-- 10. "FIRST DAY" TEXTS EXAMINED -->
+    <section id="first-day" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-tone2">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">Textual &amp; Contextual Analysis</span>
+            <h2 class="text-2xl md:text-3xl font-bold">10. Are There Sunday Meetings in the New Testament?</h2>
+        </div>
+
+        <div class="space-y-4 mb-6">
+            <!-- Acts 20:7 -->
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-base block mb-1">
+                    <a href="https://www.blueletterbible.org/kjv/act/20/6" target="_blank" rel="noopener noreferrer">Acts 20:6&ndash;12 (The Troas Meeting) &nearr;</a>
+                </span>
+                <p class="text-xs text-slate-700 italic mb-3">
+                    &ldquo;And upon the first day of the week, when the disciples came together to break bread, Paul preached unto them, ready to depart on the morrow; and continued his speech until midnight...&rdquo;
+                </p>
+                <div class="bg-parchment p-3 rounded text-xs text-slate-700 leading-relaxed space-y-1">
+                    <p><strong>Contextual Facts:</strong></p>
+                    <p>&bull; <strong>Verse 6:</strong> They sailed after the Days of Unleavened Bread. Paul was rushing to reach Jerusalem in time for the Feast of Pentecost (v. 16).</p>
+                    <p>&bull; <strong>Greek Text:</strong> The word for &ldquo;week&rdquo; is <em>sabbaton</em> (plural Sabbaths). In Greek: <em>mia ton sabbaton</em> (&ldquo;on the first of the Sabbaths&rdquo; &mdash; referring to the 7-Sabbath count between Firstfruits and Pentecost per Leviticus 23:15&ndash;16!).</p>
+                    <p>&bull; In biblical timekeeping, the &ldquo;first day&rdquo; begins at Saturday sunset. Paul met Saturday night after Sabbath, broke bread, spoke until dawn, and then walked 19 miles to Assos on Sunday morning.</p>
+                </div>
+            </div>
+
+            <!-- 1 Corinthians 16:1-3 -->
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-base block mb-1">
+                    <a href="https://www.blueletterbible.org/kjv/1co/16/1" target="_blank" rel="noopener noreferrer">1 Corinthians 16:1&ndash;3 (The Jerusalem Collection) &nearr;</a>
+                </span>
+                <p class="text-xs text-slate-700 italic mb-3">
+                    &ldquo;Upon the first day of the week let every one of you lay by him in store, as God hath prospered him, that there be no gatherings when I come.&rdquo;
+                </p>
+                <div class="bg-parchment p-3 rounded text-xs text-slate-700 leading-relaxed space-y-1">
+                    <p><strong>Contextual Facts:</strong></p>
+                    <p>&bull; This was not a corporate church offering passed in a plate during a service. Paul instructed each person to store provisions <em>at home</em> (&ldquo;lay by him in store&rdquo;).</p>
+                    <p>&bull; This was food relief gathered for the famine-stricken saints in Jerusalem, timed around the Feast of Weeks.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-tone2 p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            Neither Acts 20:7 nor 1 Corinthians 16:2 describes a regular weekly Sunday church service replacing the Sabbath. When understood in their biblical Feast calendar context, they confirm the apostles' ongoing covenant practice.
+        </div>
+    </section>
+
+    <!-- 11. PAUL'S EPISTLES EXPLAINED -->
+    <section id="paul-letters" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-blue">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">Commonly Misunderstood Passages</span>
+            <h2 class="text-2xl md:text-3xl font-bold">11. Paul's Letters Explained: Romans 14, Galatians 4, &amp; Colossians 2</h2>
+        </div>
+
+        <div class="space-y-6">
+
+            <!-- Romans 14 -->
+            <details class="faq-item" open>
+                <summary>
+                    <span class="text-lg font-bold text-caci-blue">Romans 14 &mdash; Disputable Matters &amp; Fasting, Not the Sabbath</span>
+                </summary>
+                <div class="faq-answer space-y-3 pt-2 text-xs md:text-sm text-slate-700 leading-relaxed">
+                    <p class="italic text-slate-600 bg-white p-3 rounded border border-slate-200">
+                        &ldquo;One man esteemeth one day above another: another esteemeth every day alike. Let every man be fully persuaded in his own mind...&rdquo; (Romans 14:5)
+                    </p>
+                    <p>
+                        The Sabbath and God's Holy Days are <strong>never mentioned</strong> in Romans 14. The entire chapter deals with vegetarianism vs. eating meat, wine, and voluntary days of fasting.
+                    </p>
+                    <p>
+                        Jewish believers and Gentile converts held strong personal opinions about which days of the week were best for fasting. Paul instructs them not to judge one another over personal dietary customs or cause weaker brethren to stumble. He was not repealing the Fourth Commandment spoken from God's own mouth!
+                    </p>
+                </div>
+            </details>
+
+            <!-- Galatians 4 -->
+            <details class="faq-item">
+                <summary>
+                    <span class="text-lg font-bold text-caci-blue">Galatians 4:8&ndash;11 &mdash; Pagan Astrological Calendars vs. God's Feasts</span>
+                </summary>
+                <div class="faq-answer space-y-3 pt-2 text-xs md:text-sm text-slate-700 leading-relaxed">
+                    <p class="italic text-slate-600 bg-white p-3 rounded border border-slate-200">
+                        &ldquo;Howbeit then, when ye knew not God, ye did service unto them which by nature are no gods. But now... how turn ye again to the weak and beggarly elements, whereunto ye desire again to be in bondage? Ye observe days, and months, and times, and years.&rdquo; (Galatians 4:8&ndash;10)
+                    </p>
+                    <p>
+                        Notice verse 8: Paul is addressing Gentiles who previously <em>&ldquo;did service unto them which by nature are no gods.&rdquo;</em> Before knowing the true God, they had never kept the biblical Sabbath!
+                    </p>
+                    <p>
+                        Paul was warning them against slipping back into their pagan Roman/Greek superstitious calendars—observing lucky and unlucky days, astrological months, and pagan festival seasons. Paul would never refer to God's holy, blessed commandments as &ldquo;weak and beggarly elements.&rdquo;
+                    </p>
+                </div>
+            </details>
+
+            <!-- Colossians 2 -->
+            <details class="faq-item">
+                <summary>
+                    <span class="text-lg font-bold text-caci-blue">Colossians 2:14&ndash;17 &mdash; The Handwriting of Ordinances &amp; Shadows of Messiah</span>
+                </summary>
+                <div class="faq-answer space-y-3 pt-2 text-xs md:text-sm text-slate-700 leading-relaxed">
+                    <p class="italic text-slate-600 bg-white p-3 rounded border border-slate-200">
+                        &ldquo;Blotting out the handwriting of ordinances that was against us... Let no man therefore judge you in meat, or in drink, or in respect of an holyday, or of the new moon, or of the sabbath days: Which are a shadow of things to come; but the body is of Christ.&rdquo; (Colossians 2:14&ndash;17)
+                    </p>
+                    <div class="space-y-2">
+                        <p>
+                            &bull; <strong>The Certificate of Debt:</strong> In Greek, <em>cheirographon</em> means the handwritten record of our debt and guilt (transgressions). Messiah nailed our debt and punishment to the cross, not the moral law that reveals what sin is (Romans 7:7).
+                        </p>
+                        <p>
+                            &bull; <strong>Who was judging them?</strong> Colossae was a pagan, ascetic culture obsessed with angel worship, self-abasement, and man-made taboos (&ldquo;touch not, taste not, handle not&rdquo; v. 21). Paul was telling the new believers: <em>do not let non-believers judge you for feasting, drinking, and celebrating the biblical Sabbath and New Moons!</em>
+                        </p>
+                        <p>
+                            &bull; <strong>&ldquo;A shadow of things to come&rdquo;:</strong> Notice the present tense! These appointed days prophetically foreshadow Messiah's return and millennial rest.
+                        </p>
+                    </div>
+                </div>
+            </details>
+
+        </div>
+    </section>
+
+    <!-- 12. HEBREWS 4: SABBATISMOS -->
+    <section id="hebrews" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-purple">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">Hebrews 4:1&ndash;11</span>
+            <h2 class="text-2xl md:text-3xl font-bold">12. There Remains a Sabbath-Rest to the People of God</h2>
+        </div>
+
+        <div class="bg-purple-50/50 p-5 rounded-lg border border-purple-100 mb-6">
+            <span class="font-bold text-caci-minister font-head text-lg block mb-1">
+                <a href="https://www.blueletterbible.org/kjv/heb/4/9" target="_blank" rel="noopener noreferrer">Hebrews 4:9&ndash;11 (KJV) &nearr;</a>
+            </span>
+            <blockquote class="scripture-quote text-slate-800 text-sm md:text-base leading-relaxed">
+                <strong class="text-caci-purple font-bold">There remaineth therefore a rest to the people of God.</strong>
+                <strong class="font-bold text-caci-blue">10</strong> For he that is entered into his rest, he also hath ceased from his own works, as God did from his.
+                <strong class="font-bold text-caci-blue">11</strong> Let us labour therefore to enter into that rest, lest any man fall after the same example of unbelief.
+            </blockquote>
+        </div>
+
+        <div class="bg-parchment p-4 rounded border border-slate-200 text-xs mb-6">
+            <p class="font-bold text-caci-minister text-sm">Greek Word Study: G4520 σαββατισμός (Sabbatismos)</p>
+            <p class="text-slate-700 mt-1 leading-relaxed">
+                In Hebrews 4:9, the Holy Spirit inspired the unique word <strong>sabbatismos</strong> (a keeping of the Sabbath, a Sabbath-observance), distinct from the general word <em>katapausis</em> (ordinary resting) used elsewhere in the chapter. The literal translation of Hebrews 4:9 is: <em>&ldquo;There remains therefore a Sabbath-keeping for the people of God.&rdquo;</em>
+            </p>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-purple p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            Just as God ceased from His works on the seventh day at creation, there remains an active Sabbath rest for believers today, pointing forward to our eternal rest in the Millennial Kingdom of Yeshua.
+        </div>
+    </section>
+
+    <!-- 13. HISTORICAL SHIFT: CONSTANTINE & ROME -->
+    <section id="history" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-red">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge badge-urgent mb-1">Church History &amp; Roman Decrees</span>
+            <h2 class="text-2xl md:text-3xl font-bold">13. If Scripture Didn't Change the Sabbath to Sunday, Who Did?</h2>
+        </div>
+
+        <div class="space-y-4 mb-6">
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-base block mb-1">
+                    The Civil Edict of Roman Emperor Constantine I (March 7, 321 AD)
+                </span>
+                <blockquote class="scripture-quote text-slate-700 text-xs md:text-sm italic leading-relaxed">
+                    &ldquo;On the venerable Day of the Sun let the magistrates and people residing in cities rest, and let all workshops be closed.&rdquo;
+                    <span class="block font-semibold text-caci-gray mt-1">&mdash; Codex Justinianus, lib. 3, tit. 12, 3</span>
+                </blockquote>
+                <p class="text-xs text-slate-700 mt-2">
+                    Sunday was a regular workday in the Roman Empire until Emperor Constantine, an adherent of Sol Invictus (the Unconquered Sun), issued the first civil law mandating Sunday rest.
+                </p>
+            </div>
+
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-base block mb-1">
+                    The Council of Laodicea (363&ndash;365 AD): Canon 29
+                </span>
+                <blockquote class="scripture-quote text-slate-700 text-xs md:text-sm italic leading-relaxed">
+                    &ldquo;Christians must not judaize by resting on the Sabbath, but must work on that day, rather honouring the Lord's Day; and, if they can, resting then as Christians. But if any shall be found to be judaizers, let them be anathema from Christ.&rdquo;
+                </blockquote>
+                <p class="text-xs text-slate-700 mt-2">
+                    Under penalty of excommunication (anathema), imperial church councils officially outlawed seventh-day Sabbath rest and substituted Sunday.
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-red p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            The change from Saturday Sabbath to Sunday rest was never commanded by God, Messiah, or the Apostles. It was instituted centuries later by pagan Rome and imperial ecumenical councils.
+        </div>
+    </section>
+
+    <!-- 14. PROPHETIC WARNINGS -->
+    <section id="warnings" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-purple">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">Daniel &amp; Revelation</span>
+            <h2 class="text-2xl md:text-3xl font-bold">14. Prophetic Warnings: Changing Times and Laws</h2>
+        </div>
+
+        <div class="space-y-4 mb-6">
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">
+                    <a href="https://www.blueletterbible.org/kjv/dan/7/25" target="_blank" rel="noopener noreferrer">Daniel 7:25 (KJV) &nearr;</a>
+                </span>
+                <blockquote class="scripture-quote text-slate-700 text-xs leading-relaxed">
+                    &ldquo;And he shall speak great words against the most High, and shall wear out the saints of the most High, <strong class="text-caci-red font-bold">and think to change times and laws:</strong> and they shall be given into his hand until a time and times and the dividing of time.&rdquo;
+                </blockquote>
+                <div class="mt-2 text-xs text-slate-600">
+                    Aramaic: <em>Zman</em> (appointed seasons/feasts) and <em>Dath</em> (divine laws/commandments). Daniel foresaw an earthly power attempting to alter God's calendar and commandments!
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">
+                    <a href="https://www.blueletterbible.org/kjv/rev/18/4" target="_blank" rel="noopener noreferrer">Revelation 18:4 (KJV) &nearr;</a>
+                </span>
+                <blockquote class="scripture-quote text-slate-700 text-xs leading-relaxed">
+                    &ldquo;And I heard another voice from heaven, saying, <strong class="text-caci-minister font-bold">Come out of her, my people, that ye be not partakers of her sins, and that ye receive not of her plagues.</strong>&rdquo;
+                </blockquote>
+            </div>
+
+            <div class="bg-white p-4 rounded border border-slate-200">
+                <span class="font-bold text-caci-minister text-sm block mb-1">
+                    <a href="https://www.blueletterbible.org/kjv/2th/2/3" target="_blank" rel="noopener noreferrer">2 Thessalonians 2:3&ndash;12 (The Falling Away &amp; Strong Delusion) &nearr;</a>
+                </span>
+                <p class="text-xs text-slate-700 italic">
+                    Paul warned that before Yeshua returns there would be a falling away (apostasy) and the revelation of the lawless one. Those who do not receive the love of the truth fall victim to strong delusion.
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-purple p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Key Understanding:</strong>
+            Scripture warned us that an earthly system would seek to change God's appointed times and laws. In these last days, God calls His people out of religious Babylon back to His pure, unadulterated covenant.
+        </div>
+    </section>
+
+    <!-- PRACTICAL GUIDE: HOW DO WE KEEP THE SABBATH TODAY? -->
+    <section id="practical-guide" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-amber-500 bg-gradient-to-br from-amber-50/40 via-white to-slate-50">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-200 mb-1">Living the Commandment</span>
+            <h2 class="text-2xl md:text-3xl font-bold text-caci-blue">How Do We Keep the Sabbath Today? A Practical Walkout Guide</h2>
+            <p class="text-sm text-slate-600 mt-2">
+                The Sabbath was given as a weekly sanctuary in time—a day of physical rest, spiritual renewal, family fellowship, and holy assembly. Here is how believers walk it out according to Scripture:
+            </p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-5 mb-6">
+            <!-- 1. Sunset to Sunset -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-t-4 border-t-caci-blue">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-7 h-7 rounded-full bg-blue-100 text-caci-blue flex items-center justify-center font-bold text-xs">1</span>
+                        <h3 class="font-bold text-base text-caci-blue">Sunset to Sunset</h3>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed">
+                        In biblical timekeeping, the biblical day begins at evening. The Sabbath begins Friday at sundown and concludes Saturday at sundown.
+                    </p>
+                </div>
+                <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-caci-minister">
+                    <span>Genesis 1:5 &middot; Leviticus 23:32</span>
+                    <a href="https://www.blueletterbible.org/kjv/lev/23/32" target="_blank" rel="noopener noreferrer" class="text-caci-tone2 hover:underline">KJV &nearr;</a>
+                </div>
+            </div>
+
+            <!-- 2. Cease From Work & Commerce -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-t-4 border-t-caci-purple">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-7 h-7 rounded-full bg-purple-100 text-caci-purple flex items-center justify-center font-bold text-xs">2</span>
+                        <h3 class="font-bold text-base text-caci-blue">Cease From Regular Work &amp; Commerce</h3>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed">
+                        Step away from weekday employment, worldly business, buying, and selling. It is a day to set down our labors and be physically refreshed in God's provision.
+                    </p>
+                </div>
+                <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-caci-minister">
+                    <span>Exodus 20:10 &middot; Nehemiah 10:31</span>
+                    <a href="https://www.blueletterbible.org/kjv/exo/20/10" target="_blank" rel="noopener noreferrer" class="text-caci-tone2 hover:underline">KJV &nearr;</a>
+                </div>
+            </div>
+
+            <!-- 3. Gather for Holy Convocation -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-t-4 border-t-amber-500">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-7 h-7 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-xs">3</span>
+                        <h3 class="font-bold text-base text-caci-blue">Gather for Holy Convocation</h3>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed">
+                        The Sabbath is a commanded <em>Miqra Kodesh</em> (sacred assembly). Assemble with fellow believers in person or online to worship, pray, read Scripture, and sit under the Word.
+                    </p>
+                </div>
+                <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-caci-minister">
+                    <span>Leviticus 23:3 &middot; Luke 4:16</span>
+                    <a href="https://www.blueletterbible.org/kjv/lev/23/3" target="_blank" rel="noopener noreferrer" class="text-caci-tone2 hover:underline">KJV &nearr;</a>
+                </div>
+            </div>
+
+            <!-- 4. Make It a Delight -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-t-4 border-t-[#C8102E]">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-7 h-7 rounded-full bg-red-100 text-[#C8102E] flex items-center justify-center font-bold text-xs">4</span>
+                        <h3 class="font-bold text-base text-caci-blue">Make It a Delight</h3>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed">
+                        Share a special Sabbath meal, extend mercy, visit the lonely or sick, and focus on family and the Lord rather than legalistic restrictions. The Sabbath was made for man!
+                    </p>
+                </div>
+                <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-caci-minister">
+                    <span>Isaiah 58:13&ndash;14 &middot; Mark 2:27</span>
+                    <a href="https://www.blueletterbible.org/kjv/isa/58/13" target="_blank" rel="noopener noreferrer" class="text-caci-tone2 hover:underline">KJV &nearr;</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-amber-50/80 border-t-2 border-amber-500 p-4 rounded-b-lg text-sm text-slate-800 leading-relaxed">
+            <strong class="text-caci-minister">Pastoral Counsel:</strong>
+            Transitioning to the biblical Sabbath is a joyful journey of walking in covenant obedience. Begin where you are: set aside Friday evening for family prayer and Scripture, step away from commercial transactions, and join with us on Saturday as we celebrate Messiah's day of rest.
+        </div>
+    </section>
+
+    <!-- 15. WHAT IS TRUTH? -->
+    <section id="what-is-truth" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-blue">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+            <span class="badge mb-1">The Definition of Truth</span>
+            <h2 class="text-2xl md:text-3xl font-bold">15. What Is Truth? Loving God by Keeping His Commandments</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white p-4 rounded border border-slate-200 text-xs">
+                <span class="font-bold text-caci-minister block mb-1">John 17:17</span>
+                <p class="italic text-slate-700">&ldquo;Sanctify them through thy truth: thy word is truth.&rdquo;</p>
+            </div>
+            <div class="bg-white p-4 rounded border border-slate-200 text-xs">
+                <span class="font-bold text-caci-minister block mb-1">Psalm 119:151&ndash;152</span>
+                <p class="italic text-slate-700">&ldquo;Thou art near, O LORD; and all thy commandments are truth. Concerning thy testimonies, I have known of old that thou hast founded them for ever.&rdquo;</p>
+            </div>
+            <div class="bg-white p-4 rounded border border-slate-200 text-xs">
+                <span class="font-bold text-caci-minister block mb-1">John 14:15 &amp; 1 John 5:3</span>
+                <p class="italic text-slate-700">&ldquo;If ye love me, keep my commandments... For this is the love of God, that we keep his commandments: and his commandments are not grievous.&rdquo;</p>
+            </div>
+            <div class="bg-white p-4 rounded border border-slate-200 text-xs">
+                <span class="font-bold text-caci-minister block mb-1">1 John 2:3&ndash;4</span>
+                <p class="italic text-slate-700">&ldquo;And hereby we do know that we know him, if we keep his commandments. He that saith, I know him, and keepeth not his commandments, is a liar, and the truth is not in him.&rdquo;</p>
+            </div>
+            <div class="bg-white p-4 rounded border border-slate-200 text-xs">
+                <span class="font-bold text-caci-minister block mb-1">Revelation 14:12</span>
+                <p class="italic text-slate-700">&ldquo;Here is the patience of the saints: here are they that keep the commandments of God, and the faith of Jesus.&rdquo;</p>
+            </div>
+            <div class="bg-white p-4 rounded border border-slate-200 text-xs">
+                <span class="font-bold text-caci-minister block mb-1">Revelation 22:14</span>
+                <p class="italic text-slate-700">&ldquo;Blessed are they that do his commandments, that they may have right to the tree of life, and may enter in through the gates into the city.&rdquo;</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-t-2 border-caci-blue p-5 rounded-b-lg text-sm text-slate-800 leading-relaxed space-y-3">
+            <p>
+                Jesus declared that the greatest commandment is to love God with all our heart, soul, mind, and strength, and the second is to love our neighbor as ourselves. The first four commandments (including the Sabbath) reveal <strong>how we love God</strong>, and the last six reveal <strong>how we love our neighbor</strong>.
+            </p>
+            <p>
+                The Seventh Day Sabbath is the only day God set apart from the foundation of the world. It is the day He commanded us to cease from worldly labor and assemble in holy convocation. It is a sign between God and His people, and a weekly dress rehearsal for the seventh millennium—the Millennial Reign of Yeshua (2 Peter 3:8).
+            </p>
+            <p class="font-bold text-caci-minister">
+                God never abolished nor changed the Sabbath. He told us: &ldquo;Remember the Sabbath day, to keep it holy.&rdquo; God does not change, and His commandments endure forever.
+            </p>
+        </div>
+    </section>
+
+    <!-- CALL TO OBSERVE WITH US -->
+    <section class="scripture-card text-center p-8 md:p-12">
+        <span class="label">WORSHIP WITH US ON THE SABBATH</span>
+        <h3 class="text-2xl md:text-4xl font-bold font-head text-white mt-2 mb-4">Experience the Blessing of Sabbath Rest</h3>
+        <p class="text-slate-200 max-w-2xl mx-auto text-sm md:text-base mb-3 leading-relaxed">
+            Join @_profile.CongregationName every Sabbath as we enter into His rest, study the Whole Counsel of God, and fellowship together.
+        </p>
+        <p class="text-amber-300 font-semibold text-xs md:text-sm mb-6">
+            Join us in person in Southwest Missouri or online every Saturday (Prayer 12:00 PM &middot; Service 12:30 PM Central)
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe")" class="btn-secondary">What We Believe</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/feasts")" class="btn-secondary">Biblical Feasts Calendar</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/connect?")from=Sabbath%20Teaching%20Page" class="btn-primary">Connect With Us</a>
+        </div>
+    </section>
+
+</div>
+
+@code {
+    [Parameter] public string Slug { get; set; } = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Slug))
+        {
+            TenantContext.SetSlug(Slug);
+        }
+        _profile = await CongregationService.GetCurrentAsync();
+    }
+
+    private CongregationProfile _profile = new();
+
+    private static readonly IReadOnlyList<CongregationSeoHead.FaqItem> SabbathFaqs = new CongregationSeoHead.FaqItem[]
+    {
+        new(
+            "Does Romans 14 abolish the Seventh-Day Sabbath?",
+            "No. The Sabbath is never mentioned in Romans 14. The entire chapter deals with vegetarianism vs eating meat, wine, and voluntary days of fasting. Paul was instructing Jewish and Gentile believers not to judge one another over personal dietary customs or fast days, not repealing the Fourth Commandment."
+        ),
+        new(
+            "Does Galatians 4:8-10 warn against observing the biblical Sabbath and God's feasts?",
+            "No. In verse 8 Paul explicitly addresses Gentiles who previously 'did service unto them which by nature are no gods' and had never kept the biblical Sabbath. Paul was warning them against reverting to pagan Roman and Greek astrological calendars and lucky/unlucky days. Scripture never calls God's holy commandments 'weak and beggarly elements.'"
+        ),
+        new(
+            "What was nailed to the cross in Colossians 2:14-17?",
+            "The Greek term cheirographon refers to the handwritten certificate of debt—our record of sins, guilt, and transgressions. Messiah blotted out the penalty of our sin on the cross, not the moral Law that defines what sin is. Furthermore, verse 17 states these holy appointed days 'are a shadow of things to come' (present tense), foreshadowing Messiah's millennial reign."
+        )
+    };
+}
+
+
+

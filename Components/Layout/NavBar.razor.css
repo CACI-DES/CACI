@@ -1,0 +1,26 @@
+/* Styling for the new 'Study With Us' Pill Button */
+.study-link {
+    background-color: var(--caci-primary-blue);
+    color: var(--member-white) !important;
+    /* Force white text over blue */
+    padding: 10px 25px !important;
+    /* Override default link padding if needed */
+    border-radius: 50px;
+    /* Pill shape */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(23, 68, 119, 0.2);
+    display: inline-block;
+    font-weight: 700;
+}
+
+.study-link:hover {
+    background-color: var(--minister-blue);
+    /* Darker blue on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(23, 68, 119, 0.3);
+}
+
+/* Remove the default underline hover effect from app.css for this specific button */
+.main-nav .study-link::after {
+    display: none;
+}

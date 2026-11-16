@@ -1,0 +1,50 @@
+@page "/request-bible-study"
+@using System.ComponentModel.DataAnnotations
+
+<SeoHead Title="Online Small Groups - CACI"
+         Description="Join Covenant Connections Online Small Groups. Study, visit, and fellowship together from virtually anywhere."
+         CanonicalUrl="https://caci.life/request-bible-study" />
+
+<section class="section-padding contact-section">
+    <div class="container">
+        <!-- New Shared Component Usage -->
+        <ConnectionForm 
+            DefaultRequestType="Bible Study" 
+            FormType="BibleStudy"
+            Source="@ResolvedSource"
+            DefaultInterest="@ResolvedInterest">
+            <HeaderContent>
+                <h1>Online Small Groups - Covenant Connections</h1>
+                <div class="divider"></div>
+                <p>
+                    We are making Covenant Connections from all over the world through Online Small Groups. 
+                    In these groups you can study, visit, and fellowship together from virtually anywhere.
+                </p>
+                <p>
+                    We're happy to know you'd like to join in! 
+                    Please fill out this short form, and one of our group coordinators will reach out to help you get connected.
+                </p>
+            </HeaderContent>
+        </ConnectionForm>
+    </div>
+</section>
+
+@code {
+    [SupplyParameterFromQuery]
+    public string? Key { get; set; }
+
+    [SupplyParameterFromQuery]
+    public string? Pillars { get; set; }
+
+    [SupplyParameterFromQuery]
+    public string? Foundations { get; set; }
+
+    private string? ResolvedSource => !string.IsNullOrEmpty(Key) ? Key : 
+                                     !string.IsNullOrEmpty(Pillars) ? Pillars : 
+                                     Foundations;
+
+    private string? ResolvedInterest => !string.IsNullOrEmpty(Key) ? "4 Keys Bible Study" : 
+                                        !string.IsNullOrEmpty(Pillars) ? "4 Pillars Bible Study" : 
+                                        !string.IsNullOrEmpty(Foundations) ? "12 Foundations Bible Study" : 
+                                        null;
+}

@@ -1,0 +1,53 @@
+﻿@page "/congregation/{Slug}/connect/confirmation"
+@page "/congregation/{Slug}/connect/confirmed"
+@layout CongregationLayout
+@using CACI_Life.Core.Domain.Congregations
+@inject ICongregationService CongregationService
+@inject TenantContext TenantContext
+
+<CongregationSeoHead Title="Request Received" Description="@($"Thank you. The ministry of {_profile.CongregationName} will review your request.")" Path="@($"/congregation/{_profile.UrlSlug}/connect/confirmed")" />
+
+<section class="max-w-2xl mx-auto px-4 py-20 text-center">
+    <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center mb-6">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <h1 class="text-4xl md:text-5xl font-bold text-caci-blue">Request Received</h1>
+    <div class="section-rule my-5 mx-auto"></div>
+
+    @if (!string.IsNullOrWhiteSpace(From))
+    {
+        <div class="mb-6 p-4 rounded-xl bg-caci-tone3/20 border border-caci-tone2 text-caci-minister text-sm">
+            Thank you for reaching out regarding: <strong class="text-caci-blue">@From</strong>.
+        </div>
+    }
+
+    <p class="text-lg text-slate-700 leading-relaxed">
+        Your request has been received by <strong>@_profile.PastorName</strong> and the ministry of <strong>@_profile.CongregationName</strong>. We will review it prayerfully and reach out to you using your preferred method of contact.
+    </p>
+
+    <blockquote class="mt-8 text-left bg-slate-50 border-l-4 border-l-caci-purple p-4 rounded-r-xl">
+        "The Lord bless thee, and keep thee: The Lord make his face shine upon thee, and be gracious unto thee."
+        <footer class="not-italic font-semibold text-xs mt-1 text-caci-minister">— Numbers 6:24-25 (KJV)</footer>
+    </blockquote>
+
+    <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a class="btn-primary" href="@($"/congregation/{_profile.UrlSlug}/bible-studies")">Explore Bible Studies</a>
+        <a class="btn-secondary" href="@($"/congregation/{_profile.UrlSlug}")">Return Home</a>
+    </div>
+</section>
+
+@code {
+    [Parameter] public string Slug { get; set; } = string.Empty;
+    [SupplyParameterFromQuery(Name = "from")] public string? From { get; set; }
+    private CongregationProfile _profile = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Slug))
+        {
+            TenantContext.SetSlug(Slug);
+        }
+        _profile = await CongregationService.GetCurrentAsync();
+    }
+}
+

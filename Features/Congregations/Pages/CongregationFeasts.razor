@@ -1,0 +1,135 @@
+@page "/congregation/{Slug}/feasts"
+@layout CongregationLayout
+@using CACI_Life.Core.Domain.Congregations
+@using CACI_Life.Features.Congregations.Queries
+@inject ICongregationService CongregationService
+@inject TenantContext TenantContext
+@inject GetFeastsQuery Query
+
+<CongregationSeoHead Title="@($"Biblical Feasts Calendar (Moedim) | {_profile.CongregationName}")"
+         Description="The appointed times of the LORD from Leviticus 23: Passover, Unleavened Bread, Firstfruits, Pentecost, Trumpets, Day of Atonement and Tabernacles, with dates, Hebrew names, scripture, and assembly notices."
+         Path="@($"/congregation/{_profile.UrlSlug}/feasts")" />
+
+<section class="hero">
+    <div class="max-w-4xl mx-auto px-4 py-16 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold">The Feasts of the LORD</h1>
+        <p class="mt-4 text-lg text-slate-100">The Moedim, God's appointed times, found in the instructions of Leviticus 23.</p>
+    </div>
+</section>
+
+<section class="max-w-5xl mx-auto px-4 -mt-8 relative z-10" aria-label="CACI Corporate Traveling Feasts & Registration">
+    <div class="card p-6 md:p-8 bg-gradient-to-r from-caci-minister via-caci-blue to-caci-purple text-white shadow-xl">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="max-w-2xl">
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <span class="badge" style="background: rgba(255,255,255,0.2); color: #fff;">CACI Corporate Fellowship</span>
+                    <span class="text-xs text-caci-tone3 font-semibold">National Traveling Convocations</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold text-white">Corporate Traveling Feasts &amp; Event Registration</h2>
+                <p class="mt-2 text-slate-100 text-sm md:text-base leading-relaxed">
+                    Covenant Apostolic Congregations International convenes national traveling convocations for the annual appointed times. Register for upcoming corporate feasts, view host accommodations, and review the corporate schedule.
+                </p>
+            </div>
+            <div class="flex flex-col sm:flex-row md:flex-col gap-3 w-full md:w-auto shrink-0">
+                <a class="btn-primary text-center justify-center whitespace-nowrap" style="background: var(--caci-red); color: #fff !important;" href="https://cacievents.com" target="_blank" rel="noopener">
+                    <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    Register on CACI Events
+                </a>
+                <a class="btn-secondary text-center justify-center whitespace-nowrap" style="background: rgba(255,255,255,0.95); color: var(--caci-minister) !important;" href="@($"/congregation/{_profile.UrlSlug}/calendar")">
+                    Corporate Calendar &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="max-w-5xl mx-auto px-4 py-12">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+            <span class="badge mb-2">Leviticus 23</span>
+            <h2 class="text-3xl font-bold text-caci-blue">The Biblical Appointed Times (Moedim)</h2>
+            <p class="mt-1 text-slate-600 text-sm">Calculated according to the recognized Covenant Calendar of the CACI Ecclesiastical Body.</p>
+        </div>
+        <a class="btn-secondary text-sm shrink-0" href="@($"/congregation/{_profile.UrlSlug}/calendar")">View Corporate Calendar &rarr;</a>
+    </div>
+
+    @if (_feasts.Count == 0)
+    {
+        <p class="text-center text-slate-700">The calendar is being updated. Please check back soon.</p>
+    }
+    else
+    {
+        <ol class="space-y-6">
+            @foreach (var f in _feasts)
+            {
+                var current = f.IsCurrent(_now);
+                <li class="card p-6 md:p-8 @(current ? "border-l-8 border-caci-red" : "border-l-8 border-caci-purple")">
+                    <div class="flex flex-wrap items-center gap-3">
+                        @if (current)
+                        {
+                            <span class="badge badge-urgent">Now observing</span>
+                        }
+                        else if (f == _next)
+                        {
+                            <span class="badge">Next feast</span>
+                        }
+                        <span class="text-sm font-semibold text-caci-gray">@FeastDates(f)</span>
+                    </div>
+                    <h2 class="text-3xl font-bold mt-2">
+                        <span class="text-caci-blue">@f.FeastName</span>
+                        @if (!string.IsNullOrWhiteSpace(f.HebrewName))
+                        {
+                            <span class="text-xl text-caci-tone2 font-body font-semibold">&nbsp;@f.HebrewName</span>
+                        }
+                    </h2>
+                    <p class="scripture-quote mt-2 text-sm">@f.ScriptureReference</p>
+                    <MarkdownView Content="@f.SummaryMarkdown" CssClass="prose prose-slate mt-3 max-w-none" />
+                    @if (!string.IsNullOrWhiteSpace(f.AssemblyInstructions))
+                    {
+                        <div class="mt-4 bg-purple-50 border border-purple-200 rounded-lg p-4">
+                            <p class="font-semibold text-caci-minister">
+                                @(f.IsGatheringLocally ? $"{_profile.CongregationName} Assembly Observance" : "National CACI Convocation Notice")
+                            </p>
+                            <MarkdownView Content="@f.AssemblyInstructions" CssClass="prose prose-slate prose-sm max-w-none mt-1" />
+                        </div>
+                    }
+                    <div class="mt-5 flex flex-wrap items-center gap-4">
+                        @if (!string.IsNullOrWhiteSpace(f.LinkedStudySlug))
+                        {
+                            <a class="btn-secondary" href="@($"/congregation/{_profile.UrlSlug}/studies/{f.LinkedStudySlug}")">Read the teaching</a>
+                        }
+                        <a class="text-sm font-semibold text-caci-minister hover:text-caci-tone2 underline" href="https://cacievents.com" target="_blank" rel="noopener">
+                            Register for CACI Traveling Convocation &nearr;
+                        </a>
+                    </div>
+                </li>
+            }
+        </ol>
+    }
+</section>
+
+@code {
+    [Parameter] public string Slug { get; set; } = string.Empty;
+
+    private CongregationProfile _profile = new();
+    private IReadOnlyList<FeastDto> _feasts = [];
+    private FeastDto? _next;
+    private readonly DateTime _now = DateTime.UtcNow;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Slug))
+        {
+            TenantContext.SetSlug(Slug);
+        }
+        _profile = await CongregationService.GetCurrentAsync();
+        _feasts = await Query.ExecuteAsync();
+        _next = _feasts.FirstOrDefault(f => f.EndUtc >= _now && !f.IsCurrent(_now));
+    }
+
+    private static string FeastDates(FeastDto f) =>
+        f.EndUtc.Date - f.StartUtc.Date <= TimeSpan.FromDays(1)
+            ? f.StartUtc.ToString("MMMM d, yyyy")
+            : $"{f.StartUtc:MMMM d} - {f.EndUtc.AddDays(-1):MMMM d, yyyy}";
+}
+

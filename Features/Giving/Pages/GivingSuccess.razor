@@ -1,0 +1,339 @@
+@page "/giving/success"
+@rendermode InteractiveServer
+
+@using Microsoft.AspNetCore.WebUtilities
+@using CACI_Life.Features.Giving.Models
+@using CACI_Life.Features.Giving.Services
+@using CACI_Life.Features.Email
+@using Microsoft.Data.SqlClient
+@using Dapper
+
+@inject NavigationManager NavigationManager
+@inject IGivingRepository GivingRepo
+@inject IGivingStripeService GivingStripeService
+@inject GivingReportService GivingReportService
+@inject IEmailService EmailService
+@inject IConfiguration Configuration
+
+<PageTitle>Giving Confirmed | CACI</PageTitle>
+
+<div class="min-h-screen bg-[#001F5C] text-white flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white/5 border border-white/10 rounded-2xl p-8 text-center backdrop-blur-md shadow-2xl">
+        @if (IsLoading)
+        {
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-400 mx-auto"></div>
+            <p class="mt-4 text-blue-200 font-bold uppercase tracking-wider text-xs">Verifying contribution...</p>
+        }
+        else if (IsSuccess)
+        {
+            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10 border border-green-500/30 text-green-400 mb-6">
+                <i class="bi bi-badge-check text-3xl"></i>
+            </div>
+            <h2 class="text-2xl font-heading font-bold italic text-white mb-2">Contribution Confirmed!</h2>
+            <div class="h-0.5 w-16 bg-amber-400 mx-auto mb-6 rounded-full"></div>
+            
+            <p class="text-sm text-blue-200 mb-8 leading-relaxed">
+                Thank you so much for your generous support!<br/>
+                We have emailed a receipt statement to you at <span class="text-amber-400 font-semibold">@DonorEmail</span>.
+            </p>
+            
+            @if (GivingRecord != null)
+            {
+                <div class="bg-white/5 rounded-xl p-4 border border-white/5 text-left mb-8 space-y-2 text-xs">
+                    <div class="flex justify-between border-b border-white/5 pb-2 text-blue-300 font-bold uppercase tracking-wide">
+                        <span>Allocation</span>
+                        <span>Amount</span>
+                    </div>
+                    
+                    @{
+                        var allocationsShowed = false;
+                        if (!string.IsNullOrEmpty(GivingRecord.AllocationsJson))
+                        {
+                            try
+                            {
+                                var allocations = System.Text.Json.JsonSerializer.Deserialize<List<GivingAllocation>>(GivingRecord.AllocationsJson);
+                                if (allocations != null && allocations.Any())
+                                {
+                                    foreach (var alloc in allocations)
+                                    {
+                                        if (alloc.Amount > 0)
+                                        {
+                                            <div class="flex justify-between">
+                                                <span>@alloc.AccountName:</span>
+                                                <span class="font-mono">@alloc.Amount.ToString("C")</span>
+                                            </div>
+                                        }
+                                    }
+                                    allocationsShowed = true;
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+
+                    @if (!allocationsShowed)
+                    {
+                        @if (GivingRecord.TitheAmount > 0)
+                        {
+                            <div class="flex justify-between">
+                                <span>Tithe:</span>
+                                <span class="font-mono">@GivingRecord.TitheAmount.ToString("C")</span>
+                            </div>
+                        }
+                        @if (GivingRecord.OfferingAmount > 0)
+                        {
+                            <div class="flex justify-between">
+                                <span>Offering:</span>
+                                <span class="font-mono">@GivingRecord.OfferingAmount.ToString("C")</span>
+                            </div>
+                        }
+                        @if (GivingRecord.DonationAmount > 0)
+                        {
+                            <div class="flex justify-between">
+                                <span>Donation / Missions:</span>
+                                <span class="font-mono">@GivingRecord.DonationAmount.ToString("C")</span>
+                            </div>
+                        }
+                        @if (GivingRecord.MinistryDuesAmount > 0)
+                        {
+                            <div class="flex justify-between text-purple-300">
+                                <span>Ministry Dues:</span>
+                                <span class="font-mono">@GivingRecord.MinistryDuesAmount.ToString("C")</span>
+                            </div>
+                        }
+                    }
+
+                    @if (GivingRecord.FeeAmount > 0)
+                    {
+                        <div class="flex justify-between text-gray-400 italic">
+                            <span>Card Processing Fee (6%):</span>
+                            <span class="font-mono">@GivingRecord.FeeAmount.ToString("C")</span>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(GivingRecord.Memo))
+                    {
+                        <div class="border-t border-white/5 pt-2 text-[11px] text-blue-200">
+                            <span class="font-semibold block text-blue-300 uppercase text-[9px] tracking-wide mb-0.5">Memo:</span>
+                            <p class="italic text-gray-300">@GivingRecord.Memo</p>
+                        </div>
+                    }
+
+                    <div class="flex justify-between border-t border-white/5 pt-2 text-sm font-bold text-amber-400">
+                        <span>Total Paid:</span>
+                        <span class="font-mono">@GivingRecord.TotalAmount.ToString("C")</span>
+                    </div>
+                </div>
+            }
+
+            <a href="/giving" class="block w-full rounded-xl py-3.5 text-center font-bold text-[#001F5C] bg-amber-500 hover:bg-amber-400 transition transform hover:scale-[1.02] shadow-lg text-xs uppercase tracking-widest font-bold">
+                Return to Giving
+            </a>
+        }
+        else
+        {
+             <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 border border-red-500/30 text-red-400 mb-6">
+                <i class="bi bi-x-circle-fill text-3xl"></i>
+            </div>
+            <h2 class="text-2xl font-heading font-bold italic text-white mb-2">Verification Failed</h2>
+            <div class="h-0.5 w-16 bg-red-400 mx-auto mb-6 rounded-full"></div>
+            
+            <p class="text-sm text-blue-200 mb-8">
+                We couldn't verify your giving transaction. Please try again or contact CACI support.
+            </p>
+            
+            <a href="/giving" class="block w-full rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 px-4 py-3.5 text-center font-bold text-white transition text-xs uppercase tracking-widest font-bold">
+                Try Again
+            </a>
+        }
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "session_id")]
+    public string? SessionId { get; set; }
+
+    private bool IsLoading = true;
+    private bool IsSuccess = false;
+    private string? DonorEmail;
+    private OnlineGiving? GivingRecord;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrEmpty(SessionId))
+        {
+            IsLoading = false;
+            IsSuccess = false;
+            return;
+        }
+
+        try
+        {
+            var session = await GivingStripeService.GetSessionAsync(SessionId);
+            if (session == null || session.PaymentStatus != "paid")
+            {
+                IsLoading = false;
+                IsSuccess = false;
+                return;
+            }
+
+            var record = await GivingRepo.GetGivingBySessionIdAsync(SessionId);
+            if (record == null)
+            {
+                IsLoading = false;
+                IsSuccess = false;
+                return;
+            }
+
+            if (record.PaymentStatus != "Completed")
+            {
+                await GivingRepo.CompleteGivingPaymentAsync(SessionId, session.PaymentIntentId);
+                record = await GivingRepo.GetGivingBySessionIdAsync(SessionId);
+
+                // Auto-record Ministry Dues in Ministry_Payments if applicable
+                if (record != null && record.MinistryDuesAmount > 0 && !string.IsNullOrEmpty(record.UserEmail))
+                {
+                    try
+                    {
+                        using var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection"));
+                        var profile = await connection.QueryFirstOrDefaultAsync<dynamic>(
+                            "SELECT Id FROM CACI.Ministry_Profiles WHERE Email = @Email",
+                            new { Email = record.UserEmail }
+                        );
+                        if (profile != null)
+                        {
+                            await connection.ExecuteAsync(
+                                @"INSERT INTO CACI.Ministry_Payments (ProfileId, Amount, Year, Status, PaymentType, PaymentDate, CreatedAt, StripeSessionId)
+                                  VALUES (@ProfileId, @Amount, @Year, 'Paid', 'Stripe', @PaymentDate, GETUTCDATE(), @StripeSessionId)",
+                                new
+                                {
+                                    ProfileId = profile.Id,
+                                    Amount = record.MinistryDuesAmount,
+                                    Year = DateTime.UtcNow.Year,
+                                    PaymentDate = DateTime.UtcNow,
+                                    StripeSessionId = SessionId
+                                }
+                            );
+                        }
+                    }
+                    catch (Exception duesEx)
+                    {
+                        Console.WriteLine($"Error auto-recording ministry dues: {duesEx.Message}");
+                    }
+                }
+
+                // Send receipt email with attached statement PDF
+                if (record != null && !string.IsNullOrEmpty(record.UserEmail))
+                {
+                    try
+                    {
+                        string allocationsHtml = "";
+                        if (!string.IsNullOrEmpty(record.AllocationsJson))
+                        {
+                            try
+                            {
+                                var allocations = System.Text.Json.JsonSerializer.Deserialize<List<GivingAllocation>>(record.AllocationsJson);
+                                if (allocations != null)
+                                {
+                                    foreach (var alloc in allocations)
+                                    {
+                                        if (alloc.Amount > 0)
+                                        {
+                                            allocationsHtml += $"<tr><td style='padding: 8px; border-bottom: 1px solid #ddd;'>{alloc.AccountName}</td><td style='padding: 8px; border-bottom: 1px solid #ddd; text-align: right;'>{alloc.Amount:C}</td></tr>";
+                                        }
+                                    }
+                                }
+                            }
+                            catch { }
+                        }
+
+                        if (string.IsNullOrEmpty(allocationsHtml))
+                        {
+                            if (record.TitheAmount > 0)
+                                allocationsHtml += $"<tr><td style='padding: 8px; border-bottom: 1px solid #ddd;'>Tithing</td><td style='padding: 8px; border-bottom: 1px solid #ddd; text-align: right;'>{record.TitheAmount:C}</td></tr>";
+                            if (record.OfferingAmount > 0)
+                                allocationsHtml += $"<tr><td style='padding: 8px; border-bottom: 1px solid #ddd;'>Offering</td><td style='padding: 8px; border-bottom: 1px solid #ddd; text-align: right;'>{record.OfferingAmount:C}</td></tr>";
+                            if (record.DonationAmount > 0)
+                                allocationsHtml += $"<tr><td style='padding: 8px; border-bottom: 1px solid #ddd;'>Donation</td><td style='padding: 8px; border-bottom: 1px solid #ddd; text-align: right;'>{record.DonationAmount:C}</td></tr>";
+                            if (record.MinistryDuesAmount > 0)
+                                allocationsHtml += $"<tr><td style='padding: 8px; border-bottom: 1px solid #ddd;'>Ministry Dues (Ordination Card)</td><td style='padding: 8px; border-bottom: 1px solid #ddd; text-align: right;'>{record.MinistryDuesAmount:C}</td></tr>";
+                        }
+
+                        if (record.FeeAmount > 0)
+                        {
+                            allocationsHtml += $"<tr><td style='padding: 8px; border-bottom: 1px solid #ddd; font-style: italic; color: #555;'>Card Processing Fee (6%)</td><td style='padding: 8px; border-bottom: 1px solid #ddd; text-align: right; font-style: italic; color: #555;'>{record.FeeAmount:C}</td></tr>";
+                        }
+
+                        var subject = $"CACI Online Giving Receipt - {DateTime.Now:MM/dd/yyyy}";
+                        var htmlBody = $@"
+                            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;'>
+                                <div style='text-align: center; margin-bottom: 20px;'>
+                                    <h2 style='color: #174477; margin: 0;'>Covenant Apostolic Congregations Intl.</h2>
+                                    <p style='color: #666; margin: 5px 0 0 0;'>Online Giving Confirmation</p>
+                                </div>
+                                
+                                <p>Dear {record.DonorName ?? "Valued Supporter"},</p>
+                                <p>Thank you for your generous contribution to CACI. Your gift helps support our ministries and communities.</p>
+                                
+                                <div style='background-color: #f9f9f9; padding: 15px; border-radius: 6px; margin: 20px 0;'>
+                                    <h3 style='color: #001F5C; margin-top: 0; border-bottom: 2px solid #174477; padding-bottom: 5px;'>Giving Receipt Details</h3>
+                                    <table style='width: 100%; border-collapse: collapse;'>
+                                        <thead>
+                                            <tr>
+                                                <th style='text-align: left; padding: 8px; border-bottom: 2px solid #ddd;'>Allocation</th>
+                                                <th style='text-align: right; padding: 8px; border-bottom: 2px solid #ddd;'>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {allocationsHtml}
+                                            <tr>
+                                                <td style='padding: 8px; font-weight: bold;'>Total Amount</td>
+                                                <td style='padding: 8px; font-weight: bold; text-align: right; color: #10b981;'>{record.TotalAmount:C}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <p style='font-size: 12px; color: #888; text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;'>
+                                    Covenant Apostolic Congregations Intl. | <a href='mailto:admin@caci.life' style='color: #174477;'>admin@caci.life</a>
+                                </p>
+                            </div>";
+
+                        var pdfBytes = GivingReportService.GenerateGivingHistoryPdf(
+                            record.UserEmail,
+                            record.DonorName ?? record.UserEmail,
+                            new List<OnlineGiving> { record },
+                            record.CreatedAt,
+                            DateTime.Today
+                        );
+
+                        await EmailService.SendEmailWithAttachmentAsync(
+                            record.UserEmail,
+                            subject,
+                            htmlBody,
+                            pdfBytes,
+                            $"CACI_Receipt_{record.Id}.pdf"
+                        );
+                    }
+                    catch (Exception emailEx)
+                    {
+                        Console.WriteLine($"Error sending giving receipt email: {emailEx.Message}");
+                    }
+                }
+            }
+
+            GivingRecord = record;
+            DonorEmail = record?.UserEmail;
+            IsSuccess = record != null && record.PaymentStatus == "Completed";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error verifying giving payment internally: {ex.Message}");
+            IsSuccess = false;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+}

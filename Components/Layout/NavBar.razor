@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Authorization
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+<header class="site-header">
+    <div class="container nav-container">
+        <a href="" class="logo">
+            <img src="images/logos/AllTheWord_NOTextLogo.png" alt="CACI Symbol Mark" class="logo-symbol-img">
+            <div>
+                <div class="logo-text">CACI</div>
+            </div>
+        </a>
+
+        <nav class="main-nav">
+            <ul>
+                <li><a href="">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        About Us <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="meet-the-caci">Meet the CACI</a></li>
+                        <li><a href="congregations">Congregations</a></li>
+                        <li><a href="what-we-believe">What We Believe</a></li>
+                        <li><a href="ministry">Ministry Structure</a></li>
+                        <li><a href="our-history">Our History</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Bible Topics <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="study-with-us">Bible Studies</a></li>
+                        <li><a href="sabbath">Sabbath</a></li>
+                        <li><a href="feast-dates">Biblical Feasts</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Events <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="FeastEvent">Conference Schedule</a></li>
+                        <li><a href="events">Annual Events</a></li>
+                        <li><a href="https://cacievents.com">Event Registration</a></li>
+                        
+                        <AuthorizeView>
+                            <Authorized>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a href="documents-on-demand">Member Portal</a></li>
+                                <li><a href="portal/foundations">Foundations Curriculum</a></li>
+                            </Authorized>
+                        </AuthorizeView>
+                    </ul>
+                </li>
+                <li><a href="study-with-us" class="study-link">Study with us</a></li>
+                <AuthorizeView>
+                    <Authorized>
+                        <li>
+                            <form action="/Account/Logout" method="post">
+                                <AntiforgeryToken />
+                                <button type="submit" class="give-link" style="background:none; border:none; padding:0; font:inherit; cursor:pointer; color:inherit;">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    </Authorized>
+                    <NotAuthorized>
+                        <li><a href="login" class="give-link">Login</a></li>
+                    </NotAuthorized>
+                </AuthorizeView>
+                <li><a href="/giving" class="give-link">Give</a></li>
+            </ul>
+        </nav>
+
+        <div class="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+</header>
+

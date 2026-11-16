@@ -1,0 +1,545 @@
+.survey-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+    font-family: 'Inter', sans-serif;
+    color: #1E293B;
+}
+
+/* Base Cards */
+.survey-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.02);
+    border: 1px solid #F1F5F9;
+    padding: 3rem;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.main-form-card {
+    max-width: 1200px;
+    padding: 3.5rem;
+}
+
+@media (max-width: 576px) {
+    .survey-card {
+        padding: 1.5rem 1rem !important;
+    }
+    .main-form-card {
+        padding: 1.5rem 1rem !important;
+    }
+}
+
+/* Custom Header Branding */
+.form-header {
+    border-bottom: 2px solid #E2E8F0;
+    padding-bottom: 2rem;
+    margin-bottom: 3rem;
+}
+
+.header-logo-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 576px) {
+    .header-logo-row {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+.form-logo {
+    height: 70px;
+    width: auto;
+}
+
+.header-titles {
+    display: flex;
+    flex-direction: column;
+}
+
+.caci-text {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #64748B;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.caci-blue {
+    color: #1E3A8A;
+}
+
+h1.caci-blue {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.form-intro {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #475569;
+    margin: 0;
+    font-style: italic;
+}
+
+/* Grid Layout */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+}
+
+@media (min-width: 992px) {
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.form-column {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+/* Form Sections */
+.form-section {
+    background: #F8FAFC;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    overflow: hidden;
+}
+
+.section-title {
+    background: #1E3A8A;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.25rem;
+}
+
+.section-num {
+    background: rgba(255, 255, 255, 0.2);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.section-title h2 {
+    color: #FFFFFF;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.05em;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.section-content {
+    padding: 1.75rem;
+}
+
+.section-subtext {
+    font-size: 0.85rem;
+    color: #64748B;
+    margin-bottom: 1.25rem;
+    line-height: 1.4;
+}
+
+/* Form Controls */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 0.5rem;
+}
+
+::deep .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: #1E293B;
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+::deep .form-control:focus {
+    border-color: #3B82F6;
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+::deep textarea.form-control {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    box-sizing: border-box;
+}
+
+::deep textarea.form-control:focus {
+    border-color: #3B82F6;
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+::deep .text-area-small {
+    min-height: 130px; /* At least 4-5 rows height */
+    resize: vertical;
+}
+
+::deep .text-area-medium {
+    min-height: 180px; /* ~7-8 rows height */
+    resize: vertical;
+}
+
+::deep .text-area-tall {
+    min-height: 260px; /* ~10-12 rows height */
+    resize: vertical;
+}
+
+/* Radio & Checkbox Styling */
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.radio-group-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.radio-label, .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #334155;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s ease;
+}
+
+.radio-label input[type="radio"], 
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 4px;
+    cursor: pointer;
+    accent-color: #1E3A8A;
+}
+
+.radio-label input[type="radio"] {
+    border-radius: 50%;
+}
+
+.radio-label:hover, .checkbox-label:hover {
+    color: #1E3A8A;
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+@media (min-width: 576px) {
+    .checkbox-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.checkbox-vertical-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Areas of Interest subgroups */
+.interest-group {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px dashed #E2E8F0;
+    padding-bottom: 1rem;
+}
+
+.interest-group:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.interest-group-header {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1E3A8A;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.75rem 0;
+}
+
+.form-closing-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1E3A8A;
+    line-height: 1.5;
+    font-style: italic;
+    border-left: 3px solid #1E3A8A;
+    padding-left: 0.75rem;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.75rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.btn-submit {
+    background-color: #1E3A8A;
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+}
+
+.btn-submit:hover:not(:disabled) {
+    background-color: #172554;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(30, 58, 138, 0.3);
+}
+
+.btn-submit:disabled, .btn-pdf:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.btn-pdf {
+    background-color: #EF4444;
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.btn-pdf:hover:not(:disabled) {
+    background-color: #DC2626;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
+}
+
+.btn-secondary {
+    background-color: #F1F5F9;
+    color: #475569;
+    border: 1px solid #E2E8F0;
+}
+
+.btn-secondary:hover {
+    background-color: #E2E8F0;
+    color: #1F2937;
+}
+
+/* Info and Warning Cards */
+.logo-wrapper {
+    margin-bottom: 2rem;
+}
+
+.caci-logo {
+    height: 90px;
+    width: auto;
+}
+
+.intro-p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #475569;
+    margin-bottom: 1.5rem;
+}
+
+.support-text {
+    font-size: 0.85rem;
+    color: #94A3B8;
+    margin: 0;
+}
+
+.warning-title {
+    color: #DC2626;
+}
+
+/* Success Card */
+.success-icon {
+    font-size: 5rem;
+    color: #10B981;
+}
+
+.success-subtitle {
+    font-size: 1.15rem;
+    color: #10B981;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.success-details {
+    background: #F0FDF4;
+    border: 1px solid #DCFCE7;
+    border-radius: 12px;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+    color: #166534;
+    line-height: 1.6;
+}
+
+.success-details p {
+    margin: 0 0 0.5rem 0;
+}
+
+.success-details p:last-child {
+    margin: 0;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (min-width: 576px) {
+    .action-buttons {
+        flex-direction: row;
+        justify-content: center;
+    }
+    .action-buttons .btn {
+        width: auto;
+    }
+}
+
+.text-danger {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.mr-2 {
+    margin-right: 0.5rem;
+}
+
+.mt-4 { margin-top: 1.5rem; }
+.mt-5 { margin-top: 2.5rem; }
+.mt-3 { margin-top: 1rem; }
+.text-center { text-align: center; }
+.font-montserrat { font-family: 'Montserrat', sans-serif; }
+.text-uppercase { text-transform: uppercase; }
+
+.feast-subtext {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1E3A8A;
+    font-style: italic;
+    margin-bottom: 0.75rem;
+}
+
+.feast-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+@media (max-width: 480px) {
+    .feast-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Direct Access Survey Selection Links */
+.survey-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.survey-link-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #1E3A8A;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.survey-link-card:hover {
+    transform: translateY(-4px);
+    border-color: #3B82F6;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1), 0 4px 6px -2px rgba(59, 130, 246, 0.05);
+    background: #F8FAFC;
+}
+
+.survey-link-card h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #1E3A8A;
+    letter-spacing: 0.02em;
+}
+
+.survey-link-card p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #64748B;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

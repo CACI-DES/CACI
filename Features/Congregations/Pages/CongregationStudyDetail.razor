@@ -1,0 +1,53 @@
+﻿@page "/congregation/{CongregationSlug}/teachings/{StudySlug}"
+@page "/congregation/{CongregationSlug}/studies/{StudySlug}"
+@layout CongregationLayout
+@using CACI_Life.Core.Domain.Congregations
+@using CACI_Life.Features.Congregations.Queries
+@inject ICongregationService CongregationService
+@inject TenantContext TenantContext
+@inject GetStudiesQueries Queries
+@inject NavigationManager Navigation
+@inject ILogger<CongregationStudyDetail> Logger
+
+@if (_result is not null)
+{
+    <StudyDetailView Model="_result.Study" Faqs="_result.Faqs" BasePath="@($"/congregation/{_profile.UrlSlug}/teachings")" BackLabel="← All Teachings" />
+}
+else
+{
+    <CongregationSeoHead Title="Teaching not found" Description="This teaching could not be found." Path="@Navigation.ToBaseRelativePath(Navigation.Uri)" />
+    <section class="max-w-3xl mx-auto px-4 py-20 text-center">
+        <h1 class="text-4xl font-bold">Teaching not found</h1>
+        <p class="mt-4">We could not find that teaching. <a href="@($"/congregation/{_profile.UrlSlug}/teachings")">Return to all teachings.</a></p>
+    </section>
+}
+
+@code {
+    [Parameter] public string CongregationSlug { get; set; } = string.Empty;
+    [Parameter] public string StudySlug { get; set; } = string.Empty;
+
+    private CongregationProfile _profile = new();
+    private StudyDetailResult? _result;
+
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(CongregationSlug))
+        {
+            TenantContext.SetSlug(CongregationSlug);
+        }
+        _profile = await CongregationService.GetCurrentAsync();
+        _result = await Queries.GetBySlugAsync(StudySlug);
+        if (_result is null && HttpContext is not null) 
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+        }
+        if (_result is not null && string.Equals(_result.Study.Category, "Foundations", StringComparison.OrdinalIgnoreCase))
+        {
+            Logger.LogInformation("Slug {Slug} is a foundation, redirecting.", StudySlug);
+            Navigation.NavigateTo($"/congregation/{_profile.UrlSlug}/foundations/{StudySlug}", replace: true);
+        }
+    }
+}
+

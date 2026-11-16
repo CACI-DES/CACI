@@ -1,0 +1,102 @@
+footer {
+    /* Background image with a white overlay to maintain contrast for dark text */
+    background: linear-gradient(rgba(240, 245, 250, 0.7), rgba(240, 245, 250, 0.7)),
+        url('images/images/pexels-pixabay-41949.jpg') no-repeat center center/cover;
+    padding-top: 70px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    margin-bottom: 50px;
+}
+
+.footer-col h4 {
+    color: var(--minister-blue);
+    font-family: var(--font-body);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+    font-size: 1rem;
+}
+
+.footer-col ul li {
+    margin-bottom: 12px;
+}
+
+.footer-col ul li a {
+    color: var(--menu-text);
+    /* standard-gray was #5A5A5A. tone-highlight is #A4BDDD. Contrast? */
+    /* Keeping original color for now as requested, but standard-gray on tone-highlight might be low contrast */
+    color: var(--standard-gray);
+    font-size: 0.95rem;
+}
+
+.footer-col ul li a:hover {
+    color: var(--elder-red);
+    padding-left: 5px;
+}
+
+.footer-brand span {
+    display: block;
+    color: var(--bishop-purple);
+    font-family: var(--font-heading);
+    font-weight: bold;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.footer-brand p {
+    color: var(--standard-gray);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.social-icons {
+    margin-top: 15px;
+    font-size: 1.2rem;
+}
+
+.social-icons a {
+    color: var(--minister-blue);
+    margin-right: 15px;
+}
+
+.social-icons a:hover {
+    color: var(--elder-red);
+}
+
+.bottom-bar {
+    background-color: var(--minister-blue);
+    /* padding: 10px 0; */
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--member-white);
+    /* Make the bottom bar span the full width if needed, but in footer it is normally block */
+    /* It might need negative margin if container padding interferes? */
+    /* Layout/Footer.razor structure: footer > container, bottom-bar > container. */
+    /* footer has padding-top 70px. bottom-bar is separate div at bottom. */
+}
+
+/* Ensure bottom-bar extends full width if footer has padding? 
+   Footer.razor: 
+   <footer>
+      <div class="container">...</div>
+      <div class="bottom-bar">...</div>
+   </footer>
+   The footer padding-top applies to the top. The bottom-bar is a child.
+   So it should work fine as in app.css.
+*/
+
+/* Ensure paragraph inside bottom bar has no margin to prevent space below */
+.bottom-bar p {
+    margin-bottom: 0;
+    padding: 15px 0;
+    /* Add padding here or on the container to center text */
+}
+
+.bottom-bar a {
+    color: var(--tone-highlight);
+}

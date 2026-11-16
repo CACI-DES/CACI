@@ -1,0 +1,21 @@
+@using CACI_Life.Core.Domain.Congregations
+@inject IMarkdownService MarkdownService
+
+@if (!string.IsNullOrWhiteSpace(Content))
+{
+    @if (!string.IsNullOrWhiteSpace(CssClass))
+    {
+        <div class="@CssClass">
+            @((MarkupString)MarkdownService.ToHtml(Content))
+        </div>
+    }
+    else
+    {
+        @((MarkupString)MarkdownService.ToHtml(Content))
+    }
+}
+
+@code {
+    [Parameter] public string? Content { get; set; }
+    [Parameter] public string? CssClass { get; set; }
+}

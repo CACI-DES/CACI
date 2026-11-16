@@ -1,0 +1,126 @@
+@using Microsoft.AspNetCore.Components.Web
+@using CACI_Life.Features.SEO.Services
+@inject NavigationManager NavigationManager
+@inject ISeoRepository SeoRepo
+
+<PageTitle>@_title</PageTitle>
+
+<HeadContent>
+    <meta name="description" content="@_description" />
+    <meta name="keywords" content="@_keywords" />
+    <meta name="robots" content="@_metaRobots" />
+
+    @if (!string.IsNullOrEmpty(_canonicalUrl))
+    {
+        <link rel="canonical" href="@_canonicalUrl" />
+    }
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="CACI Life" />
+    <meta property="og:url" content="@_canonicalUrl" />
+    <meta property="og:title" content="@_title" />
+    <meta property="og:description" content="@_description" />
+    
+    @if (!string.IsNullOrEmpty(_absoluteImageUrl))
+    {
+        <meta property="og:image" content="@_absoluteImageUrl" />
+    }
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:site" content="@@THECACI" />
+    <meta property="twitter:url" content="@_canonicalUrl" />
+    <meta property="twitter:title" content="@_title" />
+    <meta property="twitter:description" content="@_description" />
+    
+    @if (!string.IsNullOrEmpty(_absoluteImageUrl))
+    {
+        <meta property="twitter:image" content="@_absoluteImageUrl" />
+    }
+
+    <!-- JSON-LD Structured Data Organization Schema -->
+    <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@@type": "Organization",
+            "name": "Covenant Apostolic Congregations International",
+            "alternateName": "CACI",
+            "url": "https://caci.life",
+            "logo": "https://caci.life/images/logos/AllTheWord_NOTextLogo.png",
+            "sameAs": [
+                "https://www.facebook.com/THECACI",
+                "https://www.youtube.com/@@THECACI"
+            ]
+        }
+    </script>
+
+    @if (!string.IsNullOrEmpty(_jsonLdSchema))
+    {
+        <!-- Page Specific Structured Data -->
+        @((MarkupString)_jsonLdSchema)
+    }
+</HeadContent>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public string? Keywords { get; set; }
+    [Parameter] public string? CanonicalUrl { get; set; }
+    [Parameter] public string? ImageUrl { get; set; }
+    [Parameter] public string? MetaRobots { get; set; }
+
+    private string _title = "CACI - Covenant Apostolic Congregations Intl.";
+    private string _description = "Restoring the Original Apostolic faith. We are committed to the coming Kingdom of God, the Apostles Doctrine, and Fellowship.";
+    private string _keywords = "Apostolic, CACI, Covenant, Faith, Bible, Jesus, God, Church, Pentecostal, Acts 2:38, Kingdom of God";
+    private string _canonicalUrl = "https://caci.life/";
+    private string _imageUrl = "images/logos/AllTheWord_NOTextLogo.png";
+    private string _metaRobots = "index, follow";
+    private string? _jsonLdSchema;
+
+    private string _absoluteImageUrl => string.IsNullOrWhiteSpace(_imageUrl)
+        ? ""
+        : _imageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+            ? _imageUrl
+            : $"{NavigationManager.BaseUri.TrimEnd('/')}/{_imageUrl.TrimStart('/')}";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // 1. Set default fallbacks from parameters if provided
+        if (!string.IsNullOrEmpty(Title)) _title = Title;
+        if (!string.IsNullOrEmpty(Description)) _description = Description;
+        if (!string.IsNullOrEmpty(Keywords)) _keywords = Keywords;
+        if (!string.IsNullOrEmpty(CanonicalUrl)) _canonicalUrl = CanonicalUrl;
+        if (!string.IsNullOrEmpty(ImageUrl)) _imageUrl = ImageUrl;
+        if (!string.IsNullOrEmpty(MetaRobots)) _metaRobots = MetaRobots;
+
+        try
+        {
+            // 2. Query dynamic settings directly from DB repository based on the active path
+            var uri = new Uri(NavigationManager.Uri);
+            var path = uri.AbsolutePath;
+            if (string.IsNullOrEmpty(path)) path = "/";
+
+            var settings = await SeoRepo.GetSeoByPathAsync(path);
+            if (settings != null)
+            {
+                if (!string.IsNullOrEmpty(settings.Title)) _title = settings.Title;
+                if (!string.IsNullOrEmpty(settings.Description)) _description = settings.Description;
+                if (!string.IsNullOrEmpty(settings.Keywords)) _keywords = settings.Keywords;
+                if (!string.IsNullOrEmpty(settings.ImageUrl)) _imageUrl = settings.ImageUrl;
+                if (!string.IsNullOrEmpty(settings.MetaRobots)) _metaRobots = settings.MetaRobots;
+                if (!string.IsNullOrEmpty(settings.JsonLdSchema)) _jsonLdSchema = settings.JsonLdSchema;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading dynamic SEO settings: {ex.Message}");
+        }
+
+        // 3. Fallback canonical URL if not explicitly defined
+        if (string.IsNullOrEmpty(CanonicalUrl))
+        {
+            _canonicalUrl = NavigationManager.Uri;
+        }
+    }
+}

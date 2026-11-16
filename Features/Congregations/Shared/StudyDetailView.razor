@@ -1,0 +1,157 @@
+﻿@using CACI_Life.Core.Domain.Congregations
+@using CACI_Life.Features.Congregations.Queries
+@inject ICongregationService CongregationService
+
+<CongregationSeoHead Title="@Model.Title"
+         Description="@Model.LeadSummary"
+         Path="@($"{BasePath}/{Model.Slug}")"
+         OgType="article"
+         PublishedUtc="@Model.PublishedUtc"
+         ModifiedUtc="@Model.UpdatedUtc"
+         Author="@Model.AuthorByline"
+         VideoId="@Model.YouTubeVideoId"
+         Faqs="@FaqItems" />
+
+<article class="max-w-4xl mx-auto px-4 py-10">
+    <nav aria-label="Breadcrumb" class="text-sm text-caci-gray mb-4">
+        <a href="@BasePath">@BackLabel</a>
+    </nav>
+
+    <header class="mb-6">
+        @if (Model.SeriesOrder is not null)
+        {
+            <p class="badge mb-3">Foundation @Model.SeriesOrder of 12</p>
+        }
+        <h1 class="text-4xl md:text-5xl font-bold">@Model.Title</h1>
+        @if (!string.IsNullOrWhiteSpace(Model.Subtitle))
+        {
+            <p class="mt-2 text-lg text-caci-gray">@Model.Subtitle</p>
+        }
+        <p class="mt-3 text-sm text-caci-gray">By @Model.AuthorByline &middot; <time datetime="@Model.PublishedUtc.ToString("yyyy-MM-dd")">@Model.PublishedUtc.ToString("MMMM d, yyyy")</time></p>
+    </header>
+
+    <ScriptureCard Reference="@Model.ScriptureReference" />
+
+    <p class="mt-6 text-xl leading-relaxed text-slate-700">@Model.LeadSummary</p>
+
+    @if (!string.IsNullOrWhiteSpace(Model.YouTubeVideoId))
+    {
+        <div class="mt-8"><YouTubePlayer VideoId="@Model.YouTubeVideoId" Title="@Model.Title" /></div>
+    }
+
+    <div class="mt-8 bg-white rounded-2xl border border-slate-200 p-6 md:p-10">
+        <MarkdownView Content="@Model.BodyMarkdown" />
+    </div>
+
+    @if (Model.SeriesOrder is not null && Model.SeriesOrder <= 3)
+    {
+        <div class="mt-8 p-6 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+                <span class="inline-block px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-emerald-700 text-white mb-1">Open Interactive Course</span>
+                <p class="font-bold text-slate-800 text-base">Take Foundation @Model.SeriesOrder as a Free Interactive Lesson on CACI.life</p>
+                <p class="text-xs text-slate-600 mt-1">Includes the student workbook, interactive study checks, and direct elder connection.</p>
+            </div>
+            <a href="@(_profile.CaciBaseUrl)/foundations/lesson/@Model.SeriesOrder?ref=@(_profile.UrlSlug)" target="_blank" rel="noopener" class="btn-primary !bg-[#C8102E] !text-white hover:!bg-red-700 text-sm whitespace-nowrap shrink-0 shadow">
+                Start Lesson Online &nearr;
+            </a>
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.PdfDownloadUrl))
+    {
+        <div class="mt-8">
+            <a class="btn-primary" href="@SafeHref(Model.PdfDownloadUrl)" download>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 20h14v-2H5v2zm7-18v10.2l3.6-3.6L17 10l-5 5-5-5 1.4-1.4L11 12.2V2h1z" /></svg>
+                Download the PDF
+            </a>
+        </div>
+    }
+
+    <section class="mt-10 p-6 md:p-8 rounded-2xl bg-gradient-to-br from-caci-minister via-caci-blue to-caci-purple text-white shadow-xl">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+                <span class="inline-block px-3 py-1 text-xs font-bold rounded-full bg-amber-400 text-slate-900 mb-2">Free In-Home or Online Study</span>
+                <h3 class="text-2xl font-bold text-white">Ready to Go Deeper into @Model.Title?</h3>
+                <p class="mt-2 text-slate-200 text-sm md:text-base max-w-xl">
+                    We offer free, personalized Bible studies walking through the scriptures with you verse by verse with our local ministry.
+                </p>
+            </div>
+            <div class="shrink-0">
+                <a href="@($"/congregation/{_profile.UrlSlug}/connect?from=" + Uri.EscapeDataString((Model.SeriesOrder != null ? "12 Foundations - Lesson " + Model.SeriesOrder + ": " : "") + Model.Title) + "&study=" + Uri.EscapeDataString(Model.Title))" class="btn-primary !bg-amber-400 !text-slate-900 hover:!bg-amber-300 font-bold px-6 py-3 shadow-lg">
+                    Request This Bible Study
+                </a>
+            </div>
+        </div>
+    </section>
+
+    @if (!string.IsNullOrWhiteSpace(PrevSlug) || !string.IsNullOrWhiteSpace(NextSlug))
+    {
+        <nav aria-label="Study Navigation" class="mt-10 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-stretch justify-between gap-4">
+            @if (!string.IsNullOrWhiteSpace(PrevSlug))
+            {
+                <a href="@($"{BasePath}/{PrevSlug}")" class="flex-1 p-4 rounded-xl border border-slate-200 hover:border-caci-tone2 bg-white no-underline text-slate-700 hover:text-caci-blue transition-colors">
+                    <span class="block text-xs font-semibold text-caci-gray">← Previous</span>
+                    <span class="block font-bold text-sm mt-1">@PrevTitle</span>
+                </a>
+            }
+            else
+            {
+                <div class="flex-1"></div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(NextSlug))
+            {
+                <a href="@($"{BasePath}/{NextSlug}")" class="flex-1 p-4 rounded-xl border border-slate-200 hover:border-caci-tone2 bg-white no-underline text-right text-slate-700 hover:text-caci-blue transition-colors">
+                    <span class="block text-xs font-semibold text-caci-gray">Next →</span>
+                    <span class="block font-bold text-sm mt-1">@NextTitle</span>
+                </a>
+            }
+        </nav>
+    }
+
+    @if (Faqs.Count > 0)
+    {
+        <section class="mt-12" aria-labelledby="faq-heading" itemscope itemtype="https://schema.org/FAQPage">
+            <h2 id="faq-heading" class="text-3xl font-bold">Frequently Asked Questions</h2>
+            <div class="section-rule my-4"></div>
+            @foreach (var faq in Faqs)
+            {
+                <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                    <summary itemprop="name">@faq.Question</summary>
+                    <div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                        <div itemprop="text"><MarkdownView Content="@faq.AnswerMarkdown" CssClass="prose prose-slate max-w-none" /></div>
+                    </div>
+                </details>
+            }
+        </section>
+    }
+</article>
+
+@code {
+    [Parameter, EditorRequired] public StudyDetailDto Model { get; set; } = default!;
+    [Parameter] public IReadOnlyList<StudyFaqDto> Faqs { get; set; } = [];
+    [Parameter, EditorRequired] public string BasePath { get; set; } = "/studies";
+    [Parameter] public string BackLabel { get; set; } = "All teachings";
+    [Parameter] public string? PrevSlug { get; set; }
+    [Parameter] public string? PrevTitle { get; set; }
+    [Parameter] public string? NextSlug { get; set; }
+    [Parameter] public string? NextTitle { get; set; }
+
+    private CongregationProfile _profile = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _profile = await CongregationService.GetCurrentAsync();
+    }
+
+    private IReadOnlyList<CongregationSeoHead.FaqItem>? FaqItems =>
+        Faqs.Count > 0 ? Faqs.Select(f => new CongregationSeoHead.FaqItem(f.Question, f.AnswerMarkdown)).ToList() : null;
+
+    private static string SafeHref(string url)
+    {
+        var trimmed = url.Trim();
+        return trimmed.StartsWith('/') || trimmed.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ? trimmed : "#";
+    }
+}
+
+

@@ -1,0 +1,252 @@
+/* ==========================================================================
+   CACI Multi-Site Congregation Theme Styles
+   Used by CongregationLayout.razor for /congregation/{slug}/*
+   ========================================================================== */
+
+:root {
+    --caci-blue: #174477;
+    --caci-minister: #001F5C;
+    --caci-purple: #47306D;
+    --caci-red: #C8102E;
+    --caci-gray: #5A5A5A;
+    --caci-tone2: #6696C5;
+    --caci-tone3: #A4BDDD;
+    --parchment: #f8fafc;
+    --font-head: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --font-body: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Primary CTA: Primary Blue, white Montserrat SemiBold, hover Tone 2 */
+.btn-primary {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: var(--caci-blue); color: #fff !important;
+    font-family: var(--font-body); font-weight: 600;
+    padding: .8rem 1.6rem; border-radius: .5rem; border: 0; cursor: pointer;
+    text-decoration: none; transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 4px 14px rgba(23, 68, 119, .25);
+}
+.btn-primary:hover { background: var(--caci-tone2); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(23, 68, 119, .25); }
+
+.btn-secondary {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: #fff; color: var(--caci-blue) !important;
+    font-weight: 600; padding: .8rem 1.6rem; border-radius: .5rem;
+    border: 2px solid var(--caci-blue); text-decoration: none;
+    transition: background-color .2s ease, color .2s ease;
+}
+.btn-secondary:hover { background: var(--caci-tone3); }
+
+/* Scripture / formal quotes: Montserrat italic, thin Minister Blue left rule */
+blockquote, .scripture-quote {
+    font-family: var(--font-body);
+    font-style: italic;
+    border-left: 3px solid var(--caci-minister);
+    padding-left: 1rem;
+    margin-left: 0;
+    color: #243b53;
+}
+
+/* Hero */
+.hero {
+    background-color: #001F5C !important;
+    background-image:
+        radial-gradient(circle at 85% 10%, rgba(102, 150, 197, 0.45) 0%, transparent 60%),
+        linear-gradient(135deg, #001F5C 0%, #174477 55%, #47306D 100%) !important;
+    color: #ffffff !important;
+}
+.hero h1, .hero h2 { color: #ffffff !important; }
+.hero a:not(.btn-primary):not(.btn-secondary) { color: #ffffff !important; }
+
+/* Cards */
+.card {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: .9rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(23, 68, 119, .14);
+    border-color: var(--caci-tone2) !important;
+}
+
+.section-rule { height: 3px; width: 72px; background: var(--caci-purple); border-radius: 2px; }
+.badge { display: inline-block; font-size: .75rem; font-weight: 600; padding: .2rem .65rem; border-radius: 999px; background: var(--caci-tone3); color: var(--caci-minister); }
+.badge-urgent { background: var(--caci-red); color: #fff; }
+
+/* Scripture header card on detail pages */
+.scripture-card {
+    background: linear-gradient(135deg, var(--caci-minister), var(--caci-blue));
+    color: #fff; border-radius: 1rem; padding: 1.5rem 1.75rem;
+    border-left: 6px solid var(--caci-purple);
+    box-shadow: 0 10px 30px rgba(0, 31, 92, .25);
+}
+.scripture-card .label { color: var(--caci-tone3); font-weight: 600; font-size: .8rem; letter-spacing: .08em; }
+
+/* Responsive 16:9 video */
+.video-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: .9rem; overflow: hidden; background: #000; }
+.video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* FAQ accordion (native details/summary: works with no JS in Static SSR) */
+.faq-item { background: #fff; border: 1px solid #cbd5e1; border-radius: .75rem; overflow: hidden; }
+.faq-item + .faq-item { margin-top: .75rem; }
+.faq-item summary {
+    cursor: pointer; list-style: none; padding: 1rem 1.25rem; font-weight: 600; color: var(--caci-blue);
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: ''; width: .6rem; height: .6rem; border-right: 2px solid var(--caci-tone2); border-bottom: 2px solid var(--caci-tone2); transform: rotate(45deg); transition: transform .2s ease; flex: none; }
+.faq-item[open] summary::after { transform: rotate(-135deg); }
+.faq-item[open] summary { background: var(--parchment); }
+.faq-answer { padding: 0 1.25rem 1.25rem; }
+
+/* Forms */
+.field label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: .35rem; color: var(--caci-minister); }
+.field input, .field select, .field textarea {
+    width: 100%; box-sizing: border-box; padding: .75rem .9rem;
+    border: 1.5px solid #94a3b8 !important;
+    border-radius: .5rem; font: inherit; background: #fff;
+    color: #1e293b;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--caci-blue) !important;
+    outline: 3px solid rgba(102, 150, 197, .35) !important;
+}
+.validation-message, .field-error { color: var(--caci-red); font-size: .85rem; margin-top: .25rem; }
+.validation-summary { color: var(--caci-red); }
+
+/* Logos stay unaltered, always on a white surface */
+.logo-plate { background: #fff; border-radius: .75rem; padding: .6rem; display: inline-flex; }
+
+.prose-kca { max-width: 72ch; }
+.prose-kca h2, .prose-kca h3 { font-family: var(--font-head); color: var(--caci-blue); }
+
+/* --- CACI MATCHED CARDS (Pillars & Preaching / 4 Keys) --- */
+.card-body {
+    padding: 1.75rem 1.25rem;
+    text-align: center;
+}
+
+.card-icon {
+    width: 52px;
+    height: 52px;
+    background-color: var(--caci-blue);
+    color: #ffffff;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin: 0 auto 1.25rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.pillar-card {
+    background: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    text-align: center;
+}
+.pillar-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 31, 92, 0.16);
+    border-color: var(--caci-red);
+}
+.pillar-card h3 {
+    font-size: 1.25rem;
+    font-family: var(--font-body);
+    font-weight: 700;
+    color: var(--caci-minister);
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+.pillar-card p {
+    font-size: 0.92rem;
+    color: var(--caci-gray);
+    line-height: 1.55;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+/* 4 Keys Preaching Section matching CACI.life */
+.preaching-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.preaching-card {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 2.25rem 1.25rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    min-height: 200px;
+}
+.preaching-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(23, 68, 119, 0.15);
+    border-color: var(--caci-blue);
+}
+
+.preaching-card .card-icon {
+    width: 68px;
+    height: 68px;
+    font-size: 1.85rem;
+    background-color: var(--caci-purple);
+    color: #ffffff;
+    box-shadow: 0 6px 14px rgba(71, 48, 109, 0.22);
+    margin: 0 auto 1.25rem;
+}
+
+.preaching-overlay {
+    position: relative;
+    background: transparent;
+    padding: 0;
+    display: block;
+    text-align: center;
+}
+
+.preaching-overlay h3 {
+    font-family: var(--font-head);
+    font-size: 1.5rem;
+    margin: 0;
+    line-height: 1.25;
+}
+
+.preaching-overlay .key-word {
+    color: var(--caci-blue);
+    font-weight: 700;
+    display: block;
+    font-style: normal;
+    font-size: 1.25rem;
+}
+
+.preaching-overlay .key-subtitle {
+    color: var(--caci-gray);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: block;
+    margin-top: 0.35rem;
+    letter-spacing: 0.02em;
+}
+
+.preaching-overlay .key-description {
+    color: #475569;
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    margin-top: 0.75rem;
+    font-weight: 400;
+}

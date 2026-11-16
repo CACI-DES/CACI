@@ -1,0 +1,60 @@
+@page "/events"
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+<SeoHead Title="CACI Events and Calendar"
+         Description="Stay up to date with our gatherings, feasts, and online meetings. View the CACI Calendar."
+         CanonicalUrl="https://caci.life/events" />
+
+<section class="section-padding events-section">
+    <div class="container">
+        <div class="section-header">
+            <h1>CACI Events and Calendar</h1>
+            <div class="divider"></div>
+            <p>
+                Stay up to date with our gatherings, feasts, and online meetings.
+            </p>
+        </div>
+
+        <div class="calendar-container">
+            <div class="google-calendar-header">
+                <h2>CACI Community Calendar</h2>
+                <a href="https://calendar.google.com/calendar/embed?src=c_3eab6dfa926464d4fbd097be71f7474f10da71ed771c9b2f3d290f18f7362ba1%40group.calendar.google.com&ctz=America%2FChicago&wkst=1" 
+                   target="_blank" 
+                   class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-external-link-alt"></i> View Full Calendar
+                </a>
+            </div>
+            <!-- Desktop Calendar (Month View) -->
+            <div class="google-calendar-wrapper hidden-mobile">
+                <iframe src="https://calendar.google.com/calendar/embed?src=c_3eab6dfa926464d4fbd097be71f7474f10da71ed771c9b2f3d290f18f7362ba1%40group.calendar.google.com&ctz=America%2FChicago&wkst=1" style="border: 0" frameborder="0" scrolling="no"></iframe>
+            </div>
+
+            <!-- Mobile Calendar (Agenda View) -->
+            <div class="google-calendar-wrapper visible-mobile">
+                <iframe src="https://calendar.google.com/calendar/embed?src=c_3eab6dfa926464d4fbd097be71f7474f10da71ed771c9b2f3d290f18f7362ba1%40group.calendar.google.com&ctz=America%2FChicago&wkst=1&mode=AGENDA" style="border: 0" frameborder="0" scrolling="no"></iframe>
+            </div>
+        </div>
+        
+        <div class="other-links" style="text-align: center; margin-top: 30px;">
+             <a href="https://cacievents.com" class="btn btn-primary">Register for current CACI Event</a>
+        </div>
+
+        <div class="calendar-glance-image" style="margin-top: 50px; text-align: center;">
+            <h3 style="margin-bottom: 20px;">2026 At A Glance</h3>
+            
+            <img src="images/2026_Calendar_Glance.png" 
+                 alt="CACI 2026 Calendar At A Glance" 
+                 style="max-width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin: auto;" />
+
+            <div style="margin-top: 20px;">
+                <a href="images/2026_Calendar_Glance.pdf" target="_blank" class="btn btn-outline" style="color: var(--caci-primary-blue); border-color: var(--caci-primary-blue);">
+                    <i class="fas fa-download"></i> Download 2026 Calendar (PDF)
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+
+}

@@ -1,0 +1,78 @@
+@page "/congregation/{CongregationSlug}/foundations/{FoundationSlug}"
+@page "/congregation/{CongregationSlug}/12Foundations/{FoundationSlug}"
+@layout CongregationLayout
+@using CACI_Life.Core.Domain.Congregations
+@using CACI_Life.Features.Congregations.Queries
+@inject ICongregationService CongregationService
+@inject TenantContext TenantContext
+@inject GetFoundationsQueries Queries
+@inject NavigationManager Navigation
+@inject ILogger<CongregationFoundationDetail> Logger
+
+@if (_result is not null)
+{
+    <StudyDetailView Model="_result.Study"
+                     Faqs="_result.Faqs"
+                     BasePath="@($"/congregation/{_profile.UrlSlug}/foundations")"
+                     BackLabel="All 12 Foundations"
+                     PrevSlug="@_prev?.Slug"
+                     PrevTitle="@_prev?.Title"
+                     NextSlug="@_next?.Slug"
+                     NextTitle="@_next?.Title" />
+}
+else
+{
+    <CongregationSeoHead Title="Foundation not found" Description="This foundation could not be found." Path="@Navigation.ToBaseRelativePath(Navigation.Uri)" />
+    <section class="max-w-3xl mx-auto px-4 py-20 text-center">
+        <h1 class="text-4xl font-bold">Foundation not found</h1>
+        <p class="mt-4">We could not find that study. <a href="@($"/congregation/{_profile.UrlSlug}/foundations")">Return to the 12 Foundations.</a></p>
+    </section>
+}
+
+@code {
+    [Parameter] public string CongregationSlug { get; set; } = string.Empty;
+    [Parameter] public string FoundationSlug { get; set; } = string.Empty;
+
+    private CongregationProfile _profile = new();
+    private StudyDetailResult? _result;
+    private FoundationSummaryDto? _prev;
+    private FoundationSummaryDto? _next;
+
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(CongregationSlug))
+        {
+            TenantContext.SetSlug(CongregationSlug);
+        }
+        _profile = await CongregationService.GetCurrentAsync();
+        _result = await Queries.GetBySlugAsync(FoundationSlug);
+        if (_result is null && HttpContext is not null) 
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+        }
+        if (_result is not null && !string.Equals(_result.Study.Category, "Foundations", StringComparison.OrdinalIgnoreCase))
+        {
+            Logger.LogInformation("Slug {Slug} is category {Category}, redirecting to studies.", FoundationSlug, _result.Study.Category);
+            Navigation.NavigateTo($"/congregation/{_profile.UrlSlug}/studies/{FoundationSlug}", replace: true);
+            return;
+        }
+
+        if (_result is not null)
+        {
+            var all = await Queries.ListAsync();
+            if (all.Count > 0)
+            {
+                var list = all.ToList();
+                var idx = list.FindIndex(x => string.Equals(x.Slug, FoundationSlug, StringComparison.OrdinalIgnoreCase));
+                if (idx >= 0)
+                {
+                    if (idx > 0) _prev = list[idx - 1];
+                    if (idx < list.Count - 1) _next = list[idx + 1];
+                }
+            }
+        }
+    }
+}
+

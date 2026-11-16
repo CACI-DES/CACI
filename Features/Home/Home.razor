@@ -1,0 +1,398 @@
+@page "/"
+@inject NavigationManager Navigation
+@inject ISubsiteContext SubsiteContext
+
+<style>
+    .hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.video-overlay {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: linear-gradient(rgba(23, 68, 119, 0.55), rgba(0, 31, 92, 0.65));
+z-index: 1;
+pointer-events: none;
+}
+
+/* Ensure content stays on top */
+.hero-content {
+z-index: 2;
+}
+
+/* Countdown Styles */
+.countdown-timer {
+height: 200px;
+background: linear-gradient(135deg, #1e3a8a 0%, #001f5c 100%);
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 15px;
+color: white;
+padding: 20px;
+position: relative;
+overflow: hidden;
+}
+
+.countdown-timer::before {
+content: "";
+position: absolute;
+top: 0; left: 0; width: 100%; height: 100%;
+background: url('images/images/Sabbath.png');
+background-size: cover;
+opacity: 0.15;
+z-index: 0;
+}
+
+.countdown-unit {
+text-align: center;
+z-index: 1;
+background: rgba(255, 255, 255, 0.1);
+padding: 10px;
+border-radius: 8px;
+min-width: 60px;
+backdrop-filter: blur(5px);
+border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.countdown-value {
+display: block;
+font-size: 1.8rem;
+font-weight: 700;
+line-height: 1;
+color: #fbbf24; /* Amber accent */
+}
+
+.countdown-label {
+font-size: 0.7rem;
+text-transform: uppercase;
+letter-spacing: 1px;
+opacity: 0.8;
+}
+
+.countdown-title {
+position: absolute;
+top: 15px;
+left: 20px;
+font-size: 0.8rem;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 2px;
+color: rgba(255,255,255,0.7);
+z-index: 1;
+}
+</style>
+
+
+@if (SubsiteContext.IsSubsite && SubsiteContext.Configuration != null)
+{
+    <DoctrinalFunnelEngine Config="@SubsiteContext.Configuration" IsSubsiteMode="true" />
+}
+else if (IsEventsDomain)
+{
+    <Conference />
+}
+else
+{
+    <SeoHead Title="CACI - Covenant Apostolic Congregations Intl."
+    Description="Restoring the Original Apostolic Faith. Welcome to Covenant Apostolic Congregations Intl. Join us in the coming Kingdom of God."
+    ImageUrl="images/logos/AllTheWord_NOTextLogo.png"
+    CanonicalUrl="https://caci.life/" />
+
+
+    <section class="hero-section">
+        <!-- NEW: Video Background Test -->
+        <video autoplay muted loop playsinline class="hero-video" poster="/images/images/placeholder_video.jpg">
+            <source src="/images/images/banner1.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="video-overlay"></div>
+        <!-- END NEW -->
+
+        <div class="hero-content">
+            <div class="hero-subtitle">Welcome to the</div>
+            <h1 class="hero-title">Covenant Apostolic Congregations International</h1>
+            <p>
+                Restoring the original Apostolic faith.
+            </p>
+            <div class="hero-buttons">
+                <a href="contact" class="btn btn-primary">Join the Mission</a>
+                <a href="meet-the-caci" class="btn btn-outline">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding leadership-section">
+        <div class="container">
+            <div class="leadership-grid">
+                <div class="leadership-content">
+                    <span class="leadership-title">A word from our Presiding Bishop</span>
+                    <h2 style="color: var(--caci-primary-blue);">Restoring the Apostolic Faith</h2>
+                    <div class="divider"></div>
+                    <p>
+                        Covenant Apostolic Congregations Intl. (CACI) stands as a beacon of order, reverence, and divine
+                        authority.
+                        We are committed to restore the original Apostolic message of The Coming Kingdom of God.
+                    </p>
+                    <p>
+                        Our organization operates with a spirit of excellence, ensuring that every congregation, Bishop,
+                        Elder, Minister, and Member is empowered to carry the weight of our shared commission.
+                    </p>
+                    <p>
+                        Guided by the Apostolic Council and Bishop Jesse White, CACI ensures that the Biblical standard of
+                        holiness and administrative excellence is maintained across all Congregations.
+                    </p>
+                    <a href="ministry" class="btn btn-primary">CACI Ministry</a>
+                </div>
+                <div class="leadership-image">
+                    <img src="images/images/BishopWhite_EFC2025.jpg" alt="Presiding Bishop Image">
+                    <!-- <a href="https://www.youtube.com/watch?v=video_id" class="btn btn-outline">Video Message from Presiding Bishop Jesse White</a> -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding pillars-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 style="color: var(--light-blue);">The Apostolic Pillars</h2>
+                <div class="divider"></div>
+                <p>
+                    Foundational principles that guide our worship, our structure, and our global outreach.
+                </p>
+                <div class="mission-stat-box">
+                    <blockquote class="mission-quote">
+                        "And they continued stedfastly in the apostles' doctrine and fellowship, and in breaking of
+                        bread, and in prayers. - Acts 2:42"
+                    </blockquote>
+                    <p class="source-text">The 4 Pillars of the Apostolic Faith</p>
+                </div>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-icon"><i class="fas fa-book-open"></i></div>
+                        <h3>Apostles Doctrine</h3>
+                        <p>The foundation of all faith, restoring the original Apostolic teachings.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-icon"><i class="fas fa-handshake"></i></div>
+                        <h3>Apostolic Fellowship</h3>
+                        <p>Building strong, spiritual bonds through ordination and maintaining fellowship one with
+                        another.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-icon"><i class="fas fa-bread-slice"></i></div>
+                        <h3>Breaking of Bread</h3>
+                        <p>Recognizing and participating in the sacred ordinance of communion, remembering Christ's
+                        sacrifice.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-icon"><i class="fas fa-hands-praying"></i></div>
+                        <h3>Apostolic Prayer</h3>
+                        <p>Engaging in fervent, authoritative prayer to advance the Kingdom and see spiritual
+                        transformation.</p>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="4PillarsInfo" class="btn btn-primary">4 Pillars Info</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding preaching-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Preaching the Kingdom</h2>
+                <div class="divider"></div>
+                <p>
+                    The scriptures never declare eternity in heaven to be the reward of the saints. Jesus came to fulfil
+                    what the prophets had declared... God's Kingdom restored over all the Earth.
+                </p>
+                <div class="mission-stat-box">
+                    <blockquote class="mission-quote">
+                        "Thy kingdom come. Thy will be done in earth, as it is in heaven. - Matthew 6:10"
+                    </blockquote>
+                    <p class="source-text">The 4 Keys of the Kingdom</p>
+                </div>
+            </div>
+            <div class="preaching-grid">
+                <!-- Card 1: The Coming -->
+                <div class="preaching-card">
+                    <div class="card-icon"><i class="fas fa-crown"></i></div>
+                    <div class="preaching-overlay">
+                        <h3>
+                            <span class="key-word">The Coming</span>
+                            <span class="key-subtitle">of &nbsp;The Kingdom</span>
+                        </h3>
+                    </div>
+                </div>
+
+                <!-- Card 2: The Law -->
+                <div class="preaching-card">
+                    <div class="card-icon"><i class="fas fa-book-open"></i></div>
+                    <div class="preaching-overlay">
+                        <h3>
+                            <span class="key-word">The Law</span>
+                            <span class="key-subtitle">of &nbsp;The Kingdom</span>
+                        </h3>
+                    </div>
+                </div>
+
+                <!-- Card 3: The Culture -->
+                <div class="preaching-card">
+                    <div class="card-icon"><i class="fas fa-users"></i></div>
+                    <div class="preaching-overlay">
+                        <h3>
+                            <span class="key-word">The Culture</span>
+                            <span class="key-subtitle">of &nbsp;The Kingdom</span>
+                        </h3>
+                    </div>
+                </div>
+
+                <!-- Card 4: The Gospel -->
+                <div class="preaching-card">
+                    <div class="card-icon"><i class="fas fa-bullhorn"></i></div>
+                    <div class="preaching-overlay">
+                        <h3>
+                            <span class="key-word">The Gospel</span>
+                            <span class="key-subtitle">of &nbsp;The Kingdom</span>
+                        </h3>
+                    </div>
+                </div>
+
+            </div>
+            <a href="4KeysInfo" style="margin-top:15px" class="btn btn-primary">4 Keys Info</a>
+        </div>
+    </section>
+
+    <section class="section-padding get-involved-section">
+        <div class="container">
+            <h2>3 Ways To Get Involved</h2>
+            <div class="involved-grid">
+                <!-- Card 1 -->
+                <div class="involved-card">
+                    <img src="images/images/onlinebiblestudy.jpg" alt="Online Bible Study">
+                    <div class="involved-content">
+                        <h3>#1 - Online Bible Study & Fellowship</h3>
+                        <p>Covenant Apostolics meet in small groups throughout the week to study and fellowship
+                        together.</p>
+                        <a href="contact" class="btn btn-accent">Check it out</a>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="involved-card">
+                    <img src="images/images/ElderClifton_Preaching2.jpg"  alt="Weekly Sabbath Celebration">
+                    <div class="involved-content">
+                        <h3>#2 - Weekly Sabbath Celebration</h3>
+                        <p>~ On The 7th Day ~<br>Spirit Filled, Contemporary Worship<br>Ancient Roots - Apostolic Faith
+                    </p>
+                    <a href="events" class="btn btn-accent">Plan a Visit</a>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="involved-card">
+                <div class="countdown-timer">
+                    <div class="countdown-title">Countdown to Tabernacles</div>
+                    <div class="countdown-unit">
+                        <span class="countdown-value">@timeLeft.Days</span>
+                        <span class="countdown-label">Days</span>
+                    </div>
+                    <div class="countdown-unit">
+                        <span class="countdown-value">@timeLeft.Hours</span>
+                        <span class="countdown-label">Hrs</span>
+                    </div>
+                    <div class="countdown-unit">
+                        <span class="countdown-value">@timeLeft.Minutes</span>
+                        <span class="countdown-label">Min</span>
+                    </div>
+                    <div class="countdown-unit">
+                        <span class="countdown-value">@timeLeft.Seconds</span>
+                        <span class="countdown-label">Sec</span>
+                    </div>
+                </div>
+                <div class="involved-content">
+                    <h3>#3 - Biblical Feast Gathering</h3>
+                    <p><span style="color:white; font-weight: bold; font-size: 1.2rem;">Tabernacles 2026</span><br>Registration Opens July 19th 2026</p>
+                    <a href="https://cacievents.com" class="btn btn-accent">Event Info</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+}
+
+@implements IDisposable
+@using System.Timers
+@using CACI_Life.Features.Home
+
+@code {
+    private TimeSpan timeLeft;
+    private Timer? timer;
+    private DateTime targetDate = new DateTime(2026, 9, 27, 0, 0, 0, DateTimeKind.Unspecified);
+    private bool IsEventsDomain { get; set; }
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            var uri = new Uri(Navigation.Uri);
+            IsEventsDomain = uri.Host.Contains("events.caci.life", StringComparison.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            IsEventsDomain = false;
+        }
+
+        if (SubsiteContext.IsSubsite || IsEventsDomain) return;
+        CalculateTimeLeft();
+        timer = new Timer(1000);
+        timer.Elapsed += (s, e) => InvokeAsync(() =>
+        {
+            CalculateTimeLeft();
+            StateHasChanged();
+        });
+        timer.Start();
+    }
+
+    private void CalculateTimeLeft()
+    {
+        var now = TimeHelper.GetCentralTime();
+        if (targetDate > now)
+        {
+            timeLeft = targetDate - now;
+        }
+        else
+        {
+            timeLeft = TimeSpan.Zero;
+        }
+    }
+
+    public void Dispose()
+    {
+        timer?.Stop();
+        timer?.Dispose();
+    }
+}

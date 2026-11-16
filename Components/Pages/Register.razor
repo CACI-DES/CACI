@@ -1,0 +1,241 @@
+@page "/register"
+@page "/create-account"
+@page "/request-access"
+@rendermode InteractiveServer
+
+@using CACI_Life.Features.Identity.Models
+@using CACI_Life.Features.Identity.Services
+@inject IAuthRepository AuthRepo
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create Account &bull; Request Access | CACI</PageTitle>
+
+<div class="min-h-screen bg-[#001F5C] text-white flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div class="max-w-xl w-full bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-10 backdrop-blur-md shadow-2xl transition-all duration-300">
+        
+        <!-- Header Section -->
+        <div class="text-center mb-8">
+            <a href="/" class="inline-block transition-transform hover:scale-105">
+                <img src="images/logos/AllTheWord_NOTextLogo.png" alt="CACI Logo" class="h-16 w-16 mx-auto mb-3 drop-shadow-md"/>
+            </a>
+            <h1 class="text-3xl font-heading font-bold italic text-white tracking-wide">Request CACI Account</h1>
+            <div class="h-1 w-20 bg-amber-400 mx-auto mt-2 rounded-full"></div>
+            <p class="text-xs sm:text-sm text-blue-200 mt-3 max-w-md mx-auto">
+                Members, ministers, and fellowship leaders can request account access to CACI Life online services.
+            </p>
+        </div>
+
+        @if (_isSuccess)
+        {
+            <!-- Success State -->
+            <div class="text-center py-6 space-y-6 animate-fadeIn">
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/20 border-2 border-emerald-400 text-emerald-400 shadow-lg">
+                    <i class="bi bi-check-circle-fill text-4xl"></i>
+                </div>
+
+                <div>
+                    <h2 class="text-2xl font-heading font-bold italic text-white">Request Submitted!</h2>
+                    <p class="text-sm text-blue-200 mt-2 leading-relaxed max-w-md mx-auto">
+                        Thank you, <strong class="text-amber-300">@_model.FullName</strong>. Your account request for <strong class="text-white">@_model.Email</strong> has been received and is pending administrator review.
+                    </p>
+                </div>
+
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-5 text-left text-xs text-blue-200 space-y-2 max-w-md mx-auto">
+                    <div class="flex items-center space-x-2 text-amber-400 font-semibold uppercase tracking-wider text-[11px]">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <span>What Happens Next?</span>
+                    </div>
+                    <p class="leading-relaxed text-gray-300">
+                        1. A CACI administrator will verify your information.<br/>
+                        2. You will receive an email confirmation once your login is approved.<br/>
+                        3. You can then sign in directly with the password you selected.
+                    </p>
+                </div>
+
+                <div class="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+                    <a href="/login" class="px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-[#001F5C] font-bold uppercase tracking-wider rounded-xl transition duration-150 text-xs text-center shadow-lg">
+                        Go to Sign In
+                    </a>
+                    <a href="/" class="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold uppercase tracking-wider rounded-xl transition duration-150 text-xs text-center border border-white/10">
+                        Return to Home
+                    </a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Error Banner -->
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <div class="mb-6 bg-red-500/15 border border-red-500/40 text-red-200 p-4 rounded-2xl text-xs sm:text-sm font-medium flex items-start space-x-3 shadow-md">
+                    <i class="bi bi-exclamation-triangle-fill text-red-400 text-lg mt-0.5 flex-shrink-0"></i>
+                    <div class="flex-1">
+                        @_errorMessage
+                    </div>
+                </div>
+            }
+
+            <!-- Registration Form -->
+            <EditForm Model="@_model" OnValidSubmit="HandleSubmit" class="space-y-4 text-left">
+                
+                <!-- Full Name -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-blue-200 mb-1.5">
+                        Full Name <span class="text-amber-400">*</span>
+                    </label>
+                    <input type="text" @bind="_model.FullName" required placeholder="First and Last Name"
+                           class="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition duration-150" />
+                </div>
+
+                <!-- Email Address -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-blue-200 mb-1.5">
+                        Email Address <span class="text-amber-400">*</span>
+                    </label>
+                    <input type="email" @bind="_model.Email" required placeholder="you@example.com"
+                           class="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition duration-150" />
+                    <p class="text-[11px] text-blue-300 mt-1">This will be your username for signing in.</p>
+                </div>
+
+                <!-- Password & Confirm Password Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-blue-200 mb-1.5">
+                            Password <span class="text-amber-400">*</span>
+                        </label>
+                        <input type="password" @bind="_model.Password" required placeholder="Minimum 6 characters"
+                               class="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition duration-150" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-blue-200 mb-1.5">
+                            Confirm Password <span class="text-amber-400">*</span>
+                        </label>
+                        <input type="password" @bind="_confirmPassword" required placeholder="Re-enter password"
+                               class="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition duration-150" />
+                    </div>
+                </div>
+
+                <!-- Phone & Congregation Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-blue-200 mb-1.5">
+                            Phone Number <span class="text-blue-300 font-normal text-[10px]">(Optional)</span>
+                        </label>
+                        <input type="tel" @bind="_model.PhoneNumber" placeholder="(555) 000-0000"
+                               class="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition duration-150" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-blue-200 mb-1.5">
+                            Congregation / Location <span class="text-blue-300 font-normal text-[10px]">(Optional)</span>
+                        </label>
+                        <input type="text" @bind="_model.Congregation" placeholder="e.g. Mobile, AL or Remote"
+                               class="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition duration-150" />
+                    </div>
+                </div>
+
+                <!-- Reason / Notes -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-blue-200 mb-1.5">
+                        Notes or Ministerial Affiliation <span class="text-blue-300 font-normal text-[10px]">(Optional)</span>
+                    </label>
+                    <textarea @bind="_model.Notes" rows="2" placeholder="Tell us about your connection to CACI (member, minister, etc.)..."
+                              class="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition duration-150 resize-none"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" disabled="@_isSubmitting"
+                            class="w-full py-4 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-[#001F5C] font-bold uppercase tracking-widest rounded-xl transition duration-150 shadow-lg text-xs flex items-center justify-center space-x-2">
+                        @if (_isSubmitting)
+                        {
+                            <span class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-[#001F5C] border-t-transparent"></span>
+                            <span>Submitting Request...</span>
+                        }
+                        else
+                        {
+                            <span>Submit Account Request</span>
+                            <i class="bi bi-arrow-right"></i>
+                        }
+                    </button>
+                </div>
+            </EditForm>
+
+            <!-- Bottom Navigation -->
+            <div class="mt-8 pt-6 border-t border-white/10 text-center text-xs text-blue-200">
+                <span>Already have an approved account?</span>
+                <a href="/login" class="text-amber-400 hover:text-amber-300 font-bold ml-1.5 underline decoration-amber-400/50 underline-offset-4 transition">
+                    Sign In here
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn {
+        animation: fadeIn 0.4s ease-out forwards;
+    }
+</style>
+
+@code {
+    private RequestAccessModel _model = new();
+    private string _confirmPassword = string.Empty;
+    private string? _errorMessage;
+    private bool _isSubmitting = false;
+    private bool _isSuccess = false;
+
+    private async Task HandleSubmit()
+    {
+        _errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(_model.FullName))
+        {
+            _errorMessage = "Please enter your full name.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_model.Email) || !_model.Email.Contains("@") || !_model.Email.Contains("."))
+        {
+            _errorMessage = "Please enter a valid email address.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_model.Password) || _model.Password.Length < 6)
+        {
+            _errorMessage = "Password must be at least 6 characters long.";
+            return;
+        }
+
+        if (_model.Password != _confirmPassword)
+        {
+            _errorMessage = "Passwords do not match. Please verify and try again.";
+            return;
+        }
+
+        _isSubmitting = true;
+        try
+        {
+            var result = await AuthRepo.RequestAccessAsync(_model);
+            if (result.Succeeded)
+            {
+                _isSuccess = true;
+            }
+            else
+            {
+                _errorMessage = result.ErrorMessage ?? "Unable to submit account request. Please try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"An unexpected error occurred: {ex.Message}";
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+}

@@ -1,0 +1,241 @@
+/* Modern Split Layout */
+.connection-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    /* Soft elevated shadow */
+    margin: 40px 0;
+}
+
+.mt-2 {
+    margin-top: 15px;
+}
+
+@media (min-width: 992px) {
+    .connection-container {
+        grid-template-columns: 1.5fr 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .form-section,
+    .info-section {
+        padding: 20px !important;
+    }
+}
+
+/* --- Form Section --- */
+.form-section {
+    padding: 40px;
+    background-color: white;
+}
+
+.form-header h2 {
+    color: var(--caci-primary-blue);
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.form-header p {
+    color: var(--standard-gray);
+    margin-bottom: 30px;
+}
+
+.divider {
+    height: 3px;
+    width: 60px;
+    background: var(--elder-red);
+    margin-bottom: 15px;
+}
+
+/* Modern Input Styling */
+.input-group {
+    margin-bottom: 25px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--minister-blue);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+::deep .form-control {
+    display: block;
+    width: 100% !important;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 2px;
+    font-size: 1rem;
+    font-family: var(--font-body);
+    transition: all 0.3s ease;
+    background: #e6e6e6;
+    /* Light gray background like screenshot */
+    color: #333;
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width */
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+.form-control:focus {
+    background: #dcdcdc;
+    box-shadow: none;
+    outline: none;
+}
+
+
+
+/* Submit Button */
+.btn-block {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    /* Pill shape */
+    margin-top: 10px;
+    background: var(--caci-primary-blue);
+    color: white;
+    border: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(23, 68, 119, 0.3);
+    background: var(--minister-blue);
+}
+
+/* --- Info Section (Right Side) --- */
+.info-section {
+    background: linear-gradient(135deg, var(--minister-blue), var(--caci-primary-blue));
+    color: white;
+    padding: 40px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Decorative circle overlay */
+.info-section::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.info-card h3 {
+    color: white;
+    margin-bottom: 20px;
+    font-family: var(--font-heading);
+}
+
+.info-divider {
+    width: 40px;
+    height: 3px;
+    background: var(--tone-highlight);
+    margin-bottom: 40px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    font-size: 1.2rem;
+    color: var(--tone-highlight);
+}
+
+.info-text label {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 2px;
+}
+
+.info-text a,
+.info-text span {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.social-connect {
+    margin-top: 50px;
+}
+
+.social-connect label {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.social-icons a {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s;
+}
+
+.social-icons a:hover {
+    background: white;
+    color: var(--caci-primary-blue);
+}
+
+/* Success Message Styling */
+.success-message {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: #28a745;
+    /* Success Green */
+    margin-bottom: 20px;
+}
+
+.success-message h3 {
+    color: var(--minister-blue);
+    font-size: 2rem;
+    margin-bottom: 15px;
+}

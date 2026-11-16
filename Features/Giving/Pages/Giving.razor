@@ -1,0 +1,784 @@
+@page "/giving"
+@page "/give"
+@rendermode InteractiveServer
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using CACI_Life.Features.Giving.Models
+@using CACI_Life.Features.Giving.Services
+@using CACI_Life.Features.Identity.Services
+
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IGivingRepository GivingRepo
+@inject IGivingStripeService GivingStripeService
+@inject GivingReportService GivingReportService
+@inject IAuthRepository AuthRepo
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<PageTitle>Online Giving | CACI</PageTitle>
+
+<div class="min-h-screen bg-[#001F5C] text-white py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto space-y-12">
+        
+        <!-- Welcome Header (if logged in) -->
+        @if (_isAuthenticated)
+        {
+            <div class="flex flex-col md:flex-row items-center justify-between border-b border-white/10 pb-6">
+                <div>
+                    <h1 class="text-3xl font-heading font-bold italic text-amber-400">Welcome, @_donorName</h1>
+                    <p class="text-xs text-blue-200 mt-1">Manage your contributions, track history, and download statements.</p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <a href="https://caci.churchtrac.com/give" target="_blank" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider rounded-xl transition duration-200 shadow-md inline-flex items-center">
+                        <i class="fas fa-external-link-alt me-1"></i> Use Churchtrac
+                    </a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-6">
+                <h1 class="text-4xl sm:text-5xl font-heading font-bold italic mb-2">CACI Online Giving</h1>
+                <div class="h-1 w-20 bg-amber-400 mx-auto mb-4 rounded-full"></div>
+                <p class="text-sm text-blue-200 italic max-w-md mx-auto mb-4">
+                    "Every man according as he purposeth in his heart, so let him give... for God loveth a cheerful giver."
+                </p>
+                <div>
+                    <a href="https://caci.churchtrac.com/give" target="_blank" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-black uppercase tracking-wider rounded-xl transition duration-200 shadow-md inline-flex items-center">
+                        <i class="fas fa-external-link-alt me-1"></i> Use Churchtrac
+                    </a>
+                </div>
+            </div>
+        }
+
+        <!-- Layout Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- LEFT COLUMN: Giving Widget Card (white background) -->
+            <div class="lg:col-span-6 xl:col-span-5 bg-white text-gray-800 rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-100 max-w-lg mx-auto w-full">
+                
+                <!-- Card Header -->
+                <div class="text-center pb-6 border-b border-gray-100">
+                    <h2 class="text-2xl font-semibold text-[#174477] font-heading tracking-wide">Give</h2>
+                </div>
+
+                @if (_errorMessage != null)
+                {
+                    <div class="mt-4 bg-red-50 text-red-700 border border-red-200 p-3.5 rounded-xl text-xs font-semibold text-center animate-pulse">
+                        @_errorMessage
+                    </div>
+                }
+
+                @if (_showSelectionScreen)
+                {
+                    <!-- SCREEN 1: "This donation is for" Selector -->
+                    <div class="mt-6 space-y-4">
+                        <h3 class="text-center text-lg font-bold text-[#174477] mb-6">This donation is for</h3>
+                        
+                        <div class="border border-gray-200 rounded-2xl divide-y divide-gray-100 overflow-hidden shadow-sm">
+                            @foreach (var account in _availableAccounts)
+                            {
+                                <button @onclick="() => SelectAccount(account.AccountName)" 
+                                        class="w-full text-left px-5 py-4 hover:bg-gray-50 flex items-center justify-between text-gray-700 font-medium text-sm transition duration-200 group">
+                                    <span class="group-hover:text-[#174477]">@account.AccountName</span>
+                                    <i class="bi bi-chevron-right text-gray-400 group-hover:text-[#174477] transition-transform group-hover:translate-x-0.5"></i>
+                                </button>
+                            }
+                        </div>
+
+                        @if (_selectedGifts.Any())
+                        {
+                            <button @onclick="() => _showSelectionScreen = false" class="w-full py-3.5 mt-4 text-xs font-bold text-gray-500 hover:text-gray-800 border border-gray-200 rounded-xl hover:bg-gray-50 transition text-center uppercase tracking-wider">
+                                <i class="bi bi-arrow-left me-1"></i> Back to Contribution details
+                            </button>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <!-- SCREEN 2: Amounts, Fee, Memo, payment Details -->
+                    <div class="mt-6 space-y-6">
+                        
+                        <!-- Running Total Display -->
+                        <div class="text-center space-y-1 py-4 bg-gray-50/50 rounded-2xl border border-gray-100">
+                            <span class="text-xs text-gray-500 uppercase tracking-widest font-semibold">Total</span>
+                            <div class="text-3xl sm:text-4xl font-mono font-black text-[#174477]">
+                                @_totalAmount.ToString("N2") <span class="text-base font-semibold">USD</span>
+                            </div>
+                        </div>
+
+                        <!-- Selected Gifts Inputs -->
+                        <div class="border border-gray-200 rounded-2xl divide-y divide-gray-100 overflow-hidden shadow-sm">
+                            @foreach (var gift in _selectedGifts)
+                            {
+                                <div class="p-4 flex items-center justify-between gap-4 bg-white hover:bg-gray-50/30 transition-colors">
+                                    <div class="flex items-center gap-2 flex-grow min-w-0">
+                                        <button @onclick="() => RemoveGift(gift)" class="text-red-500 hover:text-red-700 p-1 flex-shrink-0" title="Remove account">
+                                            <i class="bi bi-dash-circle-fill text-lg"></i>
+                                        </button>
+                                        <span class="text-sm font-semibold text-gray-700 truncate">@gift.AccountName</span>
+                                    </div>
+                                    <div class="relative w-32 flex-shrink-0">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-semibold text-sm">$</span>
+                                        <input type="number" step="0.01" min="0" @bind="gift.Amount" @bind:event="oninput" @onchange="RecalculateTotal"
+                                               class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 pl-7 pr-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right font-mono text-sm" />
+                                    </div>
+                                </div>
+                            }
+                            
+                            <!-- Add Another Gift Button -->
+                            <button @onclick="ShowAccountSelection" class="w-full py-4 text-center text-sm font-semibold text-blue-600 hover:text-blue-800 hover:bg-gray-50/50 transition flex items-center justify-center gap-1.5 border-t border-dashed border-gray-100">
+                                <i class="bi bi-plus-circle"></i> Add another gift
+                            </button>
+                        </div>
+
+                        <!-- Fee Covering Toggle -->
+                        <div class="flex items-center justify-center gap-2 py-2">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" @bind="_coversFee" @bind:after="RecalculateTotal" class="sr-only peer" />
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                            <span class="text-xs sm:text-sm text-gray-600 font-medium flex items-center gap-1">
+                                Help cover card processing fees (+@(_feeAmount.ToString("C")))
+                                <i class="bi bi-question-circle text-gray-400 hover:text-gray-600 cursor-pointer" title="Credit card processor charges a fee. Helping cover it ensures 100% of your donation goes directly to support CACI."></i>
+                            </span>
+                        </div>
+
+                        <!-- Actions Grid -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Make Recurring Action Button -->
+                            <button @onclick="ToggleRecurring" class="flex items-center justify-center gap-2 py-3 px-4 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 text-blue-600 font-semibold text-xs transition duration-150">
+                                <i class="bi bi-arrow-repeat text-sm"></i>
+                                <span>@(_isRecurring ? "Recurring Active" : "Make Recurring")</span>
+                            </button>
+
+                            <!-- Add Memo Action Button -->
+                            <button @onclick="ToggleMemo" class="flex items-center justify-center gap-2 py-3 px-4 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 text-blue-600 font-semibold text-xs transition duration-150">
+                                <i class="bi bi-chat-left-text text-sm"></i>
+                                <span>@(_showMemoField ? "Hide Memo" : "Add Memo")</span>
+                            </button>
+                        </div>
+
+                        @if (_showRecurringMessage)
+                        {
+                            <div class="p-3 bg-blue-50 border border-blue-100 rounded-xl text-blue-800 text-[11px] font-semibold text-center animate-fade-in">
+                                <i class="bi bi-info-circle me-1"></i> Recurring giving integration is coming soon! Thank you for your interest.
+                            </div>
+                        }
+
+                        @if (_showMemoField)
+                        {
+                            <div class="space-y-1.5 animate-fade-in">
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Memo / Notes</label>
+                                <textarea @bind="_memoText" placeholder="Write a note regarding your contribution..." rows="2"
+                                          class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+                        }
+
+                        <!-- Donor Info Forms -->
+                        <div class="space-y-4 pt-4 border-t border-gray-100">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">Donor Name</label>
+                                <input type="text" @bind="_donorName" placeholder="Enter full name" 
+                                       class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">Email Address</label>
+                                <input type="email" @bind="_donorEmail" placeholder="name@example.com" disabled="@_isAuthenticated"
+                                       class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed" />
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="space-y-3 pt-2">
+                            <button @onclick="ProcessGiving" disabled="@_isProcessing" 
+                                    class="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold uppercase tracking-widest rounded-xl transition duration-150 shadow-md flex items-center justify-center text-xs">
+                                @if (_isProcessing)
+                                {
+                                    <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></span>
+                                    <span>Directing to Stripe...</span>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-shield-lock-fill mr-2"></i>
+                                    <span>Proceed to Secure Payment</span>
+                                }
+                            </button>
+                            <p class="text-center text-[10px] text-gray-400 font-medium">Secured by Stripe. We accept all major Credit & Debit cards.</p>
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+            <!-- RIGHT COLUMN: Giving Statement Ledger (Only for Member / Minister / Admin) -->
+            <div class="lg:col-span-6 xl:col-span-7 space-y-6">
+                @if (_isAuthenticated && (_isMember || _isMinistry))
+                {
+                    <div class="bg-white text-gray-800 rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-100 w-full space-y-6">
+                        
+                        <!-- Name & Actions Row -->
+                        <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                            <h2 class="text-2xl font-bold text-[#174477]">@_donorName</h2>
+                            
+                            <!-- Circular Blue Print Button -->
+                            <button @onclick="ExportPdf" class="w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow transition-all duration-150 hover:scale-105" title="Print statement to PDF">
+                                <i class="bi bi-printer-fill text-lg"></i>
+                            </button>
+                        </div>
+
+                        <!-- Date range Filters -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Start Date:</label>
+                                <input type="date" @bind="_startDate" 
+                                       class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">End Date:</label>
+                                <input type="date" @bind="_endDate" 
+                                       class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Quick Date Range:</label>
+                                <select @onchange="OnQuickDateRangeChanged" class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="ThisYear" selected="@(_quickDateRange == "ThisYear")">This Year</option>
+                                    <option value="LastYear" selected="@(_quickDateRange == "LastYear")">Last Year</option>
+                                    <option value="Last30Days" selected="@(_quickDateRange == "Last30Days")">Last 30 Days</option>
+                                    <option value="Last90Days" selected="@(_quickDateRange == "Last90Days")">Last 90 Days</option>
+                                    <option value="AllTime" selected="@(_quickDateRange == "AllTime")">All Time</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Transactions Table -->
+                        <div class="overflow-x-auto border border-gray-200 rounded-2xl shadow-sm">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-[#174477]">Date</th>
+                                        <th class="px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider text-[#174477]">Category/Memo</th>
+                                        <th class="px-6 py-3.5 text-right text-xs font-bold uppercase tracking-wider text-[#174477]">Amount</th>
+                                        <th class="px-6 py-3.5 text-center text-xs font-bold uppercase tracking-wider text-[#174477]">Deductible</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-100 text-sm text-gray-600">
+                                    @{
+                                        var items = GetFilteredHistoryItems();
+                                    }
+                                    @if (!items.Any())
+                                    {
+                                        <tr>
+                                            <td colspan="4" class="px-6 py-12 text-center text-gray-400 font-semibold">
+                                                No completed contributions found for this date range.
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var item in items)
+                                        {
+                                            <tr class="hover:bg-gray-50/50 transition-colors">
+                                                <td class="px-6 py-4 whitespace-nowrap text-gray-500 font-mono text-xs">
+                                                    @item.Date.ToString("MM/dd/yyyy")
+                                                </td>
+                                                <td class="px-6 py-4 font-medium text-gray-700">
+                                                    @item.CategoryMemo
+                                                </td>
+                                                <td class="px-6 py-4 text-right font-mono font-bold text-gray-900">
+                                                    @item.Amount.ToString("N2")
+                                                </td>
+                                                <td class="px-6 py-4 text-center">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold @(item.Deductible == "Yes" ? "bg-green-50 text-green-700 border border-green-100" : "bg-gray-100 text-gray-600 border border-gray-200")">
+                                                        @item.Deductible
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- running Total at bottom -->
+                        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                            <span class="text-base font-black text-gray-700 uppercase">Total:</span>
+                            <span class="text-2xl font-mono font-black text-blue-600">
+                                @GetFilteredHistoryItems().Sum(x => x.Amount).ToString("N2")
+                            </span>
+                        </div>
+
+                    </div>
+                }
+                else if (_isAuthenticated)
+                {
+                    <!-- Logged in as other role -->
+                    <div class="bg-white/5 border border-white/10 rounded-3xl p-8 text-center backdrop-blur-md">
+                        <i class="bi bi-shield-lock-fill text-4xl text-amber-400 mb-4"></i>
+                        <h3 class="text-lg font-bold text-white mb-2">Statement Access Restricted</h3>
+                        <p class="text-xs text-blue-200 max-w-sm mx-auto leading-relaxed">
+                            Official tax giving statements and filters are restricted to members and ordained ministers. Please contact administration for support.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <!-- Guest View Info Banner -->
+                    <div class="bg-white/5 border border-white/10 rounded-3xl p-8 text-center backdrop-blur-md space-y-4 max-w-md mx-auto">
+                        <div class="bg-blue-300/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto text-blue-300">
+                            <i class="bi bi-person-fill-lock text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-white">Giving History & Tax Statements</h4>
+                        <p class="text-xs text-blue-200 leading-relaxed">
+                            Sign in to your member account to view all past contributions, download yearly statement statements, and manage credentials dues.
+                        </p>
+                        <a href="/login?returnUrl=/giving" class="inline-block px-6 py-3 bg-amber-500 hover:bg-amber-400 text-[#001F5C] font-black uppercase tracking-wider text-xs rounded-xl transition duration-150 shadow-md">
+                            Sign In to Account
+                        </a>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private List<GivingAccount> _availableAccounts = new();
+
+    public class SelectedGiftItem
+    {
+        public string AccountName { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
+    }
+
+    public class HistoryItem
+    {
+        public DateTime Date { get; set; }
+        public string CategoryMemo { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
+        public string Deductible { get; set; } = "Yes";
+    }
+
+    public class StripeSessionResponse
+    {
+        public string SessionId { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
+    }
+
+    public class MinistryProfileResponse
+    {
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? UserId { get; set; }
+    }
+
+    private List<SelectedGiftItem> _selectedGifts = new();
+    private decimal _totalAmount;
+    private bool _coversFee;
+    private decimal _feeAmount;
+
+    private string? _donorName;
+    private string? _donorEmail;
+    private string? _memoText;
+
+    private bool _showSelectionScreen = true;
+    private bool _showMemoField;
+    private bool _isRecurring;
+    private bool _showRecurringMessage;
+
+    private bool _isAuthenticated;
+    private bool _isMinistry;
+    private bool _isMember;
+    private string? _userEmail;
+    private string? _ministerProfileId;
+
+    private string? _errorMessage;
+    private bool _isProcessing;
+
+    private List<OnlineGiving>? _history;
+
+    // Filters (Default to this year)
+    private DateTime _startDate = new DateTime(DateTime.Now.Year, 1, 1);
+    private DateTime _endDate = DateTime.Today;
+    private string _quickDateRange = "ThisYear";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        _isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+
+        string? userRole = null;
+        if (_isAuthenticated && user.Identity != null)
+        {
+            _userEmail = user.Identity.Name;
+            _donorEmail = _userEmail;
+
+            _isMinistry = user.IsInRole("Admin") || user.IsInRole("Minister");
+            _isMember = user.IsInRole("Member");
+
+            if (_isMinistry) userRole = "Minister";
+            else if (_isMember) userRole = "Member";
+
+            try
+            {
+                var profile = await AuthRepo.GetProfileByEmailAsync(_userEmail ?? "");
+                if (profile != null)
+                {
+                    string firstName = profile.FirstName ?? "";
+                    string lastName = profile.LastName ?? "";
+                    _donorName = $"{firstName} {lastName}".Trim();
+                    _ministerProfileId = profile.UserId;
+                    _isMinistry = true;
+                    userRole = "Minister"; // Force minister role on profile match
+                }
+                else
+                {
+                    _donorName = user.FindFirst(ClaimTypes.Name)?.Value;
+                    if (string.IsNullOrEmpty(_donorName) || _donorName == _userEmail)
+                    {
+                        _donorName = "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching profile data: {ex.Message}");
+            }
+
+            await LoadGivingHistory();
+        }
+
+        try
+        {
+            var accounts = await GivingRepo.GetActiveAccountsAsync(userRole);
+            _availableAccounts = accounts?.ToList() ?? new();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching active accounts: {ex.Message}");
+        }
+    }
+
+    private void SelectAccount(string accountName)
+    {
+        if (!System.Linq.Enumerable.Any(_selectedGifts, g => g.AccountName == accountName))
+        {
+            _selectedGifts.Add(new SelectedGiftItem { AccountName = accountName, Amount = 0 });
+        }
+        _showSelectionScreen = false;
+        RecalculateTotal();
+    }
+
+    private void RemoveGift(SelectedGiftItem gift)
+    {
+        _selectedGifts.Remove(gift);
+        if (!_selectedGifts.Any())
+        {
+            _showSelectionScreen = true;
+        }
+        RecalculateTotal();
+    }
+
+    private void ShowAccountSelection()
+    {
+        _showSelectionScreen = true;
+    }
+
+    private void ToggleMemo()
+    {
+        _showMemoField = !_showMemoField;
+        if (!_showMemoField)
+        {
+            _memoText = null;
+        }
+    }
+
+    private void ToggleRecurring()
+    {
+        _isRecurring = !_isRecurring;
+        _showRecurringMessage = _isRecurring;
+    }
+
+    private void RecalculateTotal()
+    {
+        decimal subTotal = 0;
+        foreach (var gift in _selectedGifts)
+        {
+            if (gift.Amount < 0) gift.Amount = 0;
+            subTotal += gift.Amount;
+        }
+
+        if (_coversFee && subTotal > 0)
+        {
+            _feeAmount = subTotal * 0.06m;
+            _totalAmount = subTotal + _feeAmount;
+        }
+        else
+        {
+            _feeAmount = 0;
+            _totalAmount = subTotal;
+        }
+        _errorMessage = null;
+    }
+
+    private async Task LoadGivingHistory()
+    {
+        if (!string.IsNullOrEmpty(_userEmail))
+        {
+            try
+            {
+                var results = await GivingRepo.GetGivingHistoryByEmailAsync(_userEmail);
+                _history = results?.ToList() ?? new();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading giving history: {ex.Message}");
+            }
+        }
+    }
+
+    private void OnQuickDateRangeChanged(ChangeEventArgs e)
+    {
+        _quickDateRange = e.Value?.ToString() ?? "ThisYear";
+        var today = DateTime.Today;
+        switch (_quickDateRange)
+        {
+            case "ThisYear":
+                _startDate = new DateTime(today.Year, 1, 1);
+                _endDate = today;
+                break;
+            case "LastYear":
+                _startDate = new DateTime(today.Year - 1, 1, 1);
+                _endDate = new DateTime(today.Year - 1, 12, 31);
+                break;
+            case "Last30Days":
+                _startDate = today.AddDays(-30);
+                _endDate = today;
+                break;
+            case "Last90Days":
+                _startDate = today.AddDays(-90);
+                _endDate = today;
+                break;
+            case "AllTime":
+                _startDate = new DateTime(2000, 1, 1);
+                _endDate = today;
+                break;
+        }
+        StateHasChanged();
+    }
+
+    private List<HistoryItem> GetFilteredHistoryItems()
+    {
+        var list = new List<HistoryItem>();
+        if (_history == null) return list;
+
+        foreach (var record in _history)
+        {
+            var recordDate = record.CompletedAt ?? record.CreatedAt;
+            if (recordDate.Date >= _startDate.Date && recordDate.Date <= _endDate.Date)
+            {
+                if (!string.IsNullOrEmpty(record.AllocationsJson))
+                {
+                    try
+                    {
+                        var allocations = System.Text.Json.JsonSerializer.Deserialize<List<GivingAllocation>>(record.AllocationsJson);
+                        if (allocations != null)
+                        {
+                            foreach (var alloc in allocations)
+                            {
+                                if (alloc.Amount > 0)
+                                {
+                                    list.Add(new HistoryItem
+                                    {
+                                        Date = recordDate,
+                                        CategoryMemo = alloc.AccountName + (string.IsNullOrEmpty(record.Memo) ? "" : $" - {record.Memo}"),
+                                        Amount = alloc.Amount,
+                                        Deductible = IsDeductible(alloc.AccountName) ? "Yes" : "No"
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        AddLegacyItems(record, recordDate, list);
+                    }
+                }
+                else
+                {
+                    AddLegacyItems(record, recordDate, list);
+                }
+            }
+        }
+        return list.OrderByDescending(x => x.Date).ToList();
+    }
+
+    private void AddLegacyItems(OnlineGiving record, DateTime recordDate, List<HistoryItem> list)
+    {
+        var memoSuffix = string.IsNullOrEmpty(record.Memo) ? "" : $" - {record.Memo}";
+        if (record.TitheAmount > 0)
+            list.Add(new HistoryItem { Date = recordDate, CategoryMemo = "Tithing" + memoSuffix, Amount = record.TitheAmount, Deductible = "Yes" });
+        if (record.OfferingAmount > 0)
+            list.Add(new HistoryItem { Date = recordDate, CategoryMemo = "Offering" + memoSuffix, Amount = record.OfferingAmount, Deductible = "Yes" });
+        if (record.DonationAmount > 0)
+            list.Add(new HistoryItem { Date = recordDate, CategoryMemo = "Donation" + memoSuffix, Amount = record.DonationAmount, Deductible = "Yes" });
+        if (record.MinistryDuesAmount > 0)
+            list.Add(new HistoryItem { Date = recordDate, CategoryMemo = "Ministry Dues" + memoSuffix, Amount = record.MinistryDuesAmount, Deductible = "No" });
+    }
+
+    private static bool IsDeductible(string categoryName)
+    {
+        if (string.IsNullOrEmpty(categoryName)) return true;
+        var name = categoryName.ToLower();
+        if (name.Contains("dues") || name.Contains("credential") || name.Contains("fee") || name.Contains("card"))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    private async Task ExportPdf()
+    {
+        if (string.IsNullOrEmpty(_userEmail) || _history == null || !_history.Any()) return;
+
+        var name = string.IsNullOrEmpty(_donorName) ? _userEmail : _donorName;
+        
+        var rangeFilteredRecords = _history
+            .Where(r => {
+                var d = r.CompletedAt ?? r.CreatedAt;
+                return d.Date >= _startDate.Date && d.Date <= _endDate.Date;
+            })
+            .ToList();
+
+        if (!rangeFilteredRecords.Any())
+        {
+            await JS.InvokeVoidAsync("alert", "No transactions found in the selected date range to print.");
+            return;
+        }
+
+        try
+        {
+            var pdfBytes = GivingReportService.GenerateGivingHistoryPdf(_userEmail, name, rangeFilteredRecords, _startDate, _endDate);
+            var fileName = $"GivingStatement_{name.Replace(" ", "_")}_{_startDate:yyyyMMdd}_to_{_endDate:yyyyMMdd}.pdf";
+
+            using var stream = new System.IO.MemoryStream(pdfBytes);
+            using var streamRef = new DotNetStreamReference(stream);
+            await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error compiling PDF statement: {ex.Message}");
+        }
+    }
+
+    private async Task ProcessGiving()
+    {
+        _errorMessage = null;
+        RecalculateTotal();
+
+        if (_totalAmount <= 0)
+        {
+            _errorMessage = "Please enter an amount greater than zero for at least one selection.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_donorName))
+        {
+            _errorMessage = "Please enter your name.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_donorEmail))
+        {
+            _errorMessage = "Please enter a valid email address.";
+            return;
+        }
+
+        _isProcessing = true;
+
+        try
+        {
+            var allocationsList = _selectedGifts.Select(g => new GivingAllocation
+            {
+                AccountName = g.AccountName,
+                Amount = g.Amount
+            }).ToList();
+
+            var allocationsJson = System.Text.Json.JsonSerializer.Serialize(allocationsList);
+
+            decimal titheAmount = 0;
+            decimal offeringAmount = 0;
+            decimal ministryDuesAmount = 0;
+            decimal donationAmount = 0;
+
+            foreach (var alloc in _selectedGifts)
+            {
+                var nameLower = alloc.AccountName.ToLower();
+                if (nameLower.Contains("tithe"))
+                {
+                    titheAmount += alloc.Amount;
+                }
+                else if (nameLower.Contains("offering"))
+                {
+                    offeringAmount += alloc.Amount;
+                }
+                else if (nameLower.Contains("dues"))
+                {
+                    ministryDuesAmount += alloc.Amount;
+                }
+                else
+                {
+                    donationAmount += alloc.Amount;
+                }
+            }
+
+            var giving = new OnlineGiving
+            {
+                UserEmail = _donorEmail,
+                DonorName = _donorName,
+                UserRole = _isMinistry ? "Minister" : (_isMember ? "Member" : "Guest"),
+                TitheAmount = titheAmount,
+                OfferingAmount = offeringAmount,
+                DonationAmount = donationAmount,
+                MinistryDuesAmount = ministryDuesAmount,
+                TotalAmount = _totalAmount,
+                PaymentStatus = "Pending",
+                AllocationsJson = allocationsJson,
+                Memo = _memoText,
+                CoversFee = _coversFee,
+                FeeAmount = _feeAmount,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var successUrl = Nav.BaseUri + "giving/success";
+            var cancelUrl = Nav.BaseUri + "giving";
+
+            int id = await GivingRepo.CreateGivingAsync(giving);
+            giving.Id = id;
+
+            var session = await GivingStripeService.CreateGivingSessionAsync(giving, successUrl, cancelUrl);
+            await GivingRepo.UpdateStripeSessionIdAsync(id, session.Id);
+
+            if (!string.IsNullOrEmpty(session.Url))
+            {
+                Nav.NavigateTo(session.Url);
+            }
+            else
+            {
+                _errorMessage = "Failed to obtain checkout session redirect URL.";
+                _isProcessing = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            _errorMessage = $"An error occurred while setting up payment: {ex.Message}";
+            _isProcessing = false;
+        }
+    }
+}

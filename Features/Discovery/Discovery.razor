@@ -1,0 +1,374 @@
+@page "/discovery"
+@using CACI_Life.Features.Discovery
+@using CACI_Life.Features.Email
+@using CACI_Life.Features.Home
+@inject ISpiritualGiftsRepository GiftsRepository
+@inject IEmailService EmailService
+@rendermode InteractiveServer
+
+<SeoHead Title="Spiritual Gifts Discovery - CACI" 
+         Description="Gather your scores from your spiritual gifts test and enter them here to track your growth year after year." 
+         CanonicalUrl="https://caci.life/discovery" />
+
+<section class="section-padding light-bg">
+    <div class="container">
+        <div class="section-header">
+            <h1>Spiritual Gifts Discovery</h1>
+            <div class="divider"></div>
+            <p>Gather your scores from your spiritual gifts test and enter them below. Your results will be emailed to you for your records, allowing you to monitor your growth year after year.</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error-alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p><strong>System Error:</strong> @errorMessage</p>
+                <p>Please ensure the database table <code>SpiritualGiftsEntries</code> has been created.</p>
+            </div>
+        }
+
+        @if (isSubmitted)
+        {
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <h2>Thank You, @Model.FirstName!</h2>
+                <p>Your results have been saved and emailed to <strong>@Model.Email</strong>.</p>
+                <button class="btn btn-primary" @onclick="ResetForm">Enter Another Record</button>
+            </div>
+        }
+        else
+        {
+            <EditForm Model="@Model" OnValidSubmit="HandleSubmit" OnInvalidSubmit="HandleInvalidSubmit" class="discovery-form">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="validation-summary-alert" />
+                
+                <div class="form-section">
+                    <h3><i class="fas fa-user"></i> Your Profile</h3>
+                    <div class="form-grid profile-grid">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <InputText @bind-Value="Model.FirstName" class="form-control" placeholder="First Name" />
+                            <ValidationMessage For="@(() => Model.FirstName)" />
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <InputText @bind-Value="Model.LastName" class="form-control" placeholder="Last Name" />
+                            <ValidationMessage For="@(() => Model.LastName)" />
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <InputText @bind-Value="Model.Email" class="form-control" placeholder="Email Address" />
+                            <ValidationMessage For="@(() => Model.Email)" />
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <InputDate @bind-Value="Model.DateOfBirth" class="form-control" />
+                            <ValidationMessage For="@(() => Model.DateOfBirth)" />
+                        </div>
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <InputSelect @bind-Value="Model.Gender" class="form-control">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </InputSelect>
+                            <ValidationMessage For="@(() => Model.Gender)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fas fa-list-ol"></i> Spiritual Gift Scores (0 - 35)</h3>
+                    <p class="section-hint">Enter the score for each gift below. The maximum score per gift is 35.</p>
+                    
+                    <div class="form-grid scores-grid">
+                        <div class="form-group score-input">
+                            <label>Administration</label>
+                            <InputNumber @bind-Value="Model.Administration" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Apostleship</label>
+                            <InputNumber @bind-Value="Model.Apostleship" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Discernment</label>
+                            <InputNumber @bind-Value="Model.Discernment" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Evangelism</label>
+                            <InputNumber @bind-Value="Model.Evangelism" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Exhortation</label>
+                            <InputNumber @bind-Value="Model.Exhortation" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Faith</label>
+                            <InputNumber @bind-Value="Model.Faith" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Giving</label>
+                            <InputNumber @bind-Value="Model.Giving" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Knowledge</label>
+                            <InputNumber @bind-Value="Model.Knowledge" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Leadership</label>
+                            <InputNumber @bind-Value="Model.Leadership" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Mercy</label>
+                            <InputNumber @bind-Value="Model.Mercy" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Pastoring</label>
+                            <InputNumber @bind-Value="Model.Pastoring" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Prophecy</label>
+                            <InputNumber @bind-Value="Model.Prophecy" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Serving</label>
+                            <InputNumber @bind-Value="Model.Serving" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Teaching</label>
+                            <InputNumber @bind-Value="Model.Teaching" class="form-control" min="0" max="35" />
+                        </div>
+                        <div class="form-group score-input">
+                            <label>Wisdom</label>
+                            <InputNumber @bind-Value="Model.Wisdom" class="form-control" min="0" max="35" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    @if (isProcessing)
+                    {
+                        <button type="button" class="btn btn-primary" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            SAVING...
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary">SUBMIT SCORES</button>
+                    }
+                </div>
+            </EditForm>
+        }
+    </div>
+</section>
+
+<style>
+    .discovery-form {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .form-section {
+        margin-bottom: 40px;
+    }
+
+    .form-section h3 {
+        color: var(--caci-primary-blue);
+        border-bottom: 2px solid var(--tone-highlight);
+        padding-bottom: 10px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .form-grid {
+        display: grid;
+        gap: 20px;
+    }
+
+    .profile-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .scores-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--minister-blue);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: var(--font-body);
+        transition: border-color 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: var(--caci-primary-blue);
+        outline: none;
+    }
+
+    .section-hint {
+        color: var(--standard-gray);
+        font-style: italic;
+        margin-bottom: 20px;
+    }
+
+    .form-actions {
+        text-align: center;
+        border-top: 1px solid #eee;
+        padding-top: 30px;
+    }
+
+    .success-message {
+        text-align: center;
+        padding: 60px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .success-message i {
+        font-size: 4rem;
+        color: #28a745;
+        margin-bottom: 20px;
+    }
+
+    .success-message h2 {
+        margin-bottom: 15px;
+    }
+
+    .success-message p {
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+
+    .error-alert {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .error-alert i {
+        font-size: 1.5rem;
+    }
+
+    .score-input input {
+        text-align: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .invalid {
+        border-color: #dc3545 !important;
+        background-color: #fff8f8;
+    }
+
+    .validation-message {
+        color: #dc3545;
+        font-size: 0.8rem;
+        margin-top: 4px;
+        font-weight: 600;
+    }
+
+    .validation-summary-alert {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        padding: 15px 20px;
+        border-radius: 4px;
+        margin-bottom: 30px;
+        list-style-position: inside;
+    }
+
+    .validation-summary-alert ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    .validation-summary-errors li {
+        margin-bottom: 5px;
+    }
+
+    @@media (max-width: 768px) {
+        .discovery-form {
+            padding: 20px;
+        }
+    }
+</style>
+
+@code {
+    private SpiritualGiftsEntry Model = new() { DateOfBirth = TimeHelper.Today.AddYears(-30) };
+    private bool isProcessing = false;
+    private bool isSubmitted = false;
+    private string? errorMessage;
+
+    private async Task HandleSubmit()
+    {
+        Console.WriteLine("SUBMIT STARTED: Handling valid submission via Dapper...");
+        isProcessing = true;
+        errorMessage = null;
+        try
+        {
+            Model.SubmissionDate = TimeHelper.Now;
+            await GiftsRepository.SaveEntryAsync(Model);
+            Console.WriteLine("DB SUCCESS: Spiritual Gifts Entry saved.");
+
+            // Send Email results
+            try 
+            {
+                await EmailService.SendSpiritualGiftsResultsAsync(Model);
+                Console.WriteLine("EMAIL SUCCESS: Results sent.");
+            }
+            catch (Exception emailEx)
+            {
+                Console.WriteLine($"EMAIL WARNING: Failed to send email: {emailEx.Message}");
+            }
+
+            isSubmitted = true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            Console.WriteLine($"SUBMIT ERROR: {ex.Message}");
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        Console.WriteLine("SUBMIT BLOCKED: Form validation failed.");
+        errorMessage = "Please correct the errors listed at the top of the form before submitting.";
+    }
+
+    private void ResetForm()
+    {
+        Model = new() { DateOfBirth = TimeHelper.Today.AddYears(-30) };
+        isSubmitted = false;
+    }
+}

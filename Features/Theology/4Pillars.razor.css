@@ -1,0 +1,51 @@
+/* 4 Pillars Page Styles */
+.content-body {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.mission-quote {
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--caci-primary-blue);
+    margin: 20px auto 40px;
+    max-width: 800px;
+    border-left: none;
+    /* Override global blockquote style if needed */
+}
+
+.keys-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+@media (min-width: 768px) {
+    .keys-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .keys-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Force equal height for cards inside the grid */
+::deep .card {
+    height: 100%;
+    margin: 0 !important;
+    /* Override CardBible's margin: auto to allow stretching */
+    display: flex;
+    flex-direction: column;
+}
+
+::deep .card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

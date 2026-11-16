@@ -1,0 +1,181 @@
+@page "/portal/foundations"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
+
+<PageTitle>Minister & Member Portal: 12 Foundations Curriculum - CACI</PageTitle>
+
+<div class="min-h-screen bg-[#F8FAFC] text-[#333333] pb-24">
+    <!-- Top Hero -->
+    <section class="bg-[#001F5C] text-white py-12 px-4 sm:px-6 lg:px-8 shadow-md" style="position: static !important;">
+        <div class="max-w-6xl mx-auto">
+            <span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/10 text-[#A4BDDD] border border-white/20 mb-3">
+                Ecclesiastical Resource Vault
+            </span>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-3" style="font-family: var(--font-heading, 'Playfair Display', Georgia, serif);">
+                12 Foundations: Ministerial Curriculum
+            </h1>
+            <p class="text-base sm:text-lg text-slate-200 max-w-3xl leading-relaxed">
+                Authorized teaching materials, editable student workbooks, lesson scripts, and local congregational referral tools.
+            </p>
+        </div>
+    </section>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <AuthorizeView>
+            <Authorized>
+                <!-- Minister / Member Authenticated View -->
+                <div class="grid lg:grid-cols-3 gap-8 mb-12">
+                    <!-- Quick Downloads Card -->
+                    <div class="bg-white rounded-2xl border border-[#CBD5E1] p-6 shadow-sm border-t-4 border-t-[#C8102E]">
+                        <span class="text-xs font-bold uppercase tracking-wider text-[#64748B] block mb-2">Teaching Assets</span>
+                        <h2 class="text-xl font-bold text-[#001F5C] mb-4">Curriculum Workbooks</h2>
+                        <ul class="space-y-3">
+                            <li>
+                                <a href="/pdfs/Lesson_1_Editable.pdf" download class="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] hover:bg-[#EBF2FA] transition-all">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[#C8102E] font-bold">PDF</span>
+                                        <span class="text-xs font-bold text-[#1E293B]">Lesson 1: Kingdom Blueprint</span>
+                                    </div>
+                                    <svg class="w-4 h-4 text-[#174477]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                </a>
+                            </li>
+                            <li>
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] opacity-80">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[#64748B] font-bold">PDF</span>
+                                        <span class="text-xs font-medium text-[#475569]">Lessons 2–12 Complete Master</span>
+                                    </div>
+                                    <span class="text-[10px] uppercase font-bold text-[#64748B] bg-slate-200 px-2 py-0.5 rounded">Updating</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Congregation Referral Link Generator -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl border border-[#CBD5E1] p-6 sm:p-8 shadow-sm border-t-4 border-t-[#174477]">
+                        <span class="text-xs font-bold uppercase tracking-wider text-[#64748B] block mb-1">Local Evangelism Tool</span>
+                        <h2 class="text-xl sm:text-2xl font-bold text-[#001F5C] mb-2">Congregational Study Link</h2>
+                        <p class="text-xs sm:text-sm text-[#475569] leading-relaxed mb-4">
+                            Provide this link to seekers visiting your local assembly website. When they complete the first 3 lessons online, their contact request routes directly back to you.
+                        </p>
+                        
+                        <div class="space-y-3">
+                            <div class="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#CBD5E1] font-mono text-xs text-[#001F5C] break-all select-all">
+                                https://caci.life/foundations/lesson/1?ref=kca
+                            </div>
+                            <div class="flex flex-wrap items-center gap-3">
+                                <a href="/foundations/lesson/1?ref=kca" target="_blank" class="inline-flex items-center px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider bg-[#174477] text-white hover:bg-[#6696C5] transition-all">
+                                    Preview Seeker Experience &nearr;
+                                </a>
+                                <span class="text-xs text-[#64748B]">Configured for Kingdom Covenant Apostolic</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 12 Foundations Complete Outline -->
+                <div class="bg-white rounded-2xl border border-[#CBD5E1] p-6 sm:p-10 shadow-sm">
+                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[#E2E8F0] pb-6 mb-8">
+                        <div>
+                            <span class="text-xs font-mono font-bold tracking-widest text-[#174477] uppercase bg-[#EBF2FA] px-3 py-1 rounded-md border border-[#CBD5E1]">
+                                Full 12 Foundations Track
+                            </span>
+                            <h2 class="text-2xl sm:text-3xl font-bold text-[#001F5C] mt-2">Curriculum Table of Contents</h2>
+                        </div>
+                        <a href="/12Foundations" class="inline-flex items-center text-xs font-bold uppercase tracking-wider text-[#174477] hover:underline">
+                            View Public Funnel &rarr;
+                        </a>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            var num = i;
+                            <div class="p-5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:border-[#174477] transition-all">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-mono font-bold text-[#C8102E]">Foundation @(num.ToString("D2"))</span>
+                                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded @(num <= 3 ? "bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]" : "bg-slate-200 text-[#475569]")">
+                                        @(num <= 3 ? "Public (1-3)" : "Minister Gated")
+                                    </span>
+                                </div>
+                                <h3 class="font-bold text-[#001F5C] text-sm mb-1">@GetLessonName(num)</h3>
+                                <p class="text-xs text-[#64748B] mb-3">@GetLessonAnchor(num)</p>
+                                @if (num <= 3)
+                                {
+                                    <a href="/foundations/lesson/@num" class="text-xs font-bold text-[#174477] hover:underline inline-flex items-center">
+                                        Open Lesson @num &rarr;
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-xs text-[#94A3B8] italic">In-person & local elder guided study</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </Authorized>
+
+            <NotAuthorized>
+                <!-- Access Gate for Unauthenticated Users -->
+                <div class="max-w-2xl mx-auto bg-white rounded-2xl border border-[#CBD5E1] shadow-xl p-8 sm:p-12 text-center border-t-4 border-t-[#001F5C]">
+                    <div class="w-16 h-16 rounded-full bg-[#EBF2FA] text-[#001F5C] flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+                        🔒
+                    </div>
+                    <span class="text-xs font-mono font-bold tracking-widest uppercase text-[#C8102E] block mb-2">Restricted Access</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-[#001F5C] mb-3" style="font-family: var(--font-heading, 'Playfair Display', Georgia, serif);">
+                        CACI Member & Minister Portal
+                    </h2>
+                    <p class="text-sm sm:text-base text-[#475569] leading-relaxed mb-6">
+                        The full 12 Foundations curriculum vault, minister outlines, and downloadable teaching guides are reserved for authorized ministers, elders, and members of Covenant Apostolic Congregations International.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row justify-center gap-3">
+                        <a href="/login?returnUrl=/portal/foundations" class="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-[#174477] hover:bg-[#6696C5] text-white shadow-md transition-all">
+                            Log In to Portal &nearr;
+                        </a>
+                        <a href="/foundations/lesson/1" class="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider bg-white border border-[#CBD5E1] text-[#174477] hover:bg-[#EBF2FA] transition-all">
+                            Take Free Lessons (1–3)
+                        </a>
+                    </div>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </main>
+</div>
+
+@code {
+    private static string GetLessonName(int order) => order switch
+    {
+        1 => "The Kingdom Blueprint: Paradise Given & Lost",
+        2 => "The Global Flood: The First Cleansing",
+        3 => "The Rise of Babylon: False Worship Systems",
+        4 => "The Abrahamic Covenant: The Promised Seed",
+        5 => "The Exodus: Redemption by Blood",
+        6 => "Mount Sinai: The Law of the Kingdom",
+        7 => "The Wilderness & Tabernacle: Dwelling with God",
+        8 => "The Kingdom Divided & The Prophets",
+        9 => "Messiah Yeshua: The Seed Arrives",
+        10 => "The Cross, Resurrection & The Kingdom Proclaimed",
+        11 => "The Holy Spirit & The Apostolic Assembly",
+        12 => "The Restoration of All Things & New Jerusalem",
+        _ => $"Foundation {order}"
+    };
+
+    private static string GetLessonAnchor(int order) => order switch
+    {
+        1 => "Genesis 1–3 · Matt 5:5 · Luke 11:2",
+        2 => "Genesis 6–9 · 1 Peter 3:20 · Matt 24:37",
+        3 => "Genesis 10–11 · Rev 18:4",
+        4 => "Genesis 12 & 15 · Galatians 3:16",
+        5 => "Exodus 12 · 1 Corinthians 5:7",
+        6 => "Exodus 20 · Jeremiah 31:33",
+        7 => "Exodus 25 · Hebrews 8–9",
+        8 => "1 & 2 Kings · Isaiah · Jeremiah",
+        9 => "Matthew 1 · John 1 · Luke 4",
+        10 => "Acts 2:38 · 1 Corinthians 15",
+        11 => "Acts 2 · Romans 8 · Ephesians 4",
+        12 => "Zechariah 14 · Revelation 21–22",
+        _ => "Biblical Revelation"
+    };
+}

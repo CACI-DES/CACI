@@ -1,0 +1,35 @@
+.section-padding .container p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.video-container {
+    display: flex;
+    padding: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.row {
+    display: flex;
+    /* Use Flexbox for layout */
+    align-items: center;
+    /* Vertically centers content within the row */
+    margin-bottom: 40px;
+    /* Spacing between rows */
+    flex-wrap: wrap;
+    /* Allows columns to wrap on smaller screens */
+}
+
+
+/* Responsive design: Stack columns on top of each other on screens less than 768px wide */
+@media screen and (max-width: 768px) {
+
+    .row,
+    .container .row:nth-child(even) {
+        flex-direction: column;
+        /* Stacks columns vertically */
+    }
+}

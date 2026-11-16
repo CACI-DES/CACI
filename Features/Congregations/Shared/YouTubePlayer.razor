@@ -1,0 +1,16 @@
+@if (!string.IsNullOrWhiteSpace(VideoId))
+{
+    <div class="video-frame shadow-md my-6">
+        <iframe src="https://www.youtube.com/embed/@VideoId"
+                title="@Title"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+        </iframe>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public string VideoId { get; set; } = string.Empty;
+    [Parameter] public string Title { get; set; } = "Video";
+}

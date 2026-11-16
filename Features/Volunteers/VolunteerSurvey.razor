@@ -1,0 +1,641 @@
+@page "/survey"
+@page "/surveys"
+@page "/survey/{TeamName}"
+@page "/surveys/{TeamName}"
+@rendermode InteractiveServer
+
+@using CACI_Life.Features.Volunteers
+@using Microsoft.JSInterop
+@using System.IO
+@using QuestPDF.Fluent
+@inject IVolunteerSurveyRepository SurveyRepo
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+@inject CACI_Life.Features.Email.IEmailService EmailService
+
+<PageTitle>Volunteer Survey | CACI</PageTitle>
+
+<div class="survey-container">
+    @if (string.IsNullOrEmpty(TeamName))
+    {
+        <!-- Prompt when accessing /survey directly -->
+        <div class="survey-card info-card text-center">
+            <div class="logo-wrapper">
+                <img src="images/logos/AllTheWord_NOTextLogo.png" alt="CACI Logo" class="caci-logo" />
+            </div>
+            <h2 class="caci-blue font-montserrat">Volunteer Survey</h2>
+            <p class="intro-p">
+                Welcome to the CACI survey portal. 
+                Survey links are distributed directly by team leaders. Please click the specific link provided by your team leader to access this form.
+            </p>
+            <p class="support-text">If you believe you reached this page in error, please contact your ministry coordinator.</p>
+        </div>
+    }
+    else if (!surveyExists)
+    {
+        <!-- Warning when team name is invalid -->
+        <div class="survey-card warning-card text-center">
+            <div class="logo-wrapper">
+                <img src="images/logos/AllTheWord_NOTextLogo.png" alt="CACI Logo" class="caci-logo" />
+            </div>
+            <h2 class="warning-title font-montserrat">Survey Not Found</h2>
+            <p class="intro-p">
+                We couldn't locate a volunteer survey for <strong>"@TeamName"</strong>. 
+                Please double-check the URL or contact your team leader to verify the correct link.
+            </p>
+            <button class="btn btn-primary mt-4" @onclick="GoHome">Return to CACI Life</button>
+        </div>
+    }
+    else if (isSubmitted)
+    {
+        <!-- Submission Success Screen -->
+        <div class="survey-card success-card text-center">
+            <div class="logo-wrapper animate-bounce">
+                <i class="fa-solid fa-circle-check success-icon"></i>
+            </div>
+            <h2 class="caci-blue font-montserrat mt-3">Thank You, @entry.FullName!</h2>
+            <p class="success-subtitle">Your survey has been successfully submitted and stored.</p>
+            
+            <div class="success-details mt-4">
+                <p>We have received your responses for the <strong>@activeSurvey.Title</strong>.</p>
+                <p class="text-muted">A copy of your responses has been prepared as a PDF file. You can download and save or print this document for your records using the button below.</p>
+            </div>
+
+            <div class="action-buttons mt-5">
+                <button class="btn btn-pdf" @onclick="DownloadPdf" disabled="@isGeneratingPdf">
+                    @if (isGeneratingPdf)
+                    {
+                        <i class="fa-solid fa-spinner fa-spin mr-2"></i><span>Generating PDF...</span>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-file-pdf mr-2"></i><span>Download Print-Ready PDF</span>
+                    }
+                </button>
+                <button class="btn btn-secondary mt-3 mt-sm-0 ml-sm-3" @onclick="ResetForm">Submit Another Response</button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Main Form Render -->
+        <div class="survey-card main-form-card">
+            <!-- Header Branding -->
+            <div class="form-header">
+                <div class="header-logo-row">
+                    <img src="images/logos/AllTheWord_NOTextLogo.png" alt="CACI Logo" class="form-logo" />
+                    <div class="header-titles">
+                        <span class="caci-text">COVENANT APOSTOLIC CONGREGATIONS, INT.</span>
+                        <h1 class="caci-blue font-montserrat text-uppercase">@activeSurvey.Title VOLUNTEER SURVEY</h1>
+                    </div>
+                </div>
+                <p class="form-intro">@activeSurvey.IntroParagraph</p>
+            </div>
+
+            <EditForm Model="@entry" OnValidSubmit="HandleSubmit" FormName="volunteerSurveyForm">
+                <DataAnnotationsValidator />
+                
+                <div class="form-grid">
+                    <!-- Column 1 (Left side on desktop) -->
+                    <div class="form-column">
+                        
+                        <!-- 1. BASIC INFORMATION -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <span class="section-num">1</span>
+                                <h2>BASIC INFORMATION</h2>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name <span class="text-danger">*</span></label>
+                                    <InputText id="fullName" class="form-control" @bind-Value="entry.FullName" placeholder="First and Last Name" />
+                                    <ValidationMessage For="@(() => entry.FullName)" class="text-danger" />
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="phoneNumber">Phone Number <span class="text-danger">*</span></label>
+                                        <InputText id="phoneNumber" class="form-control" @bind-Value="entry.PhoneNumber" placeholder="(000) 000-0000" />
+                                        <ValidationMessage For="@(() => entry.PhoneNumber)" class="text-danger" />
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="emailAddress">Email Address <span class="text-danger">*</span></label>
+                                        <InputText id="emailAddress" class="form-control" @bind-Value="entry.EmailAddress" placeholder="name@example.com" />
+                                        <ValidationMessage For="@(() => entry.EmailAddress)" class="text-danger" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Preferred Method of Contact <span class="text-danger">*</span></label>
+                                    <div class="radio-group">
+                                        @foreach (var method in new[] { "Call", "Text", "Email" })
+                                        {
+                                            <label class="radio-label">
+                                                <input type="radio" name="preferredContact" value="@method" checked="@(entry.PreferredContact == method)" @onchange="@(() => entry.PreferredContact = method)" />
+                                                <span>@method</span>
+                                            </label>
+                                        }
+                                    </div>
+                                    <ValidationMessage For="@(() => entry.PreferredContact)" class="text-danger" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. SPIRITUAL & PERSONAL BACKGROUND -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <span class="section-num">2</span>
+                                <h2>SPIRITUAL & PERSONAL BACKGROUND</h2>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label for="membershipLength">How long have you been a member of CACI? <span class="text-danger">*</span></label>
+                                    <InputText id="membershipLength" class="form-control" @bind-Value="entry.MembershipLength" placeholder="e.g. 2 years, 6 months" />
+                                    <ValidationMessage For="@(() => entry.MembershipLength)" class="text-danger" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="otherMinistries">Are you currently involved in other ministries? (If yes, please list)</label>
+                                    <InputText id="otherMinistries" class="form-control" @bind-Value="entry.OtherMinistries" placeholder="e.g. Ushering, Hospitality, None" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="testimony">Briefly share your testimony or walk with Christ:</label>
+                                    <InputTextArea id="testimony" class="form-control text-area-tall" @bind-Value="entry.Testimony" placeholder="Your testimony..." />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. FEAST PREFERENCE -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <span class="section-num">3</span>
+                                <h2>WHICH FEAST WOULD YOU PREFER TO SERVE?</h2>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label class="feast-subtext">(Please select one) <span class="text-danger">*</span></label>
+                                    <div class="feast-grid">
+                                        @foreach (var opt in activeSurvey.FeastOptions)
+                                        {
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" checked="@(entry.FeastPreference == opt)" @onchange="@(() => entry.FeastPreference = opt)" />
+                                                <span>@opt</span>
+                                            </label>
+                                        }
+                                    </div>
+                                    <ValidationMessage For="@(() => entry.FeastPreference)" class="text-danger" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. AVAILABILITY -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <span class="section-num">4</span>
+                                <h2>AVAILABILITY</h2>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label class="feast-subtext">Which days/times are you generally available to serve?</label>
+                                    <p class="section-subtext font-italic">(Please select all that apply)</p>
+                                    <div class="checkbox-vertical-list">
+                                        @foreach (var opt in new[] { "Weekdays (morning)", "Weekdays (evening)", "Saturdays", "Sundays" })
+                                        {
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" checked="@selectedAvailability.Contains(opt)" @onchange="@(e => ToggleAvailability(opt, e.Value))" />
+                                                <span>@opt</span>
+                                            </label>
+                                        }
+                                    </div>
+                                    <div class="form-group mt-3 d-flex align-items-center gap-2">
+                                        <label for="availabilityOther" class="mb-0" style="white-space: nowrap;">Other:</label>
+                                        <InputText id="availabilityOther" class="form-control" @bind-Value="entry.AvailabilityOther" placeholder="Specify other times..." style="flex: 1;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5. GIFTS / TALENTS / SKILLS / AGE GROUPS -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <span class="section-num">5</span>
+                                <h2>@activeSurvey.GiftsLabel</h2>
+                            </div>
+                            <div class="section-content">
+                                <p class="section-subtext">@activeSurvey.GiftsSubtext</p>
+                                <div class="checkbox-grid">
+                                    @foreach (var opt in activeSurvey.GiftsOptions)
+                                    {
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" checked="@selectedGifts.Contains(opt)" @onchange="@(e => ToggleGift(opt, e.Value))" />
+                                            <span>@opt</span>
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 6. EXPERIENCE -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <span class="section-num">6</span>
+                                <h2>EXPERIENCE</h2>
+                            </div>
+                            <div class="section-content">
+                                @if (activeSurvey.IsYouthMinistry)
+                                {
+                                    <div class="form-group">
+                                        <label for="giftsExperienceText">@activeSurvey.GiftsExperienceLabel</label>
+                                        <InputTextArea id="giftsExperienceText" class="form-control text-area-medium" @bind-Value="entry.GiftsExperienceText" placeholder="Describe your strengths/talents..." />
+                                    </div>
+                                }
+                                <div class="form-group">
+                                    <label for="experienceText">@activeSurvey.ExperienceQuestion</label>
+                                    <InputTextArea id="experienceText" class="form-control text-area-medium" @bind-Value="entry.ExperienceText" placeholder="Describe your experience in this area..." />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Column 2 (Right side on desktop) -->
+                    <div class="form-column">
+                        
+                        <!-- 7. AREAS OF INTEREST -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <span class="section-num">7</span>
+                                <h2>AREAS OF INTEREST</h2>
+                            </div>
+                            <div class="section-content">
+                                <p class="section-subtext">Please check the areas you are interested in serving (Check all that apply):</p>
+                                @foreach (var group in activeSurvey.InterestGroups)
+                                {
+                                    <div class="interest-group">
+                                        <h3 class="interest-group-header">@group.Name</h3>
+                                        <div class="checkbox-vertical-list">
+                                            @foreach (var item in group.Items)
+                                            {
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" checked="@selectedInterests.Contains(item)" @onchange="@(e => ToggleInterest(item, e.Value))" />
+                                                    <span>@item</span>
+                                                </label>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- 8. COMFORT LEVEL -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <span class="section-num">8</span>
+                                <h2>COMFORT LEVEL</h2>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label>I feel most comfortable (Check all that apply):</label>
+                                    <div class="checkbox-vertical-list">
+                                        @foreach (var opt in activeSurvey.ComfortOptions)
+                                        {
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" checked="@selectedComforts.Contains(opt)" @onchange="@(e => ToggleComfort(opt, e.Value))" />
+                                                <span>@opt</span>
+                                            </label>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-group mt-4">
+                                    <label>I am open to stepping into new roles with training: <span class="text-danger">*</span></label>
+                                    <div class="radio-group">
+                                        @foreach (var opt in new[] { "Yes", "No", "Maybe" })
+                                        {
+                                            <label class="radio-label">
+                                                <input type="radio" name="openToTraining" value="@opt" checked="@(entry.OpenToTraining == opt)" @onchange="@(() => entry.OpenToTraining = opt)" />
+                                                <span>@opt</span>
+                                            </label>
+                                        }
+                                    </div>
+                                    <ValidationMessage For="@(() => entry.OpenToTraining)" class="text-danger" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 9. HEART & VISION -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <span class="section-num">9</span>
+                                <h2>HEART & VISION</h2>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label for="heartVision1">@activeSurvey.HeartVisionQuestion1</label>
+                                    <InputTextArea id="heartVision1" class="form-control text-area-medium" @bind-Value="entry.HeartVision1" placeholder="Share your thoughts..." />
+                                </div>
+                                <div class="form-group">
+                                    <label for="heartVision2">@activeSurvey.HeartVisionQuestion2</label>
+                                    <InputTextArea id="heartVision2" class="form-control text-area-medium" @bind-Value="entry.HeartVision2" placeholder="Share your thoughts..." />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 10. ADDITIONAL INFORMATION -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <span class="section-num">10</span>
+                                <h2>ADDITIONAL INFORMATION</h2>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label for="restrictions">Do you have any restrictions, preferences, or concerns we should be aware of?</label>
+                                    <InputTextArea id="restrictions" class="form-control text-area-small" @bind-Value="entry.Restrictions" placeholder="e.g. Schedule limits, physical lifting caps..." />
+                                </div>
+                                <div class="form-group">
+                                    <label for="specificRole">Is there a specific role you feel strongly drawn to?</label>
+                                    <InputText id="specificRole" class="form-control" @bind-Value="entry.SpecificRole" placeholder="e.g. Website Developer, Lead Vocalist" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 11. FINAL STEP (Background check) -->
+                        <div class="form-section">
+                            <div class="section-title">
+                                <span class="section-num">11</span>
+                                <h2>FINAL STEP</h2>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label class="d-block font-weight-bold">Are you willing to complete a background check (if required)? <span class="text-danger">*</span></label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="finalStepChoice" value="Yes" checked="@(entry.FinalStepChoice == "Yes")" @onchange="@(() => entry.FinalStepChoice = "Yes")" />
+                                            <span>Yes</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="finalStepChoice" value="No" checked="@(entry.FinalStepChoice == "No")" @onchange="@(() => entry.FinalStepChoice = "No")" />
+                                            <span>No</span>
+                                        </label>
+                                    </div>
+                                    <ValidationMessage For="@(() => entry.FinalStepChoice)" class="text-danger" />
+                                </div>
+                                <p class="form-closing-text mt-4">@activeSurvey.ClosingText</p>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="submit-section mt-5">
+                            <ValidationSummary class="alert alert-danger text-danger text-sm mb-3 border-radius-0" style="background-color: #fef2f2; border: 1px solid #fee2e2; padding: 12px; border-radius: 4px; list-style-position: inside;" />
+                            <button type="submit" class="btn btn-submit" disabled="@isSubmitting">
+                                @if (isSubmitting)
+                                {
+                                    <i class="fa-solid fa-spinner fa-spin mr-2"></i><span>Saving Submission...</span>
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-paper-plane mr-2"></i><span>Submit Survey Responses</span>
+                                }
+                            </button>
+                            @if (!string.IsNullOrEmpty(errorMessage))
+                            {
+                                <div class="alert alert-danger mt-3">@errorMessage</div>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string? TeamName { get; set; }
+
+    private bool surveyExists = false;
+    private SurveyDefinition activeSurvey = new();
+    private VolunteerSurveyEntry entry = new();
+    
+    private HashSet<string> selectedGifts = new();
+    private HashSet<string> selectedInterests = new();
+    private HashSet<string> selectedComforts = new();
+    private HashSet<string> selectedAvailability = new();
+
+    private bool isSubmitting = false;
+    private bool isSubmitted = false;
+    private bool isGeneratingPdf = false;
+    private int savedId = 0;
+    private string errorMessage = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        errorMessage = string.Empty;
+        isSubmitted = false;
+        
+        if (!string.IsNullOrEmpty(TeamName))
+        {
+            surveyExists = SurveyDefinition.Exists(TeamName);
+            if (surveyExists)
+            {
+                activeSurvey = SurveyDefinition.Get(TeamName);
+                ResetForm();
+            }
+        }
+        else
+        {
+            surveyExists = false;
+        }
+    }
+
+    private void ResetForm()
+    {
+        entry = new VolunteerSurveyEntry
+        {
+            Team = activeSurvey.Key,
+            PreferredContact = "Text",
+            OpenToTraining = "Maybe"
+        };
+        
+        selectedGifts.Clear();
+        selectedInterests.Clear();
+        selectedComforts.Clear();
+        selectedAvailability.Clear();
+        
+        isSubmitted = false;
+        isSubmitting = false;
+        isGeneratingPdf = false;
+        errorMessage = string.Empty;
+    }
+
+    private void ToggleAvailability(string opt, object? val)
+    {
+        bool isChecked = val is bool b && b;
+        if (isChecked) selectedAvailability.Add(opt);
+        else selectedAvailability.Remove(opt);
+
+        entry.Availability = string.Join(", ", selectedAvailability);
+    }
+
+    private void ToggleGift(string opt, object? val)
+    {
+        bool isChecked = val is bool b && b;
+        if (isChecked) selectedGifts.Add(opt);
+        else selectedGifts.Remove(opt);
+
+        if (activeSurvey.IsYouthMinistry)
+            entry.AgeGroupPreference = string.Join(", ", selectedGifts);
+        else
+            entry.GiftsTalentsSkills = string.Join(", ", selectedGifts);
+    }
+
+    private void ToggleInterest(string opt, object? val)
+    {
+        bool isChecked = val is bool b && b;
+        if (isChecked) selectedInterests.Add(opt);
+        else selectedInterests.Remove(opt);
+
+        entry.AreasOfInterest = string.Join(", ", selectedInterests);
+    }
+
+    private void ToggleComfort(string opt, object? val)
+    {
+        bool isChecked = val is bool b && b;
+        if (isChecked) selectedComforts.Add(opt);
+        else selectedComforts.Remove(opt);
+
+        entry.ComfortLevelChoice = string.Join(", ", selectedComforts);
+    }
+
+    private async Task HandleSubmit()
+    {
+        isSubmitting = true;
+        errorMessage = string.Empty;
+
+        try
+        {
+            // Set exact submission date
+            entry.SubmissionDate = DateTime.UtcNow;
+            
+            // Save to DB via HTTP call
+            savedId = await SurveyRepo.SaveEntryAsync(entry);
+            entry.Id = savedId;
+            
+            // Configure community license for QuestPDF
+            QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+            
+            // Generate PDF Report bytes
+            var document = new VolunteerSurveyPdfReport(entry);
+            var pdfBytes = document.GeneratePdf();
+            
+            // Determine storage directory on server
+            var configPath = Configuration["VolunteerSurveySettings:PdfStoragePath"];
+            var directory = !string.IsNullOrEmpty(configPath)
+                ? configPath
+                : Path.Combine(WebHostEnvironment.WebRootPath ?? Path.Combine(WebHostEnvironment.ContentRootPath, "wwwroot"), "uploads", "surveys");
+                
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+            
+            var filename = entry.GetPdfFileName();
+            var filePath = Path.Combine(directory, filename);
+            
+            // Save PDF file to the server disk
+            await File.WriteAllBytesAsync(filePath, pdfBytes);
+            
+            // Update database with the file path
+            entry.PdfFilePath = $"uploads/surveys/{filename}";
+            await SurveyRepo.UpdateEntryAsync(entry);
+            
+            // Look up team leader's email from the Organization table
+            var leaderEmail = await SurveyRepo.GetTeamLeaderEmailAsync(entry.Team);
+            if (string.IsNullOrEmpty(leaderEmail))
+            {
+                leaderEmail = Configuration["EmailSettings:SenderEmail"] ?? "Contact@caci.life";
+            }
+            
+            // Send email to team leader with PDF attachment
+            var subject = $"New Volunteer Survey: {entry.FullName} - {activeSurvey.Title}";
+            var htmlBody = $@"
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;'>
+                    <h2 style='color: #174477; margin-top: 0;'>New Volunteer Survey Submission</h2>
+                    <p>Greetings Team Leader,</p>
+                    <p>A new volunteer survey has been submitted for the <strong>{activeSurvey.Title}</strong>.</p>
+                    
+                    <div style='background-color: #f8fafc; padding: 15px; border-radius: 6px; margin: 20px 0;'>
+                        <table style='width: 100%; border-collapse: collapse;'>
+                            <tr>
+                                <td style='padding: 6px 0; font-weight: bold; width: 120px;'>Name:</td>
+                                <td style='padding: 6px 0;'>{entry.FullName}</td>
+                            </tr>
+                            <tr>
+                                <td style='padding: 6px 0; font-weight: bold;'>Email:</td>
+                                <td style='padding: 6px 0;'><a href='mailto:{entry.EmailAddress}'>{entry.EmailAddress}</a></td>
+                            </tr>
+                            <tr>
+                                <td style='padding: 6px 0; font-weight: bold;'>Phone:</td>
+                                <td style='padding: 6px 0;'>{entry.PhoneNumber}</td>
+                            </tr>
+                            <tr>
+                                <td style='padding: 6px 0; font-weight: bold;'>Date:</td>
+                                <td style='padding: 6px 0;'>{entry.SubmissionDate.ToLocalTime().ToString("g")}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <p>The print-ready PDF containing the complete details of their responses is attached to this email.</p>
+                    <p>You can also review, edit, or reprint this survey within the CACI Admin portal.</p>
+                    <hr style='border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;' />
+                    <p style='font-size: 11px; color: #64748b; text-align: center;'>CACI Life Operations &bull; Automated Notification</p>
+                </div>";
+                
+            await EmailService.SendEmailWithAttachmentAsync(leaderEmail, subject, htmlBody, pdfBytes, filename);
+            
+            isSubmitted = true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred while saving/submitting: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private async Task DownloadPdf()
+    {
+        if (isGeneratingPdf || entry.Id == 0) return;
+        
+        isGeneratingPdf = true;
+        try
+        {
+            // Configure community license for QuestPDF
+            QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+            
+            var document = new VolunteerSurveyPdfReport(entry);
+            var pdfBytes = document.GeneratePdf();
+
+            var filename = $"CACI_Survey_{activeSurvey.Key}_{entry.FullName.Replace(" ", "_")}.pdf";
+            
+            using var stream = new MemoryStream(pdfBytes);
+            using var streamRef = new DotNetStreamReference(stream);
+            
+            await JS.InvokeVoidAsync("downloadFileFromStream", filename, streamRef);
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Failed to generate PDF: {ex.Message}");
+        }
+        finally
+        {
+            isGeneratingPdf = false;
+        }
+    }
+
+    private void GoHome()
+    {
+        Nav.NavigateTo("/", forceLoad: true);
+    }
+}

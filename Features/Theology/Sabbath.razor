@@ -1,0 +1,130 @@
+@page "/sabbath"
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager NavigationManager
+
+<SeoHead Title="CACI - God's 7th Day Sabbath"
+         Description="Recalibrating to the Creator's Calendar. A memorial of creation and redemption celebrated by Covenant Apostolics."
+         CanonicalUrl="https://caci.life/sabbath" />
+
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header">
+            <h1>God's 7th Day Sabbath</h1>
+            <div class="divider"></div>
+            <p>A memorial of both creation and redemption, God's Original 7th Sabbath should continue to be faithfully celebrated by believers now as a day of rest, worship, and well-doing.</p>
+        </div>
+
+        <div class="beliefs-container">
+            <!-- Sidebar / Menu -->
+            <div class="beliefs-menu">
+                @foreach (var topic in Topics)
+                {
+                    <a class="belief-btn @(SelectedTopic == topic ? "active" : "")"
+                       href="sabbath?tab=@Uri.EscapeDataString(topic.Title)"
+                       style="text-decoration: none; display: block; text-align: left;">
+                        @topic.Title
+                    </a>
+                }
+            </div>
+
+            <!-- Content Area -->
+            <div class="belief-content">
+                @if (SelectedTopic != null)
+                {
+                    <h2>@SelectedTopic.Title</h2>
+                    <div class="content-body">
+                         @SelectedTopic.Content
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private record Topic(string Title, RenderFragment Content);
+    private Topic? SelectedTopic { get; set; }
+    private List<Topic> Topics { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        Topics = new List<Topic>
+        {
+            new Topic("Recalibrating to the Creator's Calendar", @<text>
+                <h3 style="color: var(--minister-blue);">3 Reasons To Embrace God's Original Sabbath</h3>
+                <h4 style="color: #555;">THE HONEST TRUTH...</h4>
+
+                <h4 style="margin-top: 20px;">1. RECALIBRATING TO THE CREATOR'S CALENDAR</h4>
+                <p>Deep within the heart of all creation is a longing to connect with our Creator. Throughout life we deal with this in many ways. Some fight hard against this pull by trying to convince themselves that maybe there is no Creator, but the pull remains and can never be fully silenced. Many others are sincerely led off track by various “religious” philosophies which serve as a counterfeit and often a vaccination to the authentic Sabbath explained in God's Word. These philosophies take the path of a pendulum from “God has no Sabbath Day”… to… “God wouldn't care which Sabbath Day”.</p>
+                <p>The Scriptures do not declare either of these to be the truth. Nothing goes back further into the origin of mankind than the Sabbath.</p>
+                <p>God’s Sabbath Day…</p>
+                <ul>
+                    <li>Was with us in Paradise Garden… Genesis 2:3</li>
+                    <li>Was with Moses & Israel… Exodus 31:13</li>
+                    <li>Was with Jesus & His Disciples… Luke 4:16</li>
+                    <li>Was with the Early Apostolic Church after Calvary… Acts 16:13</li>
+                    <li>Remains for the Church today…Hebrews 4:9</li>
+                    <li>Will remain through eternity… Isaiah 66:22-23</li>
+                </ul>
+            </text>),
+
+            new Topic("An Authentic Worship Experience", @<text>
+                <h3 style="margin-top: 20px;">AN AUTHENTIC WORSHIP EXPERIENCE</h3>
+                <p>Worship is due to God on every day of the week. This is not a New Testament change, this has always been the practice of the people of God from the beginning. There were “daily” sacrifices in God’s temple even from the days of old. However, there is only one day of the week that by divine decree there exists a “cease and desist” on anything that would intrude on your Worship Connection. That day goes back to the Garden of Eden in the Creation Week.</p>
+                <p>Imagine the peace of true connection untouched by the profane. An experience not shared with career demands, answering emails, or tending to laundry. No masters, no servants, all are directly accountable to God alone. From a sunset to a sunset, a different day from all the others.</p>
+                <p>This is a rest that goes far beyond the body. This sacred time rejuvenates the body, mind, and soul. Imagine the saints gathering together under the impenetrable fortress which is God’s Holy Sabbath. Imagine them dancing with lifted hands under such peace as the world cannot provide. This is Worship on the true Sabbath.</p>
+            </text>),
+
+            new Topic("Obedience", @<text>
+                <h3 style="margin-top: 20px;">OBEDIENCE</h3>
+                <p>What is greater than our Sacrifices to God? Our loving Obedience to Him (1 Samuel 15:22) This is the greatest, purest, most sincere expression of love to our Creator.</p>
+                <p>Obedience is often called “legalism” by those with a superficial connection, or those who have been completely duped by a religious counterfeit. However, think about this, even they are “obeying” something. And that something which they “obey” is, more often than not, the true object of their love even if they haven’t thought of it in those terms.</p>
+                <p>To love “self" leads to obeying self.<br>
+                To love “religion” leads to obeying religion.<br>
+                To love “God”… can not be better expressed than a full desire to obey the things that please Him.</p>
+                <p>Obedience NEVER earns us righteousness, or Salvation. It can never be the “Cause” of His Grace, but it is the loving “Response” to His Grace.</p>
+                <p>God loves you… Want to know how to love Him back?... “If You Love Me, Keep My Commandments”... This is the New Testament.</p>
+            </text>),
+
+            new Topic("What Day Is God's Original Sabbath?", @<text>
+                <h3 style="color: var(--minister-blue);">What day is God's Original Sabbath?</h3>
+                <h4 style="color: #555;">THE HONEST TRUTH ...</h4>
+                <p>"By the seventh day God had finished the work he had been doing; so on the seventh day he rested from all his work. And God blessed the seventh day and made it holy, because on it he rested from all the work of creating that he had done" (Genesis 2:2, 3). The very word "sabbath" means rest, and to rest implies that you have labored. It's logical, then, for God to have designated the last day of the week a day of rest. "The seventh day is a Sabbath to the Lord your God" (Exodus 20:10).</p>
+                <p>Language reflects the customs of the culture that speaks it. Nearly every culture, from ancient through modern times, rested on the seventh day. As languages developed, the name for the seventh day of the week remained "rest day." In the mid 19th century, Dr. William Meade Jones created this "Chart of the Week," listing the name for the seventh day in 160 languages, including some of the most ancient. Even the Babylonian language in use hundreds of years before Abraham or the giving of the Ten Commandments at Sinai, calls the seventh day of the week sa-ba-tu, meaning "rest day."</p>
+                <p>Today more than 100 languages worldwide, many of them unrelated to ancient Hebrew, use the word "Sabbath" for Saturday—and none of them designate any other day as a day of rest. Though the world's language groups have evolved so as to be unintelligible from each other, the word for the seventh day of the week has remained fairly recognizable.</p>
+            </text>),
+
+            new Topic("Has The Calendar Changed?", @<text>
+                <h3 style="color: var(--minister-blue);">Hasn't The Calendar Changed?</h3>
+                <h4 style="color: #555;">THE HONEST TRUTH ...</h4>
+                <p>Actually, we can be positive that our seventh day is the same day Jesus observed when He was here on Earth - the day He kept every week as the Sabbath. (See Luke 4:16.) The days of the week have never been confused. Here's why some people ask this question ...</p>
+                <p>Before 1582, the world went by the Julian calendar, named for the Roman Emperor Julius Caesar, who implemented it in 46 BC. The Julian calendar had calculated that it takes the earth 365-¼ days to orbit the sun. However, it actually takes about eleven minutes less than that. Those eleven minutes accumulated each year until, by 1582, the calendar was 10 days out of harmony with the solar system.</p>
+                <p>On October 4, 1582, Pope Gregory XIII issued a papal bull proposing a new calendar - the one we go by today - called the Gregorian calendar. As countries switched to the Gregorian calendar, they would 'lose' a number of days, bringing their calendar into closer alignment with the solar system. The longer a country waited to switch, the more days would be dropped. Most European countries switched right away, and they lost 10 days. For instance, Thursday, October 4, 1582, was followed by Friday, October 15, 1582 - not October 5. (The United States switched in 1752, making 11 days disappear. Turkey was the last country to switch, making the jump in 1927, and it lost 13 days.)</p>
+                <p>Yet no matter how many days a country lost by switching to the Gregorian calendar, the weekly cycle was not affected at all. Friday still followed Thursday, and Saturday still followed Friday. The same seventh day remained.</p>
+                <p>And because the weekly cycle is completely independent of the lunar and solar systems, we can be positive that when we rest and worship in observing the Saturday, it is the same seventh day on which the Creator rested, and on which Adam and Eve, the Israelites in the wilderness, Jesus, and the apostles, rested and worshiped.</p>
+            </text>),
+
+            new Topic("New Covenant Sabbath", @<text>
+                <h3 style="color: var(--minister-blue);">Isn't There a "New Covenant" Now?</h3>
+                <h4 style="color: #555;">THE HONEST TRUTH ...</h4>
+                <p>The "New Covenant" is not the lawless absence of God's 10 Commandments. The Bible teaches in both the Old and New Testaments that the "New Covenant" is God's Law written into our hearts. God's 7th Day Sabbath is the 4th of His 10 Commands.</p>
+                <p><strong>Jeremiah 31:33</strong><br>
+                But this shall be the covenant that I will make with the house of Israel; After those days, saith the Lord, I will put my law in their inward parts, and write it in their hearts</p>
+                <p><strong>Hebrews 8:10</strong><br>
+                For this is the covenant that I will make with the house of Israel after those days, saith the Lord; I will put my laws into their mind, and write them in their hearts</p>
+                <p>The New Covenant does not make us "lawless", it indelibly writes Gods Law into our innermost being.</p>
+            </text>)
+        };
+
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("tab", out var tabValue))
+        {
+            var tabStr = tabValue.ToString();
+            SelectedTopic = Topics.FirstOrDefault(t => t.Title.Equals(tabStr, StringComparison.OrdinalIgnoreCase)) ?? Topics.FirstOrDefault();
+        }
+        else
+        {
+            SelectedTopic = Topics.FirstOrDefault();
+        }
+    }
+}

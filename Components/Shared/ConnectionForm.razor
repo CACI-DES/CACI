@@ -1,0 +1,306 @@
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.Extensions.Logging
+@using CACI_Life.Features.Communication.Services
+@inject ICommunicationService CommunicationService
+@inject ILogger<ConnectionForm> _logger
+
+<div class="connection-container">
+    <div class="form-section">
+        @if (submitted)
+        {
+            <div class="success-message">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Message Sent!</h3>
+                <p>Thank you, @Model.Name!</p>
+                <p>We have received your request regarding <strong>@Model.RequestType</strong>.</p>
+                <p>We'll be in touch shortly at @Model.Email.</p>
+                <a class="btn btn-primary btn-pill" href="@(FormType == "BibleStudy" ? "/request-bible-study" : "/contact")">Send Another Message</a>
+            </div>
+        }
+        else
+        {
+            <div class="form-header">
+                @if (HeaderContent != null)
+                {
+                    @HeaderContent
+                }
+                else
+                {
+                    <h2>@Title</h2>
+                    <div class="divider"></div>
+                    <p>We would love to hear from you. Please fill out the form below.</p>
+                }
+            </div>
+
+            <EditForm Model="@Model" OnValidSubmit="@HandleValidSubmit" FormName="ConnectionForm" class="modern-form">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="input-group">
+                    <label for="name">Name <span class="required">*</span></label>
+                    <InputText id="name" @bind-Value="Model.Name" class="form-control w-100" placeholder="Your Full Name" />
+                    <ValidationMessage For="@(() => Model.Name)" />
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email <span class="required">*</span></label>
+                    <InputText id="email" @bind-Value="Model.Email" class="form-control" placeholder="email@example.com" />
+                    <ValidationMessage For="@(() => Model.Email)" />
+                </div>
+
+                @if (FormType == "BibleStudy")
+                {
+                    <div class="input-group">
+                        <label for="citystate">City/State</label>
+                        <InputText id="citystate" @bind-Value="Model.CityState" class="form-control" placeholder="City, State" />
+                    </div>
+
+                     <div class="input-group">
+                         <label for="about">Tell us a bit about you...</label>
+                         <InputTextArea id="about" @bind-Value="Model.AboutYou" rows="3" class="form-control" placeholder="Your answer" />
+                     </div>
+
+                    <div class="input-group">
+                        <label class="radio-label">Interests & Topics</label>
+                        <InputSelect @bind-Value="Model.Interest" class="form-control">
+                            <option value="">Select an Interest...</option>
+                            @foreach (var option in InterestOptions)
+                            {
+                                <option value="@option">@option</option>
+                            }
+                            <option value="Other">Other</option>
+                        </InputSelect>
+                    </div>
+                }
+                else
+                {
+                    <div class="input-group">
+                        <label for="subject">Subject</label>
+                        <InputText id="subject" @bind-Value="Model.Subject" class="form-control" placeholder="How can we help?" />
+                    </div>
+
+                    <div class="input-group">
+                        <label class="radio-label">Inquiry Type</label>
+                        <InputSelect @bind-Value="Model.RequestType" class="form-control">
+                            <option value="More Information">More Information</option>
+                            <option value="Request Location">Request Location</option>
+                            <option value="Bible Study">Bible Study</option>
+                        </InputSelect>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="message">Message</label>
+                        <InputTextArea id="message" @bind-Value="Model.Message" rows="5" class="form-control" placeholder="Your message here..." />
+                    </div>
+                }
+
+                <!-- Honeypot fields to catch spam bots (hidden from humans, filled by bots) -->
+                <div style="display: none !important;" aria-hidden="true">
+                    <label for="honeypot_website">Website URL (leave blank)</label>
+                    <InputText id="honeypot_website" @bind-Value="Model.Website" autocomplete="off" tabindex="-1" />
+                    
+                    <label for="honeypot_phone">Phone (leave blank)</label>
+                    <InputText id="honeypot_phone" @bind-Value="Model.Phone" autocomplete="off" tabindex="-1" />
+                </div>
+
+                @if (isSending)
+                {
+                     <button type="button" class="btn btn-primary btn-block" disabled>Sending...</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary btn-block">@SubmitButtonText</button>
+                }
+                
+                @if (sendFailed)
+                {
+                    <p class="text-danger mt-2">There was a problem sending your message. Please try again later.</p>
+                }
+            </EditForm>
+        }
+    </div>
+
+    <div class="info-section">
+        <div class="info-card">
+            <h3>Other Ways to Connect</h3>
+            <div class="info-divider"></div>
+            
+            <div class="info-item">
+                <div class="icon-circle">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="info-text">
+                    <label>Email Us</label>
+                    <a href="mailto:Contact@caci.life">Contact@caci.life</a>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="icon-circle">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="info-text">
+                    <label>Headquarters</label>
+                    <span>9777 Betty's Way Suite C
+                    <br/>
+                    Semmes, AL 36575</span>
+                </div>
+            </div>
+
+            <div class="social-connect">
+                <label>Follow Us</label>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/THECACI" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.youtube.com/@@covenantapostoliccongregations" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="disabled"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Contact Us";
+
+    [Parameter]
+    public RenderFragment? HeaderContent { get; set; }
+
+    [Parameter]
+    public string DefaultRequestType { get; set; } = "More Information";
+
+    [Parameter]
+    public string FormType { get; set; } = "Contact"; // "Contact" or "BibleStudy"
+
+    [Parameter]
+    public string? Source { get; set; }
+
+    [Parameter]
+    public string? DefaultInterest { get; set; }
+
+    [SupplyParameterFromForm(FormName = "ConnectionForm")]
+    public ContactFormModel Model { get; set; } = default!;
+
+    private bool submitted = false;
+    private bool isSending = false;
+    private bool sendFailed = false;
+
+    private string SubmitButtonText => FormType == "BibleStudy" ? "Submit Request" : "Send Message";
+
+    private List<string> InterestOptions = new()
+    {
+        "4 Keys Bible Study",
+        "4 Pillars Bible Study",
+        "12 Foundations Bible Study",
+        "Next Steps - Meet The CACI An Overview",
+        "The Coming Kingdom vs The Rapture",
+        "God's 7th Day Sabbath vs SUNday",
+        "The Biblical Festivals vs The Adopted Pagan Festivals",
+        // "Torah 4 Today - Study through the weekly Torah Portions"
+    };
+
+    protected override void OnInitialized()
+    {
+        Model ??= new();
+        if (string.IsNullOrEmpty(Model.RequestType))
+        {
+            Model.RequestType = DefaultRequestType;
+        }
+
+        if (string.IsNullOrEmpty(Model.Source))
+        {
+            Model.Source = Source;
+        }
+
+        if (string.IsNullOrEmpty(Model.Interest))
+        {
+            Model.Interest = DefaultInterest;
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        isSending = true;
+        sendFailed = false;
+
+        try
+        {
+            // Spam Protection: Block honeypot submissions
+            if (!string.IsNullOrEmpty(Model.Website) || !string.IsNullOrEmpty(Model.Phone))
+            {
+                _logger.LogWarning($"Spam submission blocked via honeypot. Website: {Model.Website}, Phone: {Model.Phone}");
+                // Fake a successful submission to trick the bot
+                submitted = true;
+                return;
+            }
+
+            // Spam Protection: Block specific known spammer name
+            if (!string.IsNullOrEmpty(Model.Name) && Model.Name.Equals("RobertTronS", StringComparison.OrdinalIgnoreCase))
+            {
+                _logger.LogInformation($"Spam submission blocked for name: {Model.Name}");
+                submitted = true;
+                return;
+            }
+
+            if (FormType == "BibleStudy")
+            {
+                await CommunicationService.SubmitBibleStudyAsync(new BibleStudySubmission
+                {
+                    Name = Model.Name,
+                    Email = Model.Email,
+                    CityState = Model.CityState,
+                    Interest = Model.Interest,
+                    AboutYou = Model.AboutYou,
+                    Source = Model.Source
+                });
+            }
+            else
+            {
+                await CommunicationService.SubmitContactAsync(new ContactSubmission
+                {
+                    Name = Model.Name,
+                    Email = Model.Email,
+                    RequestType = Model.RequestType,
+                    Message = Model.Message
+                });
+            }
+
+            submitted = true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error submitting connection form: {ex.Message}");
+            sendFailed = true;
+        }
+        finally
+        {
+            isSending = false;
+        }
+    }
+
+    public class ContactFormModel
+    {
+        [Required(ErrorMessage = "Name is required")]
+        public string? Name { get; set; }
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email address")]
+        public string? Email { get; set; }
+
+        public string? Subject { get; set; }
+        public string RequestType { get; set; } = "";
+        public string? Message { get; set; }
+
+        public string? CityState { get; set; }
+        public string? AboutYou { get; set; }
+        public string? Interest { get; set; }
+        public string? OtherInterest { get; set; }
+        public string? Source { get; set; }
+
+        // Honeypot fields to trap spam bots
+        public string? Website { get; set; }
+        public string? Phone { get; set; }
+    }
+}

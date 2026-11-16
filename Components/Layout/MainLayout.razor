@@ -1,0 +1,28 @@
+@inherits LayoutComponentBase
+@using CACI.Core.Domain.Funnels
+@inject ISubsiteContext SubsiteContext
+
+<div class="page-wrapper">
+    @if (SubsiteContext.IsSubsite)
+    {
+        <SubsiteNavBar />
+    }
+    else
+    {
+        <TopBar />
+        <NavBar />
+    }
+
+    <main>
+        @Body
+    </main>
+
+    @if (SubsiteContext.IsSubsite)
+    {
+        <SubsiteFooter />
+    }
+    else
+    {
+        <Footer />
+    }
+</div>

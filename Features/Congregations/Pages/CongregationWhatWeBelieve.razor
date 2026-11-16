@@ -1,0 +1,1050 @@
+﻿@page "/congregation/{Slug}/what-we-believe"
+@page "/congregation/{Slug}/WhatWeBelieve"
+@page "/congregation/{Slug}/4PillarsInfo"
+@page "/congregation/{Slug}/pillars"
+@layout CongregationLayout
+@using CACI_Life.Core.Domain.Congregations
+@inject ICongregationService CongregationService
+@inject TenantContext TenantContext
+
+<CongregationSeoHead Title="What We Believe | Apostolic Doctrine, Sabbath & The Kingdom of God"
+         Description="@($"Statement of Faith of {_profile.CongregationName}: The original Apostles' doctrine, Acts 2:38 repentance and baptism, the 4 Pillars of apostolic fellowship (Acts 2:42), the Seventh Day Sabbath, biblical feasts, and the coming Kingdom of God on earth.")"
+         Path="@($"/congregation/{_profile.UrlSlug}/what-we-believe")" />
+
+<section class="hero py-16 md:py-20">
+    <div class="max-w-5xl mx-auto px-4 text-center">
+        <span class="badge uppercase tracking-wider mb-4">Statement of Faith &amp; Apostolic Walk</span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">What We Believe</h1>
+        <div class="max-w-3xl mx-auto">
+            <p class="text-xl md:text-2xl text-slate-100 font-head italic mb-4">
+                &ldquo;And this gospel of the kingdom shall be preached in all the world for a witness unto all nations; and then shall the end come.&rdquo;
+            </p>
+            <p class="text-sm font-semibold text-caci-tone3 uppercase tracking-widest">&mdash; Matthew 24:14 (KJV)</p>
+            <p class="mt-6 text-base md:text-lg text-slate-200 leading-relaxed">
+                Jesus / Yeshua said the &ldquo;Gospel of the Kingdom&rdquo; will be proclaimed in all of the world, to be a testimony to all of the nations.
+            </p>
+        </div>
+
+        <!-- Quick Jump Navigation -->
+        <nav aria-label="Belief Topics" class="mt-10 flex flex-wrap justify-center gap-2 md:gap-3 text-sm">
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe#")commission" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">The Great Commission</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe#")why-apostolic" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">Why Apostolic? (4 Pillars)</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe#")doctrine" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">1. Doctrine</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe#")fellowship" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">2. Fellowship &amp; Worship</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe#")breaking-bread" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">3. Breaking Bread</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe#")prayer" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">4. Prayer</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe#")why-covenant" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">Why Covenant?</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe#")law" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">The Law Written on Hearts</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe#")instructions" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 no-underline transition">Kingdom Culture (Torah)</a>
+        </nav>
+    </div>
+</section>
+
+<div class="max-w-5xl mx-auto px-4 py-12 space-y-16">
+
+    <!-- THE GREAT COMMISSION SECTION -->
+    <section id="commission" class="scroll-mt-24">
+        <div class="text-center mb-8">
+            <span class="badge">The Master's Commission</span>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2">The Gospel of the Kingdom</h2>
+            <div class="section-rule mx-auto my-4"></div>
+            <p class="text-slate-600 max-w-2xl mx-auto">
+                Before His ascension, Yeshua commanded His disciples to proclaim repentance, remission of sins, and the culture of the Kingdom to all nations.
+            </p>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-3">
+            <!-- Matthew 28:18-20 -->
+            <article class="card p-6 flex flex-col justify-between border-t-4 border-t-caci-blue">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-bold text-caci-minister font-head text-lg">Matthew 28:18&ndash;20</span>
+                        <a href="https://www.blueletterbible.org/kjv/mat/28/18" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2 hover:underline" aria-label="Matthew 28:18 on Blue Letter Bible">KJV &nearr;</a>
+                    </div>
+                    <blockquote class="text-sm text-slate-700 leading-relaxed scripture-quote">
+                        And Jesus came and spake unto them, saying, <strong class="text-caci-minister">All power is given unto me in heaven and in earth.</strong>
+                        <strong class="font-bold text-caci-blue">19</strong> Go ye therefore, and teach all nations, baptizing them in the name of the Father, and of the Son, and of the Holy Ghost:
+                        <strong class="font-bold text-caci-blue">20</strong> Teaching them to observe all things whatsoever I have commanded you: and, lo, I am with you alway, [even] unto the end of the world. Amen.
+                    </blockquote>
+                </div>
+            </article>
+
+            <!-- Mark 16:15-20 -->
+            <article class="card p-6 flex flex-col justify-between border-t-4 border-t-caci-tone2">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-bold text-caci-minister font-head text-lg">Mark 16:15&ndash;20</span>
+                        <a href="https://www.blueletterbible.org/kjv/mar/16/15" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2 hover:underline" aria-label="Mark 16:15 on Blue Letter Bible">KJV &nearr;</a>
+                    </div>
+                    <blockquote class="text-sm text-slate-700 leading-relaxed scripture-quote">
+                        And he said unto them, <strong class="text-caci-minister">Go ye into all the world, and preach the gospel to every creature.</strong>
+                        <strong class="font-bold text-caci-blue">16</strong> He that believeth and is baptized shall be saved; but he that believeth not shall be damned.
+                        <strong class="font-bold text-caci-blue">17</strong> And these signs shall follow them that believe; In my name shall they cast out devils; they shall speak with new tongues;
+                        <strong class="font-bold text-caci-blue">18</strong> They shall take up serpents; and if they drink any deadly thing, it shall not hurt them; they shall lay hands on the sick, and they shall recover.
+                        <strong class="font-bold text-caci-blue">19</strong> So then after the Lord had spoken unto them, he was received up into heaven, and sat on the right hand of God.
+                        <strong class="font-bold text-caci-blue">20</strong> And they went forth, and preached every where, the Lord working with [them], and confirming the word with signs following. Amen.
+                    </blockquote>
+                </div>
+            </article>
+
+            <!-- Luke 24:44-53 -->
+            <article class="card p-6 flex flex-col justify-between border-t-4 border-t-caci-purple">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-bold text-caci-minister font-head text-lg">Luke 24:44&ndash;53</span>
+                        <a href="https://www.blueletterbible.org/kjv/luk/24/44" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2 hover:underline" aria-label="Luke 24:44 on Blue Letter Bible">KJV &nearr;</a>
+                    </div>
+                    <blockquote class="text-sm text-slate-700 leading-relaxed scripture-quote">
+                        And he said unto them, These [are] the words which I spake unto you, while I was yet with you, that all things must be fulfilled, which were written in the law of Moses, and [in] the prophets, and [in] the psalms, concerning me.
+                        <strong class="font-bold text-caci-blue">45</strong> Then opened he their understanding, that they might understand the scriptures,
+                        <strong class="font-bold text-caci-blue">46</strong> And said unto them, Thus it is written, and thus it behoved Christ to suffer, and to rise from the dead the third day:
+                        <strong class="font-bold text-caci-blue">47</strong> And that repentance and remission of sins should be preached in his name among all nations, beginning at Jerusalem.
+                        <strong class="font-bold text-caci-blue">48</strong> And ye are witnesses of these things.
+                        <strong class="font-bold text-caci-blue">49</strong> And, behold, I send the promise of my Father upon you: but tarry ye in the city of Jerusalem, until ye be endued with power from on high...
+                    </blockquote>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- SECTION 1: WHY APOSTOLIC? -->
+    <section id="why-apostolic" class="scroll-mt-24">
+        <div class="text-center mb-10">
+            <span class="badge">The Foundation of Apostles and Prophets</span>
+            <h2 class="text-3xl md:text-5xl font-bold mt-2">Why Apostolic?</h2>
+            <div class="section-rule mx-auto my-4"></div>
+            <p class="text-lg text-slate-700 max-w-3xl mx-auto">
+                We pattern our congregational life after the first-century assembly of Yeshua's apostles, steadfastly guarding the order, doctrine, fellowship, and supernatural power of the Holy Spirit.
+            </p>
+        </div>
+
+        <!-- Foundational Scripture Banner -->
+        <div class="grid md:grid-cols-2 gap-4 mb-10">
+            <div class="card p-6 bg-parchment border-l-4 border-l-caci-blue">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="font-bold text-caci-minister font-head">1 Corinthians 11:1</span>
+                    <a href="https://www.blueletterbible.org/kjv/1co/11/1" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2 hover:underline">KJV &nearr;</a>
+                </div>
+                <blockquote class="scripture-quote text-slate-800">
+                    &ldquo;Be ye followers of me, even as I also am of Christ.&rdquo;
+                </blockquote>
+            </div>
+
+            <div class="card p-6 bg-parchment border-l-4 border-l-caci-purple">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="font-bold text-caci-minister font-head">Acts 2:42</span>
+                    <a href="https://www.blueletterbible.org/kjv/act/2/42" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2 hover:underline">KJV &nearr;</a>
+                </div>
+                <blockquote class="scripture-quote text-slate-800">
+                    &ldquo;And they continued stedfastly in the apostles' doctrine and fellowship, and in breaking of bread, and in prayers.&rdquo;
+                </blockquote>
+            </div>
+        </div>
+
+        <!-- THE FOUR PILLARS CONTAINER -->
+        <div class="space-y-8">
+
+            <!-- PILLAR 1: DOCTRINE -->
+            <div id="doctrine" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-blue">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-4 mb-6">
+                    <div>
+                        <span class="badge mb-1">Pillar One</span>
+                        <h3 class="text-2xl md:text-3xl font-bold">The Apostles' Doctrine</h3>
+                    </div>
+                    <a href="https://www.blueletterbible.org/kjv/eph/4/4" target="_blank" rel="noopener noreferrer" class="text-sm font-semibold text-caci-tone2 hover:underline">
+                        Ephesians 4:4&ndash;6 (KJV) &nearr;
+                    </a>
+                </div>
+
+                <div class="bg-blue-50/50 border border-blue-100 rounded-lg p-5 mb-6 text-slate-800">
+                    <p class="font-head italic text-base md:text-lg mb-2">
+                        &ldquo;[There is] one body, and one Spirit, even as ye are called in one hope of your calling; One Lord, one faith, one baptism, One God and Father of all, who [is] above all, and through all, and in you all.&rdquo;
+                    </p>
+                    <p class="text-xs font-semibold text-caci-blue uppercase tracking-wider">&mdash; Ephesians 4:4&ndash;6</p>
+                </div>
+
+                <div class="space-y-4">
+
+                    <!-- Sub-Topic: Spirit -->
+                    <details class="faq-item" open>
+                        <summary>
+                            <span class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-blue-100 text-caci-blue flex items-center justify-center font-bold text-sm">1</span>
+                                <span class="text-lg">The Holy Spirit &amp; His Operation</span>
+                            </span>
+                        </summary>
+                        <div class="faq-answer space-y-6 pt-2">
+                            <p class="text-slate-700 leading-relaxed">
+                                The Holy Spirit is very important for a believer. Unfortunately, most of the church world has minimized the Holy Spirit and therefore a lot of people don't understand the significance and the power that is given to us if we embrace it. Jesus / Yeshua said the things He did and greater, we would do.
+                            </p>
+
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-parchment p-4 rounded-lg border border-slate-200">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="font-bold text-caci-minister text-sm">John 14:12</span>
+                                        <a href="https://www.blueletterbible.org/kjv/joh/14/12" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                    </div>
+                                    <p class="text-xs text-slate-700 italic">
+                                        Verily, verily, I say unto you, He that believeth on me, the works that I do shall he do also; and greater [works] than these shall he do; because I go unto my Father.
+                                    </p>
+                                </div>
+
+                                <div class="bg-parchment p-4 rounded-lg border border-slate-200">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="font-bold text-caci-minister text-sm">Mark 16:17&ndash;18</span>
+                                        <a href="https://www.blueletterbible.org/kjv/mar/16/17" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                    </div>
+                                    <p class="text-xs text-slate-700 italic">
+                                        And these signs shall follow them that believe; In my name shall they cast out devils; they shall speak with new tongues; <strong>18</strong> They shall take up serpents; and if they drink any deadly thing, it shall not hurt them; they shall lay hands on the sick, and they shall recover.
+                                    </p>
+                                </div>
+
+                                <div class="bg-parchment p-4 rounded-lg border border-slate-200">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="font-bold text-caci-minister text-sm">Joel 2:28</span>
+                                        <a href="https://www.blueletterbible.org/kjv/joe/2/28" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                    </div>
+                                    <p class="text-xs text-slate-700 italic">
+                                        And it shall come to pass afterward, [that] I will pour out my spirit upon all flesh; and your sons and your daughters shall prophesy, your old men shall dream dreams, your young men shall see visions:
+                                    </p>
+                                </div>
+
+                                <div class="bg-parchment p-4 rounded-lg border border-slate-200">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="font-bold text-caci-minister text-sm">Acts 2:14&ndash;18</span>
+                                        <a href="https://www.blueletterbible.org/kjv/act/2/14" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                    </div>
+                                    <p class="text-xs text-slate-700 italic">
+                                        But Peter, standing up with the eleven, lifted up his voice, and said unto them, Ye men of Judaea, and all ye that dwell at Jerusalem, be this known unto you... <strong>17</strong> And it shall come to pass in the last days, saith God, I will pour out of my Spirit upon all flesh...
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Walk in the Spirit -->
+                            <div class="border-t border-slate-200 pt-4">
+                                <h4 class="font-head font-bold text-lg text-caci-blue mb-3">Walk in the Spirit</h4>
+                                <div class="space-y-3">
+                                    <div class="bg-white p-3 rounded border border-slate-200">
+                                        <span class="font-semibold text-xs text-caci-minister block mb-1">
+                                            <a href="https://www.blueletterbible.org/kjv/gal/5/16" target="_blank" rel="noopener noreferrer">Galatians 5:16 (KJV) &nearr;</a>
+                                        </span>
+                                        <p class="text-xs text-slate-700 italic">
+                                            [This] I say then, Walk in the Spirit, and ye shall not fulfil the lust of the flesh.
+                                        </p>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-slate-200">
+                                        <span class="font-semibold text-xs text-caci-minister block mb-1">
+                                            <a href="https://www.blueletterbible.org/kjv/jer/31/33" target="_blank" rel="noopener noreferrer">Jeremiah 31:33 (KJV) &nearr;</a>
+                                        </span>
+                                        <p class="text-xs text-slate-700 italic">
+                                            But this shall be the covenant that I will make with the house of Israel; After those days, saith the LORD, I will put my law in their inward parts, and write it in their hearts; and will be their God, and they shall be my people.
+                                        </p>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-slate-200">
+                                        <span class="font-semibold text-xs text-caci-minister block mb-1">
+                                            <a href="https://www.blueletterbible.org/kjv/heb/8/10" target="_blank" rel="noopener noreferrer">Hebrews 8:10 (KJV) &nearr;</a>
+                                        </span>
+                                        <p class="text-xs text-slate-700 italic">
+                                            For this is the covenant that I will make with the house of Israel after those days, saith the Lord; I will put my laws into their mind, and write them in their hearts: and I will be to them a God, and they shall be to me a people:
+                                        </p>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-slate-200">
+                                        <span class="font-semibold text-xs text-caci-minister block mb-1">
+                                            <a href="https://www.blueletterbible.org/kjv/eze/36/26" target="_blank" rel="noopener noreferrer">Ezekiel 36:26&ndash;27 (KJV) &nearr;</a>
+                                        </span>
+                                        <p class="text-xs text-slate-700 italic">
+                                            A new heart also will I give you, and a new spirit will I put within you: and I will take away the stony heart out of your flesh, and I will give you an heart of flesh. <strong>27</strong> And I will put my spirit within you, and cause you to walk in my statutes, and ye shall keep my judgments, and do [them].
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fruit of the Spirit -->
+                            <div class="border-t border-slate-200 pt-4">
+                                <h4 class="font-head font-bold text-lg text-caci-blue mb-3">Fruit of the Spirit</h4>
+                                <div class="bg-white p-4 rounded border border-slate-200">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="font-bold text-caci-minister text-sm">Galatians 5:22&ndash;25</span>
+                                        <a href="https://www.blueletterbible.org/kjv/gal/5/22" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                    </div>
+                                    <p class="text-sm text-slate-700 italic">
+                                        But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith, <strong>23</strong> Meekness, temperance: against such there is no law. <strong>24</strong> And they that are Christ's have crucified the flesh with the affections and lusts. <strong>25</strong> If we live in the Spirit, let us also walk in the Spirit.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Spiritual Gifts -->
+                            <div class="border-t border-slate-200 pt-4">
+                                <h4 class="font-head font-bold text-lg text-caci-blue mb-3">Spiritual Gifts</h4>
+                                <div class="bg-white p-4 rounded border border-slate-200">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-caci-minister text-sm">1 Corinthians 12:1&ndash;11</span>
+                                        <a href="https://www.blueletterbible.org/kjv/1co/12/1" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                    </div>
+                                    <p class="text-xs text-slate-700 italic leading-relaxed">
+                                        Now concerning spiritual [gifts], brethren, I would not have you ignorant. <strong>2</strong> Ye know that ye were Gentiles, carried away unto these dumb idols, even as ye were led. <strong>3</strong> Wherefore I give you to understand, that no man speaking by the Spirit of God calleth Jesus accursed: and [that] no man can say that Jesus is the Lord, but by the Holy Ghost. <strong>4</strong> Now there are diversities of gifts, but the same Spirit. <strong>5</strong> And there are differences of administrations, but the same Lord. <strong>6</strong> And there are diversities of operations, but it is the same God which worketh all in all. <strong>7</strong> But the manifestation of the Spirit is given to every man to profit withal. <strong>8</strong> For to one is given by the Spirit the word of wisdom; to another the word of knowledge by the same Spirit; <strong>9</strong> To another faith by the same Spirit; to another the gifts of healing by the same Spirit; <strong>10</strong> To another the working of miracles; to another prophecy; to another discerning of spirits; to another [divers] kinds of tongues; to another the interpretation of tongues: <strong>11</strong> But all these worketh that one and the selfsame Spirit, dividing to every man severally as he will.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Sub-Topic: One Lord -->
+                    <details class="faq-item">
+                        <summary>
+                            <span class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-blue-100 text-caci-blue flex items-center justify-center font-bold text-sm">2</span>
+                                <span class="text-lg">One Lord &mdash; God is One</span>
+                            </span>
+                        </summary>
+                        <div class="faq-answer space-y-4 pt-2">
+                            <p class="text-slate-700 font-semibold">
+                                There is only one God and He is the same Yesterday, Today, and Forever.
+                            </p>
+                            <div class="grid md:grid-cols-3 gap-3">
+                                <div class="bg-parchment p-4 rounded border border-slate-200">
+                                    <span class="font-bold text-caci-minister text-xs block mb-1">
+                                        <a href="https://www.blueletterbible.org/kjv/deu/6/4" target="_blank" rel="noopener noreferrer">Deuteronomy 6:4 (KJV) &nearr;</a>
+                                    </span>
+                                    <p class="text-xs text-slate-700 italic">
+                                        Hear, O Israel: The LORD our God [is] one LORD:
+                                    </p>
+                                </div>
+                                <div class="bg-parchment p-4 rounded border border-slate-200">
+                                    <span class="font-bold text-caci-minister text-xs block mb-1">
+                                        <a href="https://www.blueletterbible.org/kjv/zech/14/9" target="_blank" rel="noopener noreferrer">Zechariah 14:9 (KJV) &nearr;</a>
+                                    </span>
+                                    <p class="text-xs text-slate-700 italic">
+                                        And the LORD shall be king over all the earth: in that day shall there be one LORD, and his name one.
+                                    </p>
+                                </div>
+                                <div class="bg-parchment p-4 rounded border border-slate-200">
+                                    <span class="font-bold text-caci-minister text-xs block mb-1">
+                                        <a href="https://www.blueletterbible.org/kjv/eph/4/6" target="_blank" rel="noopener noreferrer">Ephesians 4:6 (KJV) &nearr;</a>
+                                    </span>
+                                    <p class="text-xs text-slate-700 italic">
+                                        One God and Father of all, who [is] above all, and through all, and in you all.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Sub-Topic: One Faith -->
+                    <details class="faq-item">
+                        <summary>
+                            <span class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-blue-100 text-caci-blue flex items-center justify-center font-bold text-sm">3</span>
+                                <span class="text-lg">One Faith &mdash; The Coming King &amp; His Kingdom</span>
+                            </span>
+                        </summary>
+                        <div class="faq-answer space-y-6 pt-2">
+                            <!-- Preaching the Kingdom -->
+                            <div class="grid md:grid-cols-2 gap-3">
+                                <div class="bg-parchment p-4 rounded border border-slate-200">
+                                    <span class="font-bold text-caci-minister text-xs block mb-1">
+                                        <a href="https://www.blueletterbible.org/kjv/mar/1/14" target="_blank" rel="noopener noreferrer">Mark 1:14&ndash;15 (KJV) &nearr;</a>
+                                    </span>
+                                    <p class="text-xs text-slate-700 italic">
+                                        Now after that John was put in prison, Jesus came into Galilee, preaching the gospel of the kingdom of God, <strong>15</strong> And saying, The time is fulfilled, and the kingdom of God is at hand: repent ye, and believe the gospel.
+                                    </p>
+                                </div>
+                                <div class="bg-parchment p-4 rounded border border-slate-200">
+                                    <span class="font-bold text-caci-minister text-xs block mb-1">
+                                        <a href="https://www.blueletterbible.org/kjv/mat/24/14" target="_blank" rel="noopener noreferrer">Matthew 24:14 (KJV) &nearr;</a>
+                                    </span>
+                                    <p class="text-xs text-slate-700 italic">
+                                        And this gospel of the kingdom shall be preached in all the world for a witness unto all nations; and then shall the end come.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Raising Priestly Nation -->
+                            <div class="border-t border-slate-200 pt-4">
+                                <p class="font-semibold text-caci-blue mb-3">There is a King (Jesus / Yeshua) coming to raise up His priestly nation:</p>
+                                <div class="grid md:grid-cols-2 gap-3">
+                                    <div class="bg-white p-3 rounded border border-slate-200">
+                                        <span class="font-bold text-caci-minister text-xs block mb-1">
+                                            <a href="https://www.blueletterbible.org/kjv/1co/15/51" target="_blank" rel="noopener noreferrer">1 Corinthians 15:51&ndash;53 (KJV) &nearr;</a>
+                                        </span>
+                                        <p class="text-xs text-slate-700 italic">
+                                            Behold, I shew you a mystery; We shall not all sleep, but we shall all be changed, <strong>52</strong> In a moment, in the twinkling of an eye, at the last trump: for the trumpet shall sound, and the dead shall be raised incorruptible, and we shall be changed. <strong>53</strong> For this corruptible must put on incorruption, and this mortal [must] put on immortality.
+                                        </p>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-slate-200">
+                                        <span class="font-bold text-caci-minister text-xs block mb-1">
+                                            <a href="https://www.blueletterbible.org/kjv/1th/4/17" target="_blank" rel="noopener noreferrer">1 Thessalonians 4:17 (KJV) &nearr;</a>
+                                        </span>
+                                        <p class="text-xs text-slate-700 italic">
+                                            Then we which are alive [and] remain shall be caught up together with them in the clouds, to meet the Lord in the air: and so shall we ever be with the Lord.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Kingdom on Earth -->
+                            <div class="border-t border-slate-200 pt-4">
+                                <p class="font-semibold text-caci-blue mb-3">There is a King (Jesus / Yeshua) coming to set up His Kingdom on earth:</p>
+                                <div class="space-y-3">
+                                    <div class="bg-white p-3 rounded border border-slate-200">
+                                        <span class="font-bold text-caci-minister text-xs block mb-1">
+                                            <a href="https://www.blueletterbible.org/kjv/rev/11/15" target="_blank" rel="noopener noreferrer">Revelation 11:15 (KJV) &nearr;</a>
+                                        </span>
+                                        <p class="text-xs text-slate-700 italic">
+                                            And the seventh angel sounded; and there were great voices in heaven, saying, The kingdoms of this world are become [the kingdoms] of our Lord, and of his Christ; and he shall reign for ever and ever.
+                                        </p>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-slate-200">
+                                        <span class="font-bold text-caci-minister text-xs block mb-1">
+                                            <a href="https://www.blueletterbible.org/kjv/rev/20/4" target="_blank" rel="noopener noreferrer">Revelation 20:4&ndash;6 (KJV) &nearr;</a>
+                                        </span>
+                                        <p class="text-xs text-slate-700 italic">
+                                            And I saw thrones, and they sat upon them, and judgment was given unto them: and [I saw] the souls of them that were beheaded for the witness of Jesus, and for the word of God... and they lived and reigned with Christ a thousand years... <strong>6</strong> Blessed and holy [is] he that hath part in the first resurrection: on such the second death hath no power, but they shall be priests of God and of Christ, and shall reign with him a thousand years.
+                                        </p>
+                                    </div>
+                                    <div class="grid md:grid-cols-3 gap-3">
+                                        <div class="bg-white p-3 rounded border border-slate-200">
+                                            <span class="font-bold text-caci-minister text-xs block mb-1">
+                                                <a href="https://www.blueletterbible.org/kjv/psa/115/16" target="_blank" rel="noopener noreferrer">Psalm 115:16 (KJV) &nearr;</a>
+                                            </span>
+                                            <p class="text-xs text-slate-700 italic">
+                                                The heaven, [even] the heavens, [are] the LORD'S: but the earth hath he given to the children of men.
+                                            </p>
+                                        </div>
+                                        <div class="bg-white p-3 rounded border border-slate-200">
+                                            <span class="font-bold text-caci-minister text-xs block mb-1">
+                                                <a href="https://www.blueletterbible.org/kjv/act/1/6" target="_blank" rel="noopener noreferrer">Acts 1:6 (KJV) &nearr;</a>
+                                            </span>
+                                            <p class="text-xs text-slate-700 italic">
+                                                When they therefore were come together, they asked of him, saying, Lord, wilt thou at this time restore again the kingdom to Israel?
+                                            </p>
+                                        </div>
+                                        <div class="bg-white p-3 rounded border border-slate-200">
+                                            <span class="font-bold text-caci-minister text-xs block mb-1">
+                                                <a href="https://www.blueletterbible.org/kjv/mat/5/5" target="_blank" rel="noopener noreferrer">Matthew 5:5 (KJV) &nearr;</a>
+                                            </span>
+                                            <p class="text-xs text-slate-700 italic">
+                                                Blessed [are] the meek: for they shall inherit the earth.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-slate-200">
+                                        <span class="font-bold text-caci-minister text-xs block mb-1">
+                                            <a href="https://www.blueletterbible.org/kjv/1ch/17/11" target="_blank" rel="noopener noreferrer">1 Chronicles 17:11&ndash;14 (KJV) &nearr;</a>
+                                        </span>
+                                        <p class="text-xs text-slate-700 italic">
+                                            And it shall come to pass, when thy days be expired that thou must go [to be] with thy fathers, that I will raise up thy seed after thee, which shall be of thy sons; and I will establish his kingdom. <strong>12</strong> He shall build me an house, and I will stablish his throne for ever. <strong>13</strong> I will be his father, and he shall be my son: and I will not take my mercy away from him... <strong>14</strong> But I will settle him in mine house and in my kingdom for ever: and his throne shall be established for evermore.
+                                        </p>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-slate-200">
+                                        <span class="font-bold text-caci-minister text-xs block mb-1">
+                                            <a href="https://www.blueletterbible.org/kjv/rev/21/1" target="_blank" rel="noopener noreferrer">Revelation 21:1&ndash;3 (KJV) &nearr;</a>
+                                        </span>
+                                        <p class="text-xs text-slate-700 italic">
+                                            And I saw a new heaven and a new earth: for the first heaven and the first earth were passed away; and there was no more sea. <strong>2</strong> And I John saw the holy city, new Jerusalem, coming down from God out of heaven, prepared as a bride adorned for her husband. <strong>3</strong> And I heard a great voice out of heaven saying, Behold, the tabernacle of God [is] with men, and he will dwell with them, and they shall be his people, and God himself shall be with them, [and be] their God.
+                                        </p>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-slate-200">
+                                        <span class="font-bold text-caci-minister text-xs block mb-1">
+                                            <a href="https://www.blueletterbible.org/kjv/eze/37/1" target="_blank" rel="noopener noreferrer">Ezekiel 37:1&ndash;14 &mdash; The Valley of Dry Bones (KJV) &nearr;</a>
+                                        </span>
+                                        <p class="text-xs text-slate-700 italic leading-relaxed">
+                                            The hand of the LORD was upon me, and carried me out in the spirit of the LORD, and set me down in the midst of the valley which [was] full of bones... <strong>11</strong> Then he said unto me, Son of man, these bones are the whole house of Israel: behold, they say, Our bones are dried, and our hope is lost: we are cut off for our parts. <strong>12</strong> Therefore prophesy and say unto them, Thus saith the Lord GOD; Behold, O my people, I will open your graves, and cause you to come up out of your graves, and bring you into the land of Israel. <strong>13</strong> And ye shall know that I [am] the LORD, when I have opened your graves, O my people, and brought you up out of your graves, <strong>14</strong> And shall put my spirit in you, and ye shall live, and I shall place you in your own land: then shall ye know that I the LORD have spoken [it], and performed [it], saith the LORD.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Sub-Topic: One Baptism -->
+                    <details class="faq-item">
+                        <summary>
+                            <span class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-blue-100 text-caci-blue flex items-center justify-center font-bold text-sm">4</span>
+                                <span class="text-lg">One Baptism &mdash; Water &amp; Spirit</span>
+                            </span>
+                        </summary>
+                        <div class="faq-answer space-y-4 pt-2">
+                            <p class="text-slate-700 leading-relaxed">
+                                Through literal water baptism in the name of Jesus / Yeshua, we are adopted into that Kingdom. As a free gift, He then baptizes us with His Spirit. That Spirit is what seals the Creator's Covenant on our heart.
+                            </p>
+                            <div class="bg-white p-4 rounded border border-slate-200">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-caci-minister text-sm">Acts 2:37&ndash;41</span>
+                                    <a href="https://www.blueletterbible.org/kjv/act/2/37" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                </div>
+                                <blockquote class="scripture-quote text-slate-700 text-xs leading-relaxed">
+                                    Now when they heard [this], they were pricked in their heart, and said unto Peter and to the rest of the apostles, Men [and] brethren, what shall we do?
+                                    <strong class="font-bold text-caci-blue">38</strong> Then Peter said unto them, <strong class="text-caci-minister">Repent, and be baptized every one of you in the name of Jesus Christ for the remission of sins, and ye shall receive the gift of the Holy Ghost.</strong>
+                                    <strong class="font-bold text-caci-blue">39</strong> For the promise is unto you, and to your children, and to all that are afar off, [even] as many as the Lord our God shall call.
+                                    <strong class="font-bold text-caci-blue">40</strong> And with many other words did he testify and exhort, saying, Save yourselves from this untoward generation.
+                                    <strong class="font-bold text-caci-blue">41</strong> Then they that gladly received his word were baptized: and the same day there were added [unto them] about three thousand souls.
+                                </blockquote>
+                            </div>
+                        </div>
+                    </details>
+
+                </div>
+            </div>
+
+            <!-- PILLAR 2: FELLOWSHIP -->
+            <div id="fellowship" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-purple">
+                <div class="border-b border-slate-200 pb-4 mb-6">
+                    <span class="badge mb-1">Pillar Two</span>
+                    <h3 class="text-2xl md:text-3xl font-bold">Fellowship &amp; The Order of Assembly</h3>
+                    <p class="text-slate-600 mt-2">The early church was deeply connected, and we believe we should be as well.</p>
+                </div>
+
+                <div class="space-y-4">
+
+                    <!-- One Body -->
+                    <details class="faq-item" open>
+                        <summary>
+                            <span class="text-lg">One Body &mdash; Many Members</span>
+                        </summary>
+                        <div class="faq-answer space-y-4 pt-2">
+                            <div class="space-y-3">
+                                <div class="bg-white p-4 rounded border border-slate-200">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-caci-minister text-sm">1 Corinthians 12:12&ndash;27</span>
+                                        <a href="https://www.blueletterbible.org/kjv/1co/12/12" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                    </div>
+                                    <p class="text-xs text-slate-700 italic leading-relaxed">
+                                        For as the body is one, and hath many members, and all the members of that one body, being many, are one body: so also [is] Christ. <strong>13</strong> For by one Spirit are we all baptized into one body, whether [we be] Jews or Gentiles, whether [we be] bond or free; and have been all made to drink into one Spirit. <strong>14</strong> For the body is not one member, but many... <strong>26</strong> And whether one member suffer, all the members suffer with it; or one member be honoured, all the members rejoice with it. <strong>27</strong> Now ye are the body of Christ, and members in particular.
+                                    </p>
+                                </div>
+                                <div class="bg-white p-4 rounded border border-slate-200">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-caci-minister text-sm">Ephesians 4:1&ndash;4</span>
+                                        <a href="https://www.blueletterbible.org/kjv/Eph/4/1" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                    </div>
+                                    <p class="text-xs text-slate-700 italic">
+                                        I therefore, the prisoner of the Lord, beseech you that ye walk worthy of the vocation wherewith ye are called, <strong>2</strong> With all lowliness and meekness, with longsuffering, forbearing one another in love; <strong>3</strong> Endeavouring to keep the unity of the Spirit in the bond of peace. <strong>4</strong> [There is] one body, and one Spirit, even as ye are called in one hope of your calling;
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Ministers of the Body -->
+                    <details class="faq-item">
+                        <summary>
+                            <span class="text-lg">Ministers of the Body &mdash; Apostolic Structure</span>
+                        </summary>
+                        <div class="faq-answer space-y-4 pt-2">
+                            <div class="space-y-3">
+                                <div class="bg-white p-4 rounded border border-slate-200">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-caci-minister text-sm">1 Corinthians 12:27&ndash;31</span>
+                                        <a href="https://www.blueletterbible.org/kjv/1co/12/27" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                    </div>
+                                    <p class="text-xs text-slate-700 italic leading-relaxed">
+                                        Now ye are the body of Christ, and members in particular. <strong>28</strong> And God hath set some in the church, first apostles, secondarily prophets, thirdly teachers, after that miracles, then gifts of healings, helps, governments, diversities of tongues. <strong>29</strong> [Are] all apostles? [are] all prophets? [are] all teachers? [are] all workers of miracles? <strong>30</strong> Have all the gifts of healing? do all speak with tongues? do all interpret? <strong>31</strong> But covet earnestly the best gifts: and yet shew I unto you a more excellent way.
+                                    </p>
+                                </div>
+                                <div class="bg-white p-4 rounded border border-slate-200">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold text-caci-minister text-sm">Ephesians 4:11&ndash;16</span>
+                                        <a href="https://www.blueletterbible.org/kjv/Eph/4/11" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                    </div>
+                                    <p class="text-xs text-slate-700 italic leading-relaxed">
+                                        And he gave some, apostles; and some, prophets; and some, evangelists; and some, pastors and teachers; <strong>12</strong> For the perfecting of the saints, for the work of the ministry, for the edifying of the body of Christ: <strong>13</strong> Till we all come in the unity of the faith, and of the knowledge of the Son of God, unto a perfect man, unto the measure of the stature of the fulness of Christ...
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Gifts of the Body -->
+                    <details class="faq-item">
+                        <summary>
+                            <span class="text-lg">Gifts of the Body &mdash; Prophecy &amp; Tongues</span>
+                        </summary>
+                        <div class="faq-answer space-y-4 pt-2">
+                            <div class="bg-white p-4 rounded border border-slate-200">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-caci-minister text-sm">1 Corinthians 14:1&ndash;25</span>
+                                    <a href="https://www.blueletterbible.org/kjv/1co/14/1" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                </div>
+                                <p class="text-xs text-slate-700 italic leading-relaxed">
+                                    Follow after charity, and desire spiritual [gifts], but rather that ye may prophesy... <strong>3</strong> But he that prophesieth speaketh unto men [to] edification, and exhortation, and comfort... <strong>12</strong> Even so ye, forasmuch as ye are zealous of spiritual [gifts], seek that ye may excel to the edifying of the church.
+                                </p>
+                            </div>
+
+                            <p class="font-semibold text-caci-minister text-sm">The partially revealed Spiritual gifts are in use until Yeshua / Jesus returns:</p>
+                            <div class="grid md:grid-cols-2 gap-3">
+                                <div class="bg-parchment p-3 rounded border border-slate-200">
+                                    <span class="font-bold text-caci-minister text-xs block mb-1">
+                                        <a href="https://www.blueletterbible.org/kjv/1co/13/8" target="_blank" rel="noopener noreferrer">1 Corinthians 13:8&ndash;12 (KJV) &nearr;</a>
+                                    </span>
+                                    <p class="text-xs text-slate-700 italic">
+                                        Charity never faileth: but whether [there be] prophecies, they shall fail; whether [there be] tongues, they shall cease; whether [there be] knowledge, it shall vanish away. <strong>9</strong> For we know in part, and we prophesy in part. <strong>10</strong> But when that which is perfect is come, then that which is in part shall be done away... <strong>12</strong> For now we see through a glass, darkly; but then face to face...
+                                    </p>
+                                </div>
+                                <div class="bg-parchment p-3 rounded border border-slate-200">
+                                    <span class="font-bold text-caci-minister text-xs block mb-1">
+                                        <a href="https://www.blueletterbible.org/kjv/1co/14/12" target="_blank" rel="noopener noreferrer">1 Corinthians 14:12&ndash;15 (KJV) &nearr;</a>
+                                    </span>
+                                    <p class="text-xs text-slate-700 italic">
+                                        Even so ye, forasmuch as ye are zealous of spiritual gifts, seek that ye may excel to the edifying of the church... <strong>15</strong> What is it then? I will pray with the spirit, and I will pray with the understanding also: I will sing with the spirit, and I will sing with the understanding also.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- When the Body Comes Together -->
+                    <details class="faq-item">
+                        <summary>
+                            <span class="text-lg">When the Body Comes Together &mdash; Why We Worship</span>
+                        </summary>
+                        <div class="faq-answer space-y-6 pt-2">
+                            <div class="bg-white p-4 rounded border border-slate-200 space-y-3">
+                                <div>
+                                    <span class="font-bold text-caci-minister text-xs block">
+                                        <a href="https://www.blueletterbible.org/kjv/col/3/15" target="_blank" rel="noopener noreferrer">Colossians 3:15&ndash;16 (KJV) &nearr;</a>
+                                    </span>
+                                    <p class="text-xs text-slate-700 italic">
+                                        And let the peace of God rule in your hearts, to the which also ye are called in one body; and be ye thankful. <strong>16</strong> Let the word of Christ dwell in you richly in all wisdom; teaching and admonishing one another in psalms and hymns and spiritual songs, singing with grace in your hearts to the Lord.
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="font-bold text-caci-minister text-xs block">
+                                        <a href="https://www.blueletterbible.org/kjv/1co/14/26" target="_blank" rel="noopener noreferrer">1 Corinthians 14:26&ndash;33, 39&ndash;40 (KJV) &nearr;</a>
+                                    </span>
+                                    <p class="text-xs text-slate-700 italic">
+                                        How is it then, brethren? when ye come together, every one of you hath a psalm, hath a doctrine, hath a tongue, hath a revelation, hath an interpretation. Let all things be done unto edifying... <strong>33</strong> For God is not [the author] of confusion, but of peace, as in all churches of the saints... <strong>40</strong> Let all things be done decently and in order.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Worship Reasons Cards -->
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="card p-4">
+                                    <h4 class="font-bold text-caci-minister text-sm mb-1">We sing because...</h4>
+                                    <p class="text-xs text-slate-700 italic">
+                                        &ldquo;Praise ye the LORD. Sing unto the LORD a new song, [and] his praise in the congregation of saints.&rdquo;
+                                        <span class="font-semibold block text-caci-tone2 mt-1">Psalm 149:1&ndash;4 &amp; Psalm 150</span>
+                                    </p>
+                                </div>
+
+                                <div class="card p-4">
+                                    <h4 class="font-bold text-caci-minister text-sm mb-1">We lift our hands in praise because...</h4>
+                                    <p class="text-xs text-slate-700 italic">
+                                        &ldquo;Lift up your hands [in] the sanctuary, and bless the LORD.&rdquo;
+                                        <span class="font-semibold block text-caci-tone2 mt-1">Psalm 134:2</span>
+                                    </p>
+                                </div>
+
+                                <div class="card p-4">
+                                    <h4 class="font-bold text-caci-minister text-sm mb-1">We clap and shout because...</h4>
+                                    <p class="text-xs text-slate-700 italic">
+                                        &ldquo;O clap your hands, all ye people; shout unto God with the voice of triumph.&rdquo;
+                                        <span class="font-semibold block text-caci-tone2 mt-1">Psalm 47:1</span>
+                                    </p>
+                                </div>
+
+                                <div class="card p-4">
+                                    <h4 class="font-bold text-caci-minister text-sm mb-1">We dance because...</h4>
+                                    <p class="text-xs text-slate-700 italic">
+                                        &ldquo;Rejoice evermore... Let them praise his name in the dance: let them sing praises unto him with the timbrel and harp.&rdquo;
+                                        <span class="font-semibold block text-caci-tone2 mt-1">1 Thessalonians 5:16, Psalm 149:3, Psalm 150:4</span>
+                                    </p>
+                                </div>
+
+                                <div class="card p-4">
+                                    <h4 class="font-bold text-caci-minister text-sm mb-1">We lay hands because...</h4>
+                                    <p class="text-xs text-slate-700 italic">
+                                        &ldquo;Is any sick among you? let him call for the elders of the church; and let them pray over him, anointing him with oil in the name of the Lord... and the prayer of faith shall save the sick...&rdquo;
+                                        <span class="font-semibold block text-caci-tone2 mt-1">James 5:13&ndash;16, Acts 28:8</span>
+                                    </p>
+                                </div>
+
+                                <div class="card p-4">
+                                    <h4 class="font-bold text-caci-minister text-sm mb-1">We seek the operation of the Spirit because...</h4>
+                                    <p class="text-xs text-slate-700 italic">
+                                        &ldquo;Now concerning spiritual [gifts], brethren, I would not have you ignorant... But the manifestation of the Spirit is given to every man to profit withal.&rdquo;
+                                        <span class="font-semibold block text-caci-tone2 mt-1">1 Corinthians 12:1&ndash;11</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="card p-4 border-l-4 border-l-caci-blue">
+                                <h4 class="font-bold text-caci-minister text-sm mb-1">We study because...</h4>
+                                <p class="text-xs text-slate-700 italic leading-relaxed">
+                                    &ldquo;Study to shew thyself approved unto God, a workman that needeth not to be ashamed, rightly dividing the word of truth.&rdquo;
+                                    <span class="font-semibold block text-caci-tone2 mt-1">2 Timothy 2:15, Matthew 28:19&ndash;20, Romans 10:14&ndash;15, 2 Timothy 3:16</span>
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+
+                </div>
+            </div>
+
+            <!-- PILLAR 3: BREAKING BREAD -->
+            <div id="breaking-bread" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-red">
+                <div class="border-b border-slate-200 pb-4 mb-6">
+                    <span class="badge mb-1">Pillar Three</span>
+                    <h3 class="text-2xl md:text-3xl font-bold">Breaking Bread &mdash; The Table of the Lord</h3>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-parchment p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-head font-bold text-lg text-caci-blue mb-2">Community &amp; Fellowship Meals</h4>
+                            <p class="text-slate-700 text-sm leading-relaxed">
+                                Literally eating a meal together and building the community and family of Christ.
+                            </p>
+                        </div>
+                        <div class="bg-parchment p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-head font-bold text-lg text-caci-blue mb-2">The Lord's Table (Communion)</h4>
+                            <p class="text-slate-700 text-sm leading-relaxed">
+                                The bread and the cup instituted by Messiah as the New Covenant in His blood, continually showing forth His death until He comes.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-caci-minister text-sm">Luke 22:17&ndash;20 (KJV)</span>
+                                <a href="https://www.blueletterbible.org/kjv/luk/22/17" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                            </div>
+                            <p class="text-xs text-slate-700 italic">
+                                And he took the cup, and gave thanks, and said, Take this, and divide [it] among yourselves: <strong>18</strong> For I say unto you, I will not drink of the fruit of the vine, until the kingdom of God shall come. <strong>19</strong> And he took bread, and gave thanks, and brake [it], and gave unto them, saying, This is my body which is given for you: this do in remembrance of me. <strong>20</strong> Likewise also the cup after supper, saying, This cup [is] the new testament in my blood, which is shed for you.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-caci-minister text-sm">1 Corinthians 11:24&ndash;26 (KJV)</span>
+                                <a href="https://www.blueletterbible.org/kjv/1co/11/24" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                            </div>
+                            <p class="text-xs text-slate-700 italic">
+                                And when he had given thanks, he brake [it], and said, Take, eat: this is my body, which is broken for you: this do in remembrance of me. <strong>25</strong> After the same manner also [he took] the cup, when he had supped, saying, This cup is the new testament in my blood: this do ye, as oft as ye drink [it], in remembrance of me. <strong>26</strong> For as often as ye eat this bread, and drink this cup, ye do shew the Lord's death till he come.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-caci-minister text-sm">1 Corinthians 10:16&ndash;17 (KJV)</span>
+                                <a href="https://www.blueletterbible.org/kjv/1co/10/16" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                            </div>
+                            <p class="text-xs text-slate-700 italic">
+                                The cup of blessing which we bless, is it not the communion of the blood of Christ? The bread which we break, is it not the communion of the body of Christ? <strong>17</strong> For we [being] many are one bread, [and] one body: for we are all partakers of that one bread.
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-3">
+                            <div class="bg-white p-3 rounded border border-slate-200">
+                                <span class="font-bold text-caci-minister text-xs block mb-1">
+                                    <a href="https://www.blueletterbible.org/kjv/exo/29/38" target="_blank" rel="noopener noreferrer">Exodus 29:38&ndash;42 (KJV) &nearr;</a>
+                                </span>
+                                <p class="text-xs text-slate-700 italic">
+                                    Now this is that which thou shalt offer upon the altar; two lambs of the first year day by day continually... with a tenth deal of flour mingled with beaten oil; and the fourth part of an hin of wine for a drink offering... a continual burnt offering throughout your generations at the door of the tabernacle...
+                                </p>
+                            </div>
+                            <div class="bg-white p-3 rounded border border-slate-200">
+                                <span class="font-bold text-caci-minister text-xs block mb-1">
+                                    <a href="https://www.blueletterbible.org/kjv/lev/24/5" target="_blank" rel="noopener noreferrer">Leviticus 24:5&ndash;9 (KJV) &nearr;</a>
+                                </span>
+                                <p class="text-xs text-slate-700 italic">
+                                    And thou shalt take fine flour, and bake twelve cakes thereof... And thou shalt set them in two rows, six on a row, upon the pure table before the LORD... Every sabbath he shall set it in order before the LORD continually, being taken from the children of Israel by an everlasting covenant.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PILLAR 4: PRAYER -->
+            <div id="prayer" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-tone2">
+                <div class="border-b border-slate-200 pb-4 mb-6">
+                    <span class="badge mb-1">Pillar Four</span>
+                    <h3 class="text-2xl md:text-3xl font-bold">Prayers Without Ceasing</h3>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-parchment p-4 rounded-lg border border-slate-200">
+                            <span class="font-bold text-caci-minister text-sm block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/1th/5/17" target="_blank" rel="noopener noreferrer">1 Thessalonians 5:17 (KJV) &nearr;</a>
+                            </span>
+                            <blockquote class="scripture-quote text-slate-800 text-sm">
+                                &ldquo;Pray without ceasing.&rdquo;
+                            </blockquote>
+                        </div>
+                        <div class="bg-parchment p-4 rounded-lg border border-slate-200">
+                            <span class="font-bold text-caci-minister text-sm block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/1ti/2/8" target="_blank" rel="noopener noreferrer">1 Timothy 2:8 (KJV) &nearr;</a>
+                            </span>
+                            <blockquote class="scripture-quote text-slate-800 text-sm">
+                                &ldquo;I will therefore that men pray every where, lifting up holy hands, without wrath and doubting.&rdquo;
+                            </blockquote>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-200 pt-4">
+                        <h4 class="font-head font-bold text-lg text-caci-blue mb-3">Praying in the Spirit</h4>
+                        <div class="space-y-3">
+                            <div class="bg-white p-4 rounded border border-slate-200">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-bold text-caci-minister text-sm">Romans 8:26&ndash;27 (KJV)</span>
+                                    <a href="https://www.blueletterbible.org/kjv/rom/8/26" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                </div>
+                                <p class="text-xs text-slate-700 italic">
+                                    Likewise the Spirit also helpeth our infirmities: for we know not what we should pray for as we ought: but the Spirit itself maketh intercession for us with groanings which cannot be uttered. <strong>27</strong> And he that searcheth the hearts knoweth what [is] the mind of the Spirit, because he maketh intercession for the saints according to [the will of] God.
+                                </p>
+                            </div>
+                            <div class="bg-white p-4 rounded border border-slate-200">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-bold text-caci-minister text-sm">1 Corinthians 14:14&ndash;15 (KJV)</span>
+                                    <a href="https://www.blueletterbible.org/kjv/1co/14/14" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                                </div>
+                                <p class="text-xs text-slate-700 italic">
+                                    For if I pray in an [unknown] tongue, my spirit prayeth, but my understanding is unfruitful. <strong>15</strong> What is it then? I will pray with the spirit, and I will pray with the understanding also: I will sing with the spirit, and I will sing with the understanding also.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 2: WHY COVENANT? -->
+    <section id="why-covenant" class="scroll-mt-24 pt-8">
+        <div class="text-center mb-10">
+            <span class="badge">A Whole Bible, New Covenant Assembly</span>
+            <h2 class="text-3xl md:text-5xl font-bold mt-2">Why Covenant?</h2>
+            <div class="section-rule mx-auto my-4"></div>
+            <p class="text-lg text-slate-700 max-w-3xl mx-auto">
+                We believe the New Covenant is God's eternal Law written upon human hearts by the Holy Spirit, accompanied by the wise Torah instructions that define the royal priesthood and culture of the Kingdom.
+            </p>
+        </div>
+
+        <div class="space-y-8">
+
+            <!-- LAW: THE TEN COMMANDMENTS WRITTEN IN OUR HEARTS -->
+            <div id="law" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-blue">
+                <div class="border-b border-slate-200 pb-4 mb-6">
+                    <span class="badge mb-1">New Covenant Reality</span>
+                    <h3 class="text-2xl md:text-3xl font-bold">The Law &mdash; Written in Our Hearts</h3>
+                    <p class="text-slate-800 font-semibold mt-3 text-base md:text-lg">
+                        With the baptism of the Holy Spirit, His Covenant (the Law / Ten Commandments) is written in our heart.
+                    </p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <span class="font-bold text-caci-minister text-sm block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/Jer/31/33" target="_blank" rel="noopener noreferrer">Jeremiah 31:33 (KJV) &nearr;</a>
+                            </span>
+                            <p class="text-xs text-slate-700 italic">
+                                But this [shall be] the covenant that I will make with the house of Israel; After those days, saith the LORD, I will put my law in their inward parts, and write it in their hearts; and will be their God, and they shall be my people.
+                            </p>
+                        </div>
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <span class="font-bold text-caci-minister text-sm block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/heb/8/10" target="_blank" rel="noopener noreferrer">Hebrews 8:10 (KJV) &nearr;</a>
+                            </span>
+                            <p class="text-xs text-slate-700 italic">
+                                For this [is] the covenant that I will make with the house of Israel after those days, saith the Lord; I will put my laws into their mind, and write them in their hearts: and I will be to them a God, and they shall be to me a people:
+                            </p>
+                        </div>
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <span class="font-bold text-caci-minister text-sm block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/heb/10/16" target="_blank" rel="noopener noreferrer">Hebrews 10:16 (KJV) &nearr;</a>
+                            </span>
+                            <p class="text-xs text-slate-700 italic">
+                                This [is] the covenant that I will make with them after those days, saith the Lord, I will put my laws into their hearts, and in their minds will I write them;
+                            </p>
+                        </div>
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <span class="font-bold text-caci-minister text-sm block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/2co/3/1" target="_blank" rel="noopener noreferrer">2 Corinthians 3:1&ndash;6 (KJV) &nearr;</a>
+                            </span>
+                            <p class="text-xs text-slate-700 italic">
+                                ...manifestly declared to be the epistle of Christ ministered by us, written not with ink, but with the Spirit of the living God; not in tables of stone, but in fleshy tables of the heart... Who also hath made us able ministers of the new testament; not of the letter, but of the spirit...
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <span class="font-bold text-caci-minister text-sm block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/eze/36/26" target="_blank" rel="noopener noreferrer">Ezekiel 36:26&ndash;27 (KJV) &nearr;</a>
+                            </span>
+                            <p class="text-xs text-slate-700 italic">
+                                A new heart also will I give you, and a new spirit will I put within you: and I will take away the stony heart out of your flesh, and I will give you an heart of flesh. <strong>27</strong> And I will put my spirit within you, and cause you to walk in my statutes, and ye shall keep my judgments, and do [them].
+                            </p>
+                        </div>
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <span class="font-bold text-caci-minister text-sm block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/eze/11/19" target="_blank" rel="noopener noreferrer">Ezekiel 11:19 (KJV) &nearr;</a>
+                            </span>
+                            <p class="text-xs text-slate-700 italic">
+                                And I will give them one heart, and I will put a new spirit within you; and I will take the stony heart out of their flesh, and will give them an heart of flesh:
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <div class="bg-white p-3 rounded border border-slate-200">
+                            <span class="font-bold text-caci-minister text-xs block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/jer/32/39" target="_blank" rel="noopener noreferrer">Jeremiah 32:39&ndash;40 (KJV) &nearr;</a>
+                            </span>
+                            <p class="text-xs text-slate-700 italic">
+                                And I will give them one heart, and one way, that they may fear me for ever, for the good of them, and of their children after them: <strong>40</strong> And I will make an everlasting covenant with them...
+                            </p>
+                        </div>
+                        <div class="bg-white p-3 rounded border border-slate-200">
+                            <span class="font-bold text-caci-minister text-xs block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/deu/10/16" target="_blank" rel="noopener noreferrer">Deuteronomy 10:16 (KJV) &nearr;</a>
+                            </span>
+                            <p class="text-xs text-slate-700 italic">
+                                Circumcise therefore the foreskin of your heart, and be no more stiffnecked.
+                            </p>
+                        </div>
+                        <div class="bg-white p-3 rounded border border-slate-200">
+                            <span class="font-bold text-caci-minister text-xs block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/1co/7/19" target="_blank" rel="noopener noreferrer">1 Corinthians 7:19 (KJV) &nearr;</a>
+                            </span>
+                            <p class="text-xs text-slate-700 italic">
+                                Circumcision is nothing, and uncircumcision is nothing, but the keeping of the commandments of God.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <span class="font-bold text-caci-minister text-sm block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/deu/4/10" target="_blank" rel="noopener noreferrer">Deuteronomy 4:10&ndash;13 (KJV) &nearr;</a>
+                            </span>
+                            <p class="text-xs text-slate-700 italic">
+                                Specially the day that thou stoodest before the LORD thy God in Horeb... <strong>13</strong> And he declared unto you his covenant, which he commanded you to perform, even ten commandments; and he wrote them upon two tables of stone.
+                            </p>
+                        </div>
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <span class="font-bold text-caci-minister text-sm block mb-1">
+                                <a href="https://www.blueletterbible.org/kjv/psa/103/17" target="_blank" rel="noopener noreferrer">Psalm 103:17&ndash;18 (KJV) &nearr;</a>
+                            </span>
+                            <p class="text-xs text-slate-700 italic">
+                                But the mercy of the LORD is from everlasting to everlasting upon them that fear him, and his righteousness unto children's children; <strong>18</strong> To such as keep his covenant, and to those that remember his commandments to do them.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INSTRUCTIONS: TORAH & KINGDOM CULTURE -->
+            <div id="instructions" class="card p-6 md:p-8 scroll-mt-24 border-l-8 border-l-caci-purple">
+                <div class="border-b border-slate-200 pb-4 mb-6">
+                    <span class="badge mb-1">Royal Priesthood &amp; Holy Nation</span>
+                    <h3 class="text-2xl md:text-3xl font-bold">Instructions &mdash; The Culture of the Kingdom</h3>
+                </div>
+
+                <div class="bg-purple-50/60 border border-purple-100 rounded-lg p-5 mb-6 text-slate-800 leading-relaxed text-sm md:text-base">
+                    <p>
+                        We believe the rest of the Torah, including the law of Moses, is full of wise instruction from our heavenly Father. There are many types and shadows and allegories that point to our Lord Jesus / Yeshua. Many aspects of Torah teach us how to love God and how to love our neighbor. Other aspects paint a beautiful picture of our Messiah. It contains the priestly instructions to set us apart as His royal priesthood, His Holy nation.
+                    </p>
+                    <p class="mt-3 font-semibold text-caci-minister">
+                        It instructs us in the <span class="underline decoration-caci-purple decoration-2">culture</span> of His coming Kingdom. God's Kingdom has a culture just like this present world has a culture. We are to be set apart from this world and these instructions from God teach us how to be set apart.
+                    </p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-white p-4 rounded border border-slate-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-caci-minister text-sm">Galatians 3:19&ndash;21 (KJV)</span>
+                            <a href="https://www.blueletterbible.org/kjv/GAl/3/19" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                        </div>
+                        <p class="text-xs text-slate-700 italic leading-relaxed">
+                            Wherefore then serveth the law? It was added because of transgressions, till the seed should come to whom the promise was made; and it was ordained by angels in the hand of a mediator. <strong>20</strong> Now a mediator is not a mediator of one, but God is one. <strong>21</strong> Is the law then against the promises of God? God forbid: for if there had been a law given which could have given life, verily righteousness should have been by the law.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded border border-slate-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-caci-minister text-sm">1 Peter 2:1&ndash;10 &mdash; A Royal Priesthood (KJV)</span>
+                            <a href="https://www.blueletterbible.org/kjv/1pe/2/1" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                        </div>
+                        <p class="text-xs text-slate-700 italic leading-relaxed">
+                            Wherefore laying aside all malice, and all guile, and hypocrisies, and envies, and all evil speakings, <strong>2</strong> As newborn babes, desire the sincere milk of the word, that ye may grow thereby... <strong>5</strong> Ye also, as lively stones, are built up a spiritual house, an holy priesthood, to offer up spiritual sacrifices, acceptable to God by Jesus Christ... <strong>9</strong> <strong class="text-caci-minister">But ye [are] a chosen generation, a royal priesthood, an holy nation, a peculiar people; that ye should shew forth the praises of him who hath called you out of darkness into his marvellous light:</strong> <strong>10</strong> Which in time past [were] not a people, but [are] now the people of God: which had not obtained mercy, but now have obtained mercy.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-bold text-caci-minister text-sm">Exodus 19:3&ndash;8 (KJV)</span>
+                                <a href="https://www.blueletterbible.org/kjv/exo/19/3" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                            </div>
+                            <p class="text-xs text-slate-700 italic">
+                                And Moses went up unto God, and the LORD called unto him out of the mountain, saying, Thus shalt thou say to the house of Jacob, and tell the children of Israel... <strong>5</strong> Now therefore, if ye will obey my voice indeed, and keep my covenant, then ye shall be a peculiar treasure unto me above all people... <strong>6</strong> And ye shall be unto me a kingdom of priests, and an holy nation...
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded border border-slate-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-bold text-caci-minister text-sm">Deuteronomy 26:17&ndash;19 (KJV)</span>
+                                <a href="https://www.blueletterbible.org/kjv/deu/26/17" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                            </div>
+                            <p class="text-xs text-slate-700 italic">
+                                Thou hast avouched the LORD this day to be thy God, and to walk in his ways, and to keep his statutes, and his commandments, and his judgments, and to hearken unto his voice: <strong>18</strong> And the LORD hath avouched thee this day to be his peculiar people... and to make thee high above all nations which he hath made, in praise, and in name, and in honour; and that thou mayest be an holy people unto the LORD thy God, as he hath spoken.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded border border-slate-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-caci-minister text-sm">Revelation 1:5&ndash;6 (KJV)</span>
+                            <a href="https://www.blueletterbible.org/kjv/rev/1/5" target="_blank" rel="noopener noreferrer" class="text-xs text-caci-tone2">KJV &nearr;</a>
+                        </div>
+                        <p class="text-xs text-slate-700 italic">
+                            And from Jesus Christ, [who is] the faithful witness, [and] the first begotten of the dead, and the prince of the kings of the earth. Unto him that loved us, and washed us from our sins in his own blood, <strong>6</strong> And hath made us kings and priests unto God and his Father; to him [be] glory and dominion for ever and ever. Amen.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CALL TO FELLOWSHIP & STUDY -->
+    <section class="scripture-card text-center p-8 md:p-12">
+        <span class="label">WALK WITH US IN TRUTH</span>
+        <h3 class="text-2xl md:text-4xl font-bold font-head text-white mt-2 mb-4">Grow in the Whole Counsel of God</h3>
+        <p class="text-slate-200 max-w-2xl mx-auto text-sm md:text-base mb-6 leading-relaxed">
+            Whether you are exploring the Hebrew roots of the faith, seeking the baptism of the Holy Ghost, or longing for deep, biblical community, we welcome you.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="@($"/congregation/{_profile.UrlSlug}/foundations")" class="btn-primary">Explore 12 Foundations Bible Study</a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/connect?")from=What%20We%20Believe%20Page" class="btn-secondary">Connect With Us</a>
+        </div>
+    </section>
+
+</div>
+
+@code {
+    [Parameter] public string Slug { get; set; } = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Slug))
+        {
+            TenantContext.SetSlug(Slug);
+        }
+        _profile = await CongregationService.GetCurrentAsync();
+    }
+
+    private CongregationProfile _profile = new();
+
+    // Blazor Static Server-Side Rendering (Static SSR). Fully pre-rendered for search engines.
+}
+
+

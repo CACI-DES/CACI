@@ -1,0 +1,260 @@
+@page "/feastevent"
+@page "/feastevent/{EventId:int}"
+@page "/schedule"
+@page "/schedule/{EventId:int}"
+
+@using CACI_Life.Features.Events
+@using CACI_Life.Features.Events.Models
+@using Microsoft.JSInterop
+@inject IEventsRepository EventsRepo
+@inject IJSRuntime JSRuntime
+
+<PageTitle>@(ActiveConference?.Title ?? "Event Schedule") - CACI</PageTitle>
+
+<section class="bg-gray-100 py-12" id="schedule">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+        @if (IsLoading)
+        {
+            <!-- Loading Skeleton -->
+            <div class="text-center py-16">
+                <div class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-medium border-r-transparent align-[-0.125em]"></div>
+                <p class="mt-4 text-lg font-semibold text-gray-600">Loading schedule...</p>
+            </div>
+        }
+        else if (ActiveConference == null || !ActiveConference.IsActive || !GroupedSessions.Any())
+        {
+            <!-- Empty State / No Active Event Available -->
+            <div class="mx-auto max-w-2xl rounded-2xl bg-white p-8 sm:p-12 text-center shadow-lg border-t-4 border-medium my-12">
+                <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-blue-50 text-medium">
+                    <i class="fas fa-calendar-alt text-4xl"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-dark mb-4">Event Schedule</h2>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    No current event schedule is available at this time, schedule will be updated as we come closer to the next event.
+                </p>
+
+                @if (!string.IsNullOrWhiteSpace(EventsRepo.LastError))
+                {
+                    <div class="mt-6 p-4 bg-gray-50 text-gray-700 text-xs font-mono rounded-lg text-left border border-gray-200">
+                        <strong class="text-gray-900 block mb-1">Database Diagnostic Info:</strong>
+                        @EventsRepo.LastError
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Hero Banner Header for Active Event -->
+            <div class="text-center mb-12">
+                @if (!string.IsNullOrWhiteSpace(ActiveConference.ImageUrl))
+                {
+                    <img src="@ActiveConference.ImageUrl" alt="@ActiveConference.Title" class="mx-auto max-w-md w-full h-auto rounded-xl shadow-lg mb-6" />
+                }
+                <h2 class="text-4xl sm:text-5xl font-extrabold text-dark">@ActiveConference.Title</h2>
+                
+                <p class="text-xl sm:text-2xl font-semibold text-medium mt-2">
+                    @FormatDateRange(ActiveConference.StartDate, ActiveConference.EndDate)
+                    @if (!string.IsNullOrWhiteSpace(ActiveConference.Location))
+                    {
+                        <span> • @ActiveConference.Location</span>
+                    }
+                </p>
+                
+                @if (!string.IsNullOrWhiteSpace(ActiveConference.Description))
+                {
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto mt-3">@ActiveConference.Description</p>
+                }
+            </div>
+
+            <!-- Schedule Days -->
+            <div class="mx-auto max-w-4xl space-y-8">
+                @foreach (var dayGroup in GroupedSessions)
+                {
+                    var isToday = dayGroup.Key.Date == DateTime.Today;
+                    var dayElementId = $"day-{dayGroup.Key:yyyy-MM-dd}";
+
+                    <div id="@dayElementId" class="schedule-day rounded-xl border-t-4 @(isToday ? "border-amber-500 ring-2 ring-amber-400" : "border-medium") bg-white p-6 shadow-lg sm:p-8 transition hover:shadow-xl">
+                        <h3 class="mb-6 text-2xl font-bold text-medium border-b pb-2 flex items-center justify-between">
+                            <span>@FormatDayHeader(dayGroup.Key)</span>
+                            @if (isToday)
+                            {
+                                <span class="text-xs bg-amber-500 text-white px-3 py-1 rounded-full font-semibold uppercase tracking-wider">Today</span>
+                            }
+                        </h3>
+
+                        <div class="space-y-4">
+                            @foreach (var session in dayGroup)
+                            {
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 pl-4 border-l-2 border-gray-200">
+                                    <div class="text-sm font-bold text-gray-500 md:text-right pt-1">
+                                        @FormatSessionTime(session.SessionTime, session.EndTime)
+                                    </div>
+                                    <div class="md:col-span-3 space-y-1">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <p class="text-lg font-bold text-dark">@session.Title</p>
+                                            @if (!string.IsNullOrWhiteSpace(session.SessionType))
+                                            {
+                                                <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-gray-100 text-gray-700 border">
+                                                    @session.SessionType
+                                                </span>
+                                            }
+                                        </div>
+
+                                        @if (!string.IsNullOrWhiteSpace(session.Speaker))
+                                        {
+                                            <p class="text-md font-bold text-medium">@session.Speaker</p>
+                                        }
+
+                                        @if (!string.IsNullOrWhiteSpace(session.Location))
+                                        {
+                                            <p class="text-sm font-semibold text-gray-500">
+                                                <i class="fas fa-map-marker-alt text-xs mr-1"></i>@session.Location
+                                            </p>
+                                        }
+
+                                        @if (!string.IsNullOrWhiteSpace(session.Description))
+                                        {
+                                            <p class="text-sm text-gray-600">@session.Description</p>
+                                        }
+
+                                        @if (!string.IsNullOrWhiteSpace(session.SpecialNote))
+                                        {
+                                            <p class="text-xs italic text-amber-700 bg-amber-50 px-2 py-1 rounded inline-block">
+                                                @session.SpecialNote
+                                            </p>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter]
+    public int? EventId { get; set; }
+
+    private bool IsLoading { get; set; } = true;
+    private ConferenceModel? ActiveConference { get; set; }
+    private IEnumerable<IGrouping<DateTime, ConferenceSession>> GroupedSessions { get; set; } = Array.Empty<IGrouping<DateTime, ConferenceSession>>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        IsLoading = true;
+        try
+        {
+            ActiveConference = await EventsRepo.GetActiveConferenceAsync(EventId);
+
+            if (ActiveConference != null && ActiveConference.Id > 0)
+            {
+                var sessions = await EventsRepo.GetSessionsForConferenceAsync(ActiveConference.Id);
+                if (sessions != null && sessions.Any())
+                {
+                    GroupedSessions = sessions
+                        .OrderBy(s => s.SessionTime)
+                        .GroupBy(s => s.SessionTime.Date)
+                        .OrderBy(g => g.Key);
+                }
+                else
+                {
+                    GroupedSessions = Array.Empty<IGrouping<DateTime, ConferenceSession>>();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ConferenceSchedule] Error loading schedule: {ex.Message}");
+            ActiveConference = null;
+            GroupedSessions = Array.Empty<IGrouping<DateTime, ConferenceSession>>();
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && GroupedSessions.Any(g => g.Key.Date == DateTime.Today))
+        {
+            try
+            {
+                var todayElementId = $"day-{DateTime.Today:yyyy-MM-dd}";
+                await JSRuntime.InvokeVoidAsync("scrollToTodaySchedule", todayElementId);
+            }
+            catch
+            {
+                // Fallback catch if JS interop fails
+            }
+        }
+    }
+
+    private string FormatDayHeader(DateTime date)
+    {
+        return date.ToString("dddd, MMMM d") + GetOrdinalSuffix(date.Day);
+    }
+
+    private string GetOrdinalSuffix(int day)
+    {
+        if (day is >= 11 and <= 13) return "th";
+        return (day % 10) switch
+        {
+            1 => "st",
+            2 => "nd",
+            3 => "rd",
+            _ => "th"
+        };
+    }
+
+    private string FormatDateRange(DateTime start, DateTime end)
+    {
+        if (start.Year == end.Year)
+        {
+            if (start.Month == end.Month)
+            {
+                return $"{start:MMMM d} – {end:d, yyyy}";
+            }
+            return $"{start:MMMM d} – {end:MMMM d, yyyy}";
+        }
+        return $"{start:MMMM d, yyyy} – {end:MMMM d, yyyy}";
+    }
+
+    private string FormatSessionTime(DateTime start, DateTime? end)
+    {
+        if (start.TimeOfDay == TimeSpan.Zero && (!end.HasValue || end.Value.TimeOfDay == TimeSpan.Zero))
+        {
+            return "All Day";
+        }
+
+        var startTimeStr = start.ToString("h:mm tt");
+        if (startTimeStr.EndsWith(":00 AM", StringComparison.OrdinalIgnoreCase))
+            startTimeStr = start.ToString("h:00 AM");
+        else if (startTimeStr.EndsWith(":00 PM", StringComparison.OrdinalIgnoreCase))
+            startTimeStr = start.ToString("h:00 PM");
+
+        if (!end.HasValue)
+        {
+            return startTimeStr;
+        }
+
+        var endTimeStr = end.Value.ToString("h:mm tt");
+        if (endTimeStr.EndsWith(":00 AM", StringComparison.OrdinalIgnoreCase))
+            endTimeStr = end.Value.ToString("h:00 AM");
+        else if (endTimeStr.EndsWith(":00 PM", StringComparison.OrdinalIgnoreCase))
+            endTimeStr = end.Value.ToString("h:00 PM");
+
+        // Format nicely e.g., "10:00 - 11:00 AM" if both are AM
+        if (start.ToString("tt") == end.Value.ToString("tt"))
+        {
+            var startNum = start.Minute == 0 ? start.ToString("h:00") : start.ToString("h:mm");
+            return $"{startNum} - {endTimeStr}";
+        }
+
+        return $"{startTimeStr} - {endTimeStr}";
+    }
+}

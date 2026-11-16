@@ -1,0 +1,17 @@
+@page "/contact"
+@using System.ComponentModel.DataAnnotations
+
+<SeoHead Title="Contact Us - CACI"
+    Description="Contact Covenant Apostolic Congregations Intl. Request Bible study, location information, or general inquiries."
+    CanonicalUrl="https://caci.life/contact" />
+
+<section class="section-padding contact-section">
+    <div class="container">
+        <!-- New Shared Component Usage -->
+        <ConnectionForm Title="Contact Us" DefaultRequestType="More Information" FormType="Contact" />
+    </div>
+</section>
+
+@code {
+    // No code needed, handled by component
+}

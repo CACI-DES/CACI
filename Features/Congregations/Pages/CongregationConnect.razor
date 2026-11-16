@@ -1,0 +1,176 @@
+@page "/congregation/{Slug}/connect"
+@page "/congregation/{Slug}/contact"
+@layout CongregationLayout
+@using CACI_Life.Core.Domain.Congregations
+@using CACI_Life.Features.Congregations.Commands
+@inject ICongregationService CongregationService
+@inject TenantContext TenantContext
+@inject SubmitInquiryCommand Command
+@inject NavigationManager Navigation
+
+<CongregationSeoHead Title="Connect With Us"
+         Description="@($"{_profile.RegionDescription} Begin a conversation with the ministry of {_profile.CongregationName}.")"
+         Path="@($"/congregation/{_profile.UrlSlug}/connect")" />
+
+<section class="hero">
+    <div class="max-w-4xl mx-auto px-4 py-14 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold">@(_isStudyRequest ? "Request a Bible Study" : "Connect With Us")</h1>
+        <p class="mt-4 text-lg text-slate-100">
+            @if (_isStudyRequest)
+            {
+                <span>Request your free personal or group in-home / online <strong>12 Foundations Bible Study</strong>. We provide the scriptures, guidance, and fellowship at no cost.</span>
+            }
+            else
+            {
+                <span>@_profile.RegionDescription To preserve assembly order and peace, gathering locations and schedules are provided following direct pastoral consultation with @_profile.PastorName.</span>
+            }
+        </p>
+    </div>
+</section>
+
+<section class="max-w-2xl mx-auto px-4 py-12">
+    @if (!string.IsNullOrWhiteSpace(_studyTitle))
+    {
+        <div class="mb-6 p-4 rounded-xl bg-caci-tone3/30 border border-caci-tone2 flex items-start gap-3 text-caci-minister">
+            <svg class="w-6 h-6 shrink-0 mt-0.5 text-caci-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+            <div>
+                <p class="font-semibold text-caci-blue">Requesting Bible Study:</p>
+                <p class="text-sm mt-0.5 font-medium">@_studyTitle</p>
+            </div>
+        </div>
+    }
+
+    <div class="card p-6 md:p-8">
+        @if (Model is not null && !string.IsNullOrWhiteSpace(Model.SourceScreen))
+        {
+            <div class="mb-5 p-3 rounded-xl bg-slate-100 border border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-700">
+                <span class="flex items-center gap-1.5 font-medium">
+                    <svg class="w-4 h-4 text-caci-tone2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Reaching out from: <strong class="text-caci-blue">@Model.SourceScreen</strong>
+                </span>
+                <span class="badge bg-caci-tone3 text-caci-minister font-semibold">Origin Noted</span>
+            </div>
+        }
+
+        <EditForm Model="Model" FormName="fellowship-inquiry" OnValidSubmit="SubmitAsync" novalidate>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="validation-summary mb-4" />
+
+            <input type="hidden" name="Model.SourceScreen" value="@Model?.SourceScreen" />
+
+            <div class="grid gap-5">
+                <div class="field">
+                    <label for="fullName">Full Name</label>
+                    <InputText id="fullName" @bind-Value="Model.FullName" autocomplete="name" />
+                    <ValidationMessage For="() => Model.FullName" />
+                </div>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <InputText id="email" type="email" @bind-Value="Model.Email" autocomplete="email" />
+                    <ValidationMessage For="() => Model.Email" />
+                </div>
+                <div class="field">
+                    <label for="phone">Phone</label>
+                    <InputText id="phone" type="tel" @bind-Value="Model.Phone" autocomplete="tel" />
+                    <ValidationMessage For="() => Model.Phone" />
+                </div>
+                <div class="grid gap-5 sm:grid-cols-2">
+                    <div class="field">
+                        <label for="city">City</label>
+                        <InputText id="city" @bind-Value="Model.City" autocomplete="address-level2" />
+                        <ValidationMessage For="() => Model.City" />
+                    </div>
+                    <div class="field">
+                        <label for="state">State</label>
+                        <InputText id="state" @bind-Value="Model.State" autocomplete="address-level1" />
+                        <ValidationMessage For="() => Model.State" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="background">Spiritual Background</label>
+                    <InputTextArea id="background" rows="5" @bind-Value="Model.SpiritualBackground" />
+                    <ValidationMessage For="() => Model.SpiritualBackground" />
+                </div>
+                <div class="field">
+                    <label for="contact">Preferred Contact</label>
+                    <InputSelect id="contact" @bind-Value="Model.PreferredContact">
+                        <option value="Phone">Phone call</option>
+                        <option value="Text">Text message</option>
+                        <option value="Email">Email</option>
+                    </InputSelect>
+                </div>
+
+                @* Honeypot: hidden from people, filled by bots *@
+                <div style="position:absolute;left:-10000px" aria-hidden="true">
+                    <label for="hp-site">Leave this empty</label>
+                    <input type="text" id="hp-site" name="Model.Website" tabindex="-1" autocomplete="off" />
+                </div>
+
+                <button type="submit" class="btn-primary mt-2 justify-center py-3.5">
+                    @(_isStudyRequest ? "Send Bible Study Request" : "Submit Connect Request")
+                </button>
+            </div>
+        </EditForm>
+    </div>
+</section>
+
+@code {
+    [Parameter] public string Slug { get; set; } = string.Empty;
+
+    [SupplyParameterFromForm] private InquiryForm? Model { get; set; }
+    [SupplyParameterFromQuery(Name = "study")] private string? StudyQuery { get; set; }
+    [SupplyParameterFromQuery(Name = "topic")] private string? TopicQuery { get; set; }
+    [SupplyParameterFromQuery(Name = "from")] private string? FromQuery { get; set; }
+
+    private CongregationProfile _profile = new();
+    private bool _isStudyRequest;
+    private string? _studyTitle;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Model ??= new();
+        if (!string.IsNullOrWhiteSpace(Slug))
+        {
+            TenantContext.SetSlug(Slug);
+        }
+        _profile = await CongregationService.GetCurrentAsync();
+
+        if (!string.IsNullOrWhiteSpace(StudyQuery))
+        {
+            _isStudyRequest = true;
+            _studyTitle = StudyQuery;
+            if (string.IsNullOrWhiteSpace(Model.SpiritualBackground))
+            {
+                Model.SpiritualBackground = $"I would like to request the Bible study: {StudyQuery}.";
+            }
+        }
+        else if (string.Equals(TopicQuery, "Bible Study", StringComparison.OrdinalIgnoreCase))
+        {
+            _isStudyRequest = true;
+        }
+
+        if (!string.IsNullOrWhiteSpace(FromQuery) && string.IsNullOrWhiteSpace(Model.SourceScreen))
+        {
+            Model.SourceScreen = FromQuery;
+        }
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (Model is null) return;
+
+        // Honeypot check
+        if (!string.IsNullOrWhiteSpace(Model.Website))
+        {
+            Navigation.NavigateTo($"/congregation/{_profile.UrlSlug}/connect/confirmed");
+            return;
+        }
+
+        var newId = await Command.ExecuteAsync(Model);
+        if (newId.HasValue)
+        {
+            Navigation.NavigateTo($"/congregation/{_profile.UrlSlug}/connect/confirmed");
+        }
+    }
+}
+

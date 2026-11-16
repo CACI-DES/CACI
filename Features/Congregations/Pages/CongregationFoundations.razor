@@ -1,0 +1,725 @@
+﻿@page "/congregation/{Slug}/foundations"
+@page "/congregation/{Slug}/12Foundations"
+@page "/congregation/{Slug}/12foundations"
+@layout CongregationLayout
+@using CACI_Life.Core.Domain.Congregations
+@using CACI_Life.Features.Congregations.Queries
+@inject ICongregationService CongregationService
+@inject TenantContext TenantContext
+@inject GetFoundationsQueries Queries
+
+<CongregationSeoHead Title="The 12 Foundations Bible Study | God's Kingdom Blueprint"
+         Description="Learn the 12 Foundations to understanding your Bible from Genesis to Revelation. Discover the Kingdom Blueprint, the 4 marks of the Bible, and God's prophetic plan."
+         Path="@($"/congregation/{_profile.UrlSlug}/foundations")" />
+
+<!-- Hero Section -->
+<section class="hero relative overflow-hidden py-16 md:py-24">
+    <div class="max-w-5xl mx-auto px-4 text-center relative z-10">
+        <span class="inline-block py-1 px-4 rounded-full text-xs md:text-sm font-semibold tracking-wider uppercase bg-amber-400 text-slate-900 shadow-md mb-4">
+            ~ 12 Foundations ~ To Understanding Your Bible
+        </span>
+        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">
+            God's Kingdom Blueprint
+        </h1>
+        <p class="mt-4 text-xl md:text-2xl text-caci-tone3 font-medium italic">
+            “All The Word To All The World”
+        </p>
+        <p class="mt-6 text-base md:text-lg text-slate-100 max-w-3xl mx-auto leading-relaxed">
+            Understanding the Bible isn't just for pastors and scholars. We all should be able to read and understand the Word that God has preserved for us. 
+            <strong>No Bible college needed. No human creeds. Only your Bible.</strong> 
+            There are 12 major events and time periods that take us from the fall of man to God's plan coming to fruition. You won't hear this taught in modern church!
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+            <a href="https://caci.life/foundations/lesson/1?ref=kca" target="_blank" rel="noopener" class="btn-primary !bg-[#C8102E] !text-white hover:!bg-red-700 font-bold px-7 py-3 text-base shadow-lg">
+                Take Lessons 1–3 Online Free &nearr;
+            </a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/connect?")from=12%20Foundations%20-%20Hero%20Banner&topic=12%20Foundations%20Bible%20Study" class="btn-primary !bg-amber-400 !text-slate-900 hover:!bg-amber-300 font-bold px-6 py-3 text-base shadow-lg">
+                Request In-Person Study with an Elder
+            </a>
+            <a href="#foundations-grid" class="btn-secondary !bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold px-6 py-3 text-base">
+                View 12 Foundations Syllabus &darr;
+            </a>
+            <a href="https://caci.life/portal/foundations" target="_blank" rel="noopener" class="btn-secondary !bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold px-6 py-3 text-base">
+                Minister Portal 🔒
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Main Container -->
+<div class="max-w-6xl mx-auto px-4 py-12 md:py-16 space-y-20">
+
+    <!-- Section 1: Intro Pillars (Lesson 1: The Blueprint) -->
+    <section id="intro-blueprint" class="space-y-12">
+        <div class="text-center max-w-3xl mx-auto">
+            <p class="text-sm font-bold uppercase tracking-widest text-caci-purple">Lesson 1: Introduction to Your Bible</p>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2">Why Study the 12 Foundations?</h2>
+            <div class="section-rule mx-auto my-4"></div>
+            <p class="text-slate-600 text-base md:text-lg">
+                Before building a house, you need a blueprint. Before studying doctrine, you need the overarching timeline of Scripture. Here is the foundation upon which all 66 books rest.
+            </p>
+        </div>
+
+        <!-- Home Bible Study & Truth vs Tradition Grid -->
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Home Bible Study Pillar -->
+            <div class="card p-6 md:p-8 border-t-4 border-t-caci-blue">
+                <div class="w-12 h-12 rounded-xl bg-caci-blue/10 text-caci-blue flex items-center justify-center mb-5">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                </div>
+                <h3 class="text-2xl font-bold text-caci-blue">The Home Bible Study Pattern</h3>
+                <p class="mt-3 text-slate-600 leading-relaxed">
+                    The early believers did not depend on institutional hierarchies. They gathered in homes, opened the Scriptures, and learned together in genuine fellowship:
+                </p>
+                <ul class="mt-4 space-y-3 text-sm text-slate-700">
+                    <li class="flex items-start gap-2">
+                        <span class="font-bold text-caci-minister shrink-0">Acts 5:42 —</span>
+                        <span><em>“Every day, in the temple and in every house, they never stopped teaching and preaching Jesus, the Messiah.”</em></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="font-bold text-caci-minister shrink-0">Acts 20:20 —</span>
+                        <span><em>“I didn't shrink from declaring to you anything that was profitable, teaching you publicly and from house to house.”</em></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="font-bold text-caci-minister shrink-0">Malachi 3:16 —</span>
+                        <span><em>“Then those who feared Yahweh spoke one with another; and Yahweh listened and heard, and a book of remembrance was written.”</em></span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Truth or Traditions Pillar -->
+            <div class="card p-6 md:p-8 border-t-4 border-t-caci-purple">
+                <div class="w-12 h-12 rounded-xl bg-caci-purple/10 text-caci-purple flex items-center justify-center mb-5">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                </div>
+                <h3 class="text-2xl font-bold text-caci-purple">Truth vs. Human Traditions</h3>
+                <p class="mt-3 text-slate-600 leading-relaxed">
+                    Will we trust the commandments of God, or human customs handed down through pagan culture and church history?
+                </p>
+                <ul class="mt-4 space-y-3 text-sm text-slate-700">
+                    <li class="flex items-start gap-2">
+                        <span class="font-bold text-caci-purple shrink-0">John 17:17 —</span>
+                        <span><em>“Sanctify them in the truth; your word is truth.”</em></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="font-bold text-caci-purple shrink-0">Matthew 22:29 —</span>
+                        <span><em>“Jesus replied, ‘Your error is not knowing the Scriptures.’”</em></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="font-bold text-caci-purple shrink-0">Acts 17:11 —</span>
+                        <span><em>“They received the word with all eagerness... examining the Scriptures daily to see if these things were so.”</em></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="font-bold text-caci-purple shrink-0">Mark 7:9 —</span>
+                        <span><em>“You reject the commandment of God, that you may keep your own tradition.”</em></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 4 Divine Marks of the Bible -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 md:p-10 shadow-sm space-y-8">
+            <div class="text-center max-w-2xl mx-auto">
+                <span class="badge mb-2">Evidence for Faith</span>
+                <h3 class="text-2xl md:text-3xl font-bold text-caci-blue">There Is No Book Like The Bible</h3>
+                <p class="mt-2 text-slate-600 text-sm md:text-base">Four supernatural signatures that prove the Bible is the literal, inspired Word of God.</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Mark 1: Origin -->
+                <div class="p-5 rounded-xl bg-slate-50 border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="text-caci-minister font-bold text-xs uppercase tracking-wider mb-2">1. Divine Origin</div>
+                        <h4 class="font-bold text-lg text-slate-900">Moved by the Spirit</h4>
+                        <p class="mt-2 text-xs text-slate-600 leading-relaxed">
+                            Written by over 40 authors across 1,500 years in 3 languages, yet speaking with one unified voice without contradiction.
+                        </p>
+                    </div>
+                    <p class="mt-4 text-xs font-semibold text-caci-blue border-t border-slate-200 pt-3">
+                        2 Peter 1:20-21 &middot; Jer 30:2 &middot; Ex 32:16
+                    </p>
+                </div>
+
+                <!-- Mark 2: Knowledge -->
+                <div class="p-5 rounded-xl bg-slate-50 border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="text-caci-minister font-bold text-xs uppercase tracking-wider mb-2">2. Divine Knowledge</div>
+                        <h4 class="font-bold text-lg text-slate-900">Science Ahead of Time</h4>
+                        <p class="mt-2 text-xs text-slate-600 leading-relaxed">
+                            Scientific facts written millennia before discovery: the uncountable stars (Jer 33:22), the life in the blood (Lev 17:11), and the circle of the earth (Isa 40:22).
+                        </p>
+                    </div>
+                    <p class="mt-4 text-xs font-semibold text-caci-blue border-t border-slate-200 pt-3">
+                        Jer 33:22 &middot; Lev 17:11 &middot; Isa 40:22
+                    </p>
+                </div>
+
+                <!-- Mark 3: Prophecy -->
+                <div class="p-5 rounded-xl bg-slate-50 border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="text-caci-minister font-bold text-xs uppercase tracking-wider mb-2">3. Divine Prophecy</div>
+                        <h4 class="font-bold text-lg text-slate-900">End From Beginning</h4>
+                        <p class="mt-2 text-xs text-slate-600 leading-relaxed">
+                            Over 300 specific Messianic prophecies written centuries before Jesus was born, fulfilled down to the exact birthplace, price of betrayal, and manner of death.
+                        </p>
+                    </div>
+                    <p class="mt-4 text-xs font-semibold text-caci-blue border-t border-slate-200 pt-3">
+                        Isa 46:9-10 &middot; Luke 24:27 &middot; Micah 5:2
+                    </p>
+                </div>
+
+                <!-- Mark 4: Protection -->
+                <div class="p-5 rounded-xl bg-slate-50 border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="text-caci-minister font-bold text-xs uppercase tracking-wider mb-2">4. Divine Protection</div>
+                        <h4 class="font-bold text-lg text-slate-900">Preserved Forever</h4>
+                        <p class="mt-2 text-xs text-slate-600 leading-relaxed">
+                            Tyrants, empires, and skeptics have tried to burn and destroy it, yet the Scriptures remain preserved flawless as silver purified seven times.
+                        </p>
+                    </div>
+                    <p class="mt-4 text-xs font-semibold text-caci-blue border-t border-slate-200 pt-3">
+                        Psalm 12:6-7 &middot; Isaiah 40:8
+                    </p>
+                </div>
+            </div>
+
+            <!-- Toggleable Prophecy Proof Table -->
+            <details class="faq-item">
+                <summary class="text-base font-bold text-caci-blue">
+                    <span>View Sample Messianic Prophecies: Foretold vs. Fulfilled</span>
+                </summary>
+                <div class="faq-answer overflow-x-auto pt-4">
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                                <th class="p-3 font-bold">Event Foretold</th>
+                                <th class="p-3 font-bold">Old Testament Prophecy</th>
+                                <th class="p-3 font-bold">New Testament Fulfillment</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr><td class="p-3 font-medium">Seed of Abraham</td><td class="p-3 text-caci-minister">Genesis 12:3; 22:18</td><td class="p-3 text-emerald-700">Galatians 3:16; Matt 1:1</td></tr>
+                            <tr><td class="p-3 font-medium">Tribe of Judah</td><td class="p-3 text-caci-minister">Genesis 49:10</td><td class="p-3 text-emerald-700">Revelation 5:5; Luke 3:33</td></tr>
+                            <tr><td class="p-3 font-medium">Born in Bethlehem</td><td class="p-3 text-caci-minister">Micah 5:2</td><td class="p-3 text-emerald-700">Matthew 2:1; Luke 2:4-7</td></tr>
+                            <tr><td class="p-3 font-medium">Born of a Virgin</td><td class="p-3 text-caci-minister">Isaiah 7:14</td><td class="p-3 text-emerald-700">Matthew 1:18-23</td></tr>
+                            <tr><td class="p-3 font-medium">Infants Killed</td><td class="p-3 text-caci-minister">Jeremiah 31:15</td><td class="p-3 text-emerald-700">Matthew 2:16</td></tr>
+                            <tr><td class="p-3 font-medium">Flee to Egypt</td><td class="p-3 text-caci-minister">Hosea 11:1</td><td class="p-3 text-emerald-700">Matthew 2:15</td></tr>
+                            <tr><td class="p-3 font-medium">Betrayed by a Friend</td><td class="p-3 text-caci-minister">Psalm 41:9</td><td class="p-3 text-emerald-700">Mark 14:10</td></tr>
+                            <tr><td class="p-3 font-medium">Sold for 30 Pieces of Silver</td><td class="p-3 text-caci-minister">Zechariah 11:12-13</td><td class="p-3 text-emerald-700">Matthew 26:15; 27:3-9</td></tr>
+                            <tr><td class="p-3 font-medium">Crucified with Transgressors</td><td class="p-3 text-caci-minister">Isaiah 53:12</td><td class="p-3 text-emerald-700">Matthew 27:38</td></tr>
+                            <tr><td class="p-3 font-medium">Gall & Vinegar to Drink</td><td class="p-3 text-caci-minister">Psalm 69:21</td><td class="p-3 text-emerald-700">John 19:29</td></tr>
+                            <tr><td class="p-3 font-medium">Pierced His Side</td><td class="p-3 text-caci-minister">Zechariah 12:10; Psalm 22:16</td><td class="p-3 text-emerald-700">John 19:34-37</td></tr>
+                            <tr><td class="p-3 font-medium">Not One Bone Broken</td><td class="p-3 text-caci-minister">Psalm 34:20; Exodus 12:46</td><td class="p-3 text-emerald-700">John 19:32-36</td></tr>
+                            <tr><td class="p-3 font-medium">Resurrection from the Dead</td><td class="p-3 text-caci-minister">Psalm 16:10</td><td class="p-3 text-emerald-700">Matthew 28:9; Acts 2:27-31</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+        </div>
+
+        <!-- The 3rd Option: The Kingdom of God on Earth -->
+        <div class="rounded-2xl bg-gradient-to-r from-caci-minister via-caci-blue to-caci-purple p-8 md:p-12 text-white shadow-xl">
+            <div class="max-w-3xl mx-auto text-center space-y-4">
+                <span class="inline-block px-3 py-1 text-xs font-bold rounded-full bg-amber-400 text-slate-900 uppercase tracking-wider">
+                    The Great Paradigm Shift
+                </span>
+                <h3 class="text-3xl md:text-4xl font-extrabold text-white">
+                    You've Heard of Heaven... You've Heard of Hell... <br class="hidden sm:inline" />
+                    <span class="text-amber-300">Have You Ever Heard the 3rd Option?</span>
+                </h3>
+                <p class="text-slate-200 text-base md:text-lg leading-relaxed">
+                    Mainstream theology teaches that salvation is leaving the earth to live in heaven forever. But what did Jesus and the prophets actually preach? 
+                    <strong>The Gospel of the Kingdom of God on Earth!</strong>
+                </p>
+                <div class="grid sm:grid-cols-2 gap-4 text-left pt-4">
+                    <div class="p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
+                        <p class="text-amber-300 font-bold text-sm">Matthew 5:5</p>
+                        <p class="text-sm text-slate-100 mt-1"><em>“Blessed are the meek: for they shall inherit the earth.”</em></p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
+                        <p class="text-amber-300 font-bold text-sm">Luke 11:2</p>
+                        <p class="text-sm text-slate-100 mt-1"><em>“Thy kingdom come, Thy will be done on earth, as it is in heaven.”</em></p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
+                        <p class="text-amber-300 font-bold text-sm">Zechariah 14:9</p>
+                        <p class="text-sm text-slate-100 mt-1"><em>“Yahweh shall be king over all the earth: in that day there shall be one Lord, and his name one.”</em></p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
+                        <p class="text-amber-300 font-bold text-sm">Revelation 21:2</p>
+                        <p class="text-sm text-slate-100 mt-1"><em>“I John saw the holy city, new Jerusalem, coming down from God out of heaven to the earth.”</em></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 66 Books Architecture: OT Lost vs NT Restored -->
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="card p-6 md:p-8 bg-slate-50 border border-slate-200">
+                <span class="badge mb-2">Part 1</span>
+                <h4 class="text-2xl font-bold text-caci-blue">39 Old Testament Books</h4>
+                <p class="text-sm font-semibold text-caci-red mt-1">How The Kingdom Was Lost</p>
+                <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+                    From Adam's lost dominion to the scattering of Israel's 10 northern tribes into the nations:
+                </p>
+                <ul class="mt-4 space-y-2 text-xs md:text-sm text-slate-700">
+                    <li><strong class="text-slate-900">5 Books of Law (Torah):</strong> Genesis, Exodus, Leviticus, Numbers, Deuteronomy</li>
+                    <li><strong class="text-slate-900">12 Books of History:</strong> Joshua to Esther</li>
+                    <li><strong class="text-slate-900">5 Books of Poetry (Wisdom):</strong> Job, Psalms, Proverbs, Ecclesiastes, Song of Solomon</li>
+                    <li><strong class="text-slate-900">17 Books of Prophecy:</strong> 5 Major Prophets &middot; 12 Minor Prophets</li>
+                </ul>
+            </div>
+
+            <div class="card p-6 md:p-8 bg-slate-50 border border-slate-200">
+                <span class="badge mb-2">Part 2</span>
+                <h4 class="text-2xl font-bold text-caci-purple">27 New Testament Books</h4>
+                <p class="text-sm font-semibold text-emerald-700 mt-1">How The Kingdom Is Restored</p>
+                <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+                    From Messiah's birth and blood atonement to the regathering of the lost sheep and the New Jerusalem:
+                </p>
+                <ul class="mt-4 space-y-2 text-xs md:text-sm text-slate-700">
+                    <li><strong class="text-slate-900">4 Gospels:</strong> Matthew, Mark, Luke, John (The Life & Kingdom of Jesus)</li>
+                    <li><strong class="text-slate-900">1 Book of History:</strong> Acts of the Apostles (The Holy Spirit & 2nd Exodus)</li>
+                    <li><strong class="text-slate-900">13 Letters of Paul:</strong> Romans to Philemon (Grafting in the scattered sheep)</li>
+                    <li><strong class="text-slate-900">8 General Epistles:</strong> Hebrews to Jude (To the 12 tribes scattered)</li>
+                    <li><strong class="text-slate-900">1 Book of Prophecy:</strong> Revelation (The Return of the King & Paradise Restored)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Interactive Slide Presentation & Video Modules -->
+    <section id="slide-viewer" class="space-y-10 pt-8 border-t border-slate-200">
+        <div class="text-center max-w-3xl mx-auto">
+            <p class="text-sm font-bold uppercase tracking-widest text-caci-purple">Visual Lesson Deck</p>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2">Lesson 1 Slide Presentation</h2>
+            <div class="section-rule mx-auto my-4"></div>
+            <p class="text-slate-600 text-base md:text-lg">
+                Browse all 33 original slide visuals used in the <em>God's Kingdom Blueprint</em> Bible study teaching.
+            </p>
+        </div>
+
+        <!-- Custom Slide Carousel Component (SSR compatible) -->
+        <div class="bg-slate-900 rounded-2xl p-4 md:p-8 shadow-2xl text-white max-w-4xl mx-auto">
+            <!-- Slide Image Frame -->
+            <div class="relative aspect-[16/9] w-full rounded-xl overflow-hidden bg-black flex items-center justify-center border border-slate-800">
+                <img id="kca-slide-img"
+                     src="/images/foundations/lesson1/slide_01.png"
+                     alt="Lesson 1 Slide Presentation"
+                     class="w-full h-full object-contain select-none" />
+            </div>
+
+            <!-- Controls & Counter -->
+            <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <button type="button" id="kca-prev-btn" onclick="prevSlide()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-caci-tone2 text-white font-bold transition-colors flex items-center gap-2 text-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        Previous
+                    </button>
+                    <button type="button" id="kca-next-btn" onclick="nextSlide()" class="px-4 py-2 rounded-lg bg-caci-blue hover:bg-caci-tone2 text-white font-bold transition-colors flex items-center gap-2 text-sm">
+                        Next
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+
+                <div class="text-sm font-semibold text-slate-300">
+                    <span id="kca-slide-counter">Slide 1 of 33</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <label for="kca-slide-select" class="text-xs text-slate-400">Jump to:</label>
+                    <select id="kca-slide-select" onchange="jumpToSlide(this.value)" class="bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-caci-tone2">
+                        @for (int i = 1; i <= 33; i++)
+                        {
+                            <option value="@i">Slide @i</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let currentSlide = 1;
+            const totalSlides = 33;
+
+            function updateSlide(index) {
+                if (index < 1) index = 1;
+                if (index > totalSlides) index = totalSlides;
+                currentSlide = index;
+
+                const pad = String(currentSlide).padStart(2, '0');
+                const img = document.getElementById('kca-slide-img');
+                const counter = document.getElementById('kca-slide-counter');
+                const select = document.getElementById('kca-slide-select');
+
+                if (img) img.src = `/images/foundations/lesson1/slide_${pad}.png`;
+                if (counter) counter.innerText = `Slide ${currentSlide} of ${totalSlides}`;
+                if (select) select.value = currentSlide;
+
+                const prevBtn = document.getElementById('kca-prev-btn');
+                const nextBtn = document.getElementById('kca-next-btn');
+                if (prevBtn) prevBtn.disabled = (currentSlide === 1);
+                if (nextBtn) nextBtn.disabled = (currentSlide === totalSlides);
+            }
+
+            function prevSlide() { updateSlide(currentSlide - 1); }
+            function nextSlide() { updateSlide(currentSlide + 1); }
+            function jumpToSlide(val) { updateSlide(parseInt(val, 10)); }
+        </script>
+    </section>
+
+    <!-- Video Teaching Modules Section -->
+    <section id="video-modules" class="space-y-10 pt-8 border-t border-slate-200">
+        <div class="text-center max-w-3xl mx-auto">
+            <span class="badge mb-2">Video Classrooms</span>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2">12 Foundations Video Lessons</h2>
+            <div class="section-rule mx-auto my-4"></div>
+            <p class="text-slate-600 text-base md:text-lg">
+                Watch the five introductory video teaching modules with Elder Dave, exploring the Kingdom blueprint step by step.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Module 1 -->
+            <div class="card overflow-hidden flex flex-col justify-between">
+                <div class="video-frame aspect-video">
+                    <iframe src="https://www.youtube-nocookie.com/embed/WyFB4OeUSVc" title="12 Foundations - Intro and Module 1" loading="lazy" allowfullscreen></iframe>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <span class="badge mb-2">Module 1</span>
+                        <h4 class="font-bold text-lg text-caci-blue">No Book Like The Bible</h4>
+                        <p class="mt-2 text-xs text-slate-600">The divine origin, scientific foresight, and miraculous preservation of the Scriptures.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="card overflow-hidden flex flex-col justify-between">
+                <div class="video-frame aspect-video">
+                    <iframe src="https://www.youtube-nocookie.com/embed/Pr1n5HNsu7s" title="12 Foundations Intro - Module 2" loading="lazy" allowfullscreen></iframe>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <span class="badge mb-2">Module 2</span>
+                        <h4 class="font-bold text-caci-blue">Blueprint & Authority</h4>
+                        <p class="mt-2 text-xs text-slate-600">How the Bible operates as an architectural blueprint for understanding God's covenants.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 3 -->
+            <div class="card overflow-hidden flex flex-col justify-between">
+                <div class="video-frame aspect-video">
+                    <iframe src="https://www.youtube-nocookie.com/embed/ez4vzyiVdlM" title="12 Foundations - Intro - Module 3" loading="lazy" allowfullscreen></iframe>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <span class="badge mb-2">Module 3</span>
+                        <h4 class="font-bold text-caci-blue">Prophecy Foretold & Fulfilled</h4>
+                        <p class="mt-2 text-xs text-slate-600">The mathematical proof of Messianic prophecies fulfilled in Jesus of Nazareth.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 4 -->
+            <div class="card overflow-hidden flex flex-col justify-between">
+                <div class="video-frame aspect-video">
+                    <iframe src="https://www.youtube-nocookie.com/embed/Q54oGHic_GI" title="12 Foundations - Introduction Module IV" loading="lazy" allowfullscreen></iframe>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <span class="badge mb-2">Module 4</span>
+                        <h4 class="font-bold text-caci-blue">The Kingdom on Earth</h4>
+                        <p class="mt-2 text-xs text-slate-600">Examining the 3rd option: what the Bible literally says about the Kingdom of God.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 5 -->
+            <div class="card overflow-hidden flex flex-col justify-between">
+                <div class="video-frame aspect-video">
+                    <iframe src="https://www.youtube-nocookie.com/embed/fq8Lk2flZKs" title="12 Foundations - Introduction - Module V" loading="lazy" allowfullscreen></iframe>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <span class="badge mb-2">Module 5</span>
+                        <h4 class="font-bold text-caci-blue">The Master Timeline</h4>
+                        <p class="mt-2 text-xs text-slate-600">Putting all 12 Foundations together with the Biblical Feasts from Genesis to Revelation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Request Free Study Card in Grid -->
+            <div class="card p-6 bg-gradient-to-br from-caci-minister to-caci-blue text-white flex flex-col justify-between">
+                <div>
+                    <span class="inline-block px-3 py-1 text-xs font-bold rounded-full bg-amber-400 text-slate-900 mb-3">Free In-Home Study</span>
+                    <h4 class="text-xl font-bold text-white">Want to Study These Lessons Together?</h4>
+                    <p class="mt-2 text-xs text-slate-200 leading-relaxed">
+                        Join our in-home fellowship or an online interactive study. We provide all lesson materials, scriptures, and slide outlines free of charge.
+                    </p>
+                </div>
+                <div class="mt-6">
+                    <a href="@($"/congregation/{_profile.UrlSlug}/connect?")from=12%20Foundations%20-%20Video%20Lessons%20Grid&topic=12%20Foundations%20Video%20Lessons" class="btn-primary !bg-amber-400 !text-slate-900 hover:!bg-amber-300 w-full justify-center font-bold text-sm">
+                        Request In-Home Bible Study
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: The 12 Foundations Study Grid -->
+    <section id="foundations-grid" class="space-y-10 pt-8 border-t border-slate-200">
+        <div class="text-center max-w-3xl mx-auto">
+            <p class="text-sm font-bold uppercase tracking-widest text-caci-purple">Explore Each Foundation</p>
+            <h2 class="text-3xl md:text-5xl font-extrabold mt-2 text-caci-blue">The 12 Foundations</h2>
+            <div class="section-rule mx-auto my-4"></div>
+            <p class="text-slate-600 text-base md:text-lg">
+                Click on any foundation below to see the key mysteries, what modern churches miss, and how it unlocks God's coming Kingdom.
+            </p>
+        </div>
+
+        <!-- Foundations Cards -->
+        @if (_items.Count == 0)
+        {
+            <p class="text-center text-slate-700 py-12">The foundations are being loaded. Please check back soon.</p>
+        }
+        else
+        {
+            <div class="space-y-6">
+                @foreach (var f in _items)
+                {
+                    var isOt = f.SeriesOrder <= 6;
+                    var feastTag = GetFeastTag(f.SeriesOrder);
+                    var hookInfo = GetHookInfo(f.SeriesOrder);
+
+                    <div class="card p-6 md:p-8 transition-all">
+                        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                            <!-- Left: Number & Header -->
+                            <div class="flex items-start gap-5">
+                                <div class="shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center font-head text-3xl font-extrabold shadow-md @(isOt ? "bg-caci-blue text-white" : "bg-caci-purple text-white")">
+                                    @f.SeriesOrder
+                                </div>
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                                        @if (f.SeriesOrder <= 3)
+                                        {
+                                            <span class="badge bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs">
+                                                Free Online Lesson (CACI)
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-purple-50 text-caci-purple border border-purple-200 font-semibold text-xs">
+                                                Elder-Guided In-Person
+                                            </span>
+                                        }
+                                        <span class="badge @(isOt ? "bg-caci-tone3 text-caci-minister" : "bg-purple-100 text-caci-purple") font-bold text-xs">
+                                            @(isOt ? "Part 1: Old Testament" : "Part 2: New Testament")
+                                        </span>
+                                        @if (!string.IsNullOrWhiteSpace(feastTag))
+                                        {
+                                            <span class="badge bg-amber-100 text-amber-900 border border-amber-200 text-xs font-semibold">
+                                                @feastTag
+                                            </span>
+                                        }
+                                        <span class="text-xs text-caci-gray font-medium">@f.ScriptureReference</span>
+                                    </div>
+                                    <h3 class="text-2xl md:text-3xl font-bold text-caci-blue">
+                                        @f.Title
+                                    </h3>
+                                    <p class="mt-2 text-slate-700 text-base leading-relaxed max-w-3xl">
+                                        @f.LeadSummary
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Right: Quick Action -->
+                            <div class="shrink-0 flex md:flex-col gap-2 justify-end">
+                                @if (f.SeriesOrder <= 3)
+                                {
+                                    <a href="https://caci.life/foundations/lesson/@f.SeriesOrder?ref=kca" target="_blank" rel="noopener" class="btn-primary !bg-[#C8102E] !text-white hover:!bg-red-700 text-sm py-2 px-4 whitespace-nowrap justify-center shadow">
+                                        Take Lesson Online &nearr;
+                                    </a>
+                                }
+                                <a href="@($"/congregation/{_profile.UrlSlug}/foundations/{f.Slug}")" class="btn-primary text-sm py-2 px-4 whitespace-nowrap justify-center">
+                                    Full Study Syllabus →
+                                </a>
+                                <a href="@($"/congregation/{_profile.UrlSlug}/connect?")from=12%20Foundations%20-%20Lesson%20@f.SeriesOrder:%20@Uri.EscapeDataString(f.Title)&study=@Uri.EscapeDataString(f.Title)" class="btn-secondary text-sm py-2 px-4 whitespace-nowrap justify-center text-center">
+                                    Request Local Study
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- In-Page Expandable Drawer for Extra Info -->
+                        <details class="mt-6 pt-4 border-t border-slate-100 group">
+                            <summary class="cursor-pointer list-none font-bold text-sm text-caci-minister hover:text-caci-tone2 flex items-center gap-2 select-none">
+                                <svg class="w-4 h-4 text-caci-tone2 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                <span>Preview Foundation Details, Secrets &amp; Scriptures</span>
+                            </summary>
+                            
+                            <div class="mt-5 grid md:grid-cols-2 gap-6 bg-slate-50 p-5 md:p-6 rounded-xl border border-slate-200/70 text-sm">
+                                <!-- The Biblical Mystery -->
+                                <div>
+                                    <h5 class="font-bold text-caci-blue text-base flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                                        The Mystery Unlocked
+                                    </h5>
+                                    <p class="mt-2 text-slate-700 leading-relaxed">
+                                        @hookInfo.Mystery
+                                    </p>
+                                </div>
+
+                                <!-- What Church Tradition Misses -->
+                                <div>
+                                    <h5 class="font-bold text-caci-red text-base flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-caci-red" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                                        What Modern Churches Miss
+                                    </h5>
+                                    <p class="mt-2 text-slate-700 leading-relaxed">
+                                        @hookInfo.TraditionVsTruth
+                                    </p>
+                                </div>
+
+                                <!-- Key Verses -->
+                                <div class="md:col-span-2 pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                                    <div class="text-xs text-slate-600">
+                                        <strong class="text-slate-900">Key Scriptures:</strong> @hookInfo.KeyVerses
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <a href="@($"/congregation/{_profile.UrlSlug}/connect?")from=12%20Foundations%20-%20Lesson%20@f.SeriesOrder:%20@Uri.EscapeDataString(f.Title)&study=@Uri.EscapeDataString(f.Title)" class="btn-primary !bg-amber-400 !text-slate-900 hover:!bg-amber-300 font-bold text-xs py-2 px-4 shadow">
+                                            Request Free Study on Foundation @f.SeriesOrder
+                                        </a>
+                                        <a href="@($"/congregation/{_profile.UrlSlug}/foundations/{f.Slug}")" class="text-xs font-bold text-caci-minister hover:underline">
+                                            Read Full Study →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+
+    <!-- Section 4: Final Call to Action -->
+    <section class="rounded-3xl bg-gradient-to-br from-caci-minister via-caci-blue to-caci-purple p-8 md:p-14 text-white shadow-2xl text-center space-y-6">
+        <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-amber-400 text-slate-900 shadow">
+            Begin Your Journey Today
+        </span>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white leading-tight">
+            Ready to Unlock Your Bible From Beginning to End?
+        </h2>
+        <p class="text-slate-200 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+            The ministry and fellowship of @_profile.CongregationName are here to study with you one-on-one or in a small group. 
+            No fees, no obligations, and no denominational creeds—just the pure Word of God.
+        </p>
+        <div class="pt-4 flex flex-wrap justify-center gap-4">
+            <a href="@($"/congregation/{_profile.UrlSlug}/connect?")from=12%20Foundations%20-%20Bottom%20CTA&topic=12%20Foundations%20Bible%20Study" class="btn-primary !bg-amber-400 !text-slate-900 hover:!bg-amber-300 font-bold px-8 py-4 text-base shadow-xl">
+                Request a 12 Foundations Bible Study
+            </a>
+            <a href="@($"/congregation/{_profile.UrlSlug}/connect?")from=12%20Foundations%20-%20Ask%20a%20Question" class="btn-secondary !bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold px-6 py-4 text-base">
+                Ask a Question
+            </a>
+        </div>
+    </section>
+
+</div>
+
+@code {
+    private CongregationProfile _profile = new();
+
+    private IReadOnlyList<FoundationSummaryDto> _items = [];
+
+    [Parameter] public string Slug { get; set; } = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Slug))
+        {
+            TenantContext.SetSlug(Slug);
+        }
+        _profile = await CongregationService.GetCurrentAsync();
+        _items = await Queries.ListAsync();
+    }
+
+    private static string GetFeastTag(int? order) => order switch
+    {
+        7 => "Passover, Unleavened Bread & Weeks (Spring Feasts)",
+        8 => "The 2nd Exodus (Grafted in by Blood & Spirit)",
+        9 => "Feast of Trumpets (Messiah Returns to Reign)",
+        10 => "Day of Atonement (Satan Bound)",
+        11 => "Feast of Tabernacles (Millennial Kingdom)",
+        12 => "The 8th Day (The Eternal Kingdom)",
+        _ => string.Empty
+    };
+
+    private record HookData(string Mystery, string TraditionVsTruth, string KeyVerses);
+
+    private static HookData GetHookInfo(int? order) => order switch
+    {
+        1 => new(
+            "Adam was given dominion as king and priest over a physical earth. The Fall wasn't just personal guilt—it was the loss of the Kingdom of God on earth.",
+            "Churches teach salvation is about leaving earth to live in the clouds with a harp. The Bible teaches that God's ultimate plan is restoring paradise ON EARTH (Matt 5:5; Rev 21:2).",
+            "Genesis 1:26-28; Genesis 3:15; Matthew 5:5; Revelation 21:1-4"
+        ),
+        2 => new(
+            "The Global Flood was a divine legal baptism of the entire planet. God did not destroy the earth; He cleansed it with water and preserved a righteous remnant to inherit the new beginning.",
+            "People treat Noah as a fairy tale and misapply Jesus' words: the wicked were 'taken away' in judgment, while the righteous were left behind on the cleansed earth (Matt 24:37-41).",
+            "Genesis 6-9; 1 Peter 3:20-21; 2 Peter 3:5-7; Matthew 24:37-39"
+        ),
+        3 => new(
+            "Under Nimrod, humanity built a one-world religious, political, and economic headquarters at Babel. When God scattered their languages, the seeds of the Babylonian mystery religion spread to every continent.",
+            "Babylon is not an extinct ancient ruin. It is an active false religious system that infiltrated church tradition, replacing God's Sabbath and Feasts with pagan solstice rituals (Rev 17-18).",
+            "Genesis 10:8-10; Genesis 11:1-9; Revelation 17:5; Revelation 18:4"
+        ),
+        4 => new(
+            "God answered Babylon by calling Abraham and entering into a wedding covenant at Mount Sinai with the 12 tribes of Israel, taking them as His holy nation and covenant bride.",
+            "Replacement Theology claims God 'divorced and discarded Israel' to create a Gentile church. Scripture declares God's covenant with Israel is everlasting (Jer 31:35-37; Rom 11:1-2).",
+            "Genesis 12:1-3; Exodus 19:5-6; Jeremiah 3:14; Romans 11:17-24"
+        ),
+        5 => new(
+            "After Solomon, Israel split into two nations: the Southern House of Judah (Jews) and the Northern House of Israel (10 tribes). The Northern Kingdom was exiled into the nations and became 'lost sheep' (Hosea 1:9).",
+            "Most Christians don't know the difference between a Jew (tribe of Judah) and an Israelite (12 tribes). Understanding the two houses is the master key to Paul's epistles and Romans 9-11.",
+            "1 Kings 11:30-31; 2 Kings 17:22-23; Hosea 1:9-10; Matthew 15:24"
+        ),
+        6 => new(
+            "Old Testament prophets gave over 300 precise prophecies predicting both the Suffering Servant (Messiah ben Joseph) and the Ruling King (Messiah ben David), and the promise of a New Covenant.",
+            "The New Covenant is not a brand new religion discarding God's Law. It is made specifically with the House of Israel and Judah (Jer 31:31), writing God's Torah on our hearts.",
+            "Isaiah 9:6-7; Isaiah 53; Jeremiah 31:31-34; Ezekiel 37:15-28"
+        ),
+        7 => new(
+            "Yeshua came proclaiming the royal Gospel of the Kingdom of God. In His First Coming, He fulfilled the 4 Spring Feasts to the exact day: Passover (death), Unleavened Bread (burial), Firstfruits (resurrection), and Weeks (Spirit).",
+            "Jesus never preached 'accept me to go to heaven when you die.' He preached: 'Repent, for the Kingdom of God is at hand!' (Mark 1:14-15; Matt 4:23).",
+            "Mark 1:14-15; 1 Corinthians 5:7; 1 Corinthians 15:20; Acts 2:1-4"
+        ),
+        8 => new(
+            "Jesus said He was sent to the lost sheep of the House of Israel. Through the Apostles, the scattered Israelites among the Gentiles are found and grafted back into the commonwealth of Israel by Blood, Water, and Spirit.",
+            "Gentile believers are not a separate church entity from Israel. Through faith in Messiah, they are grafted into the one Olive Tree of Israel, sharing in the covenants of promise (Eph 2:11-19).",
+            "Matthew 10:5-6; Acts 2:38-39; Ephesians 2:11-19; James 1:1; 1 Peter 1:1"
+        ),
+        9 => new(
+            "Messiah is returning bodily to the Mount of Olives to reign over all the nations from Jerusalem for 1,000 years, fulfilling the Feast of Trumpets at the 7th trumpet (Rev 11:15).",
+            "Popular rapture theories claim believers vanish off to heaven. The Bible promises that the saints will reign with King Jesus AS KINGS AND PRIESTS UPON THE EARTH (Rev 5:10; Rev 20:4-6).",
+            "Acts 1:6-11; Zechariah 14:4-9; Revelation 11:15; Revelation 20:4-6"
+        ),
+        10 => new(
+            "The final manifestation of Mystery Babylon—the global false religious, economic, and political system—is exposed, judged, and destroyed in one hour.",
+            "Believers must heed God's urgent call: 'Come out of her, My people, lest you share in her sins and receive of her plagues' (Rev 18:4). We cannot compromise with Babylonian traditions.",
+            "Revelation 14:8; Revelation 17:1-6; Revelation 18:1-10; Jeremiah 51:6"
+        ),
+        11 => new(
+            "Just as the earth was cleansed with water at the Flood, the present heavens and earth will be purified by divine fire and Spirit, destroying the curse, disease, and death forever.",
+            "The fire does not annihilate creation; it refines and purges away all corruption so that the righteous may dwell on a renewed earth in glory (2 Peter 3:10-13; Mal 4:1-3).",
+            "2 Peter 3:10-13; Malachi 4:1-3; Revelation 20:7-15; 1 Corinthians 15:26"
+        ),
+        12 => new(
+            "The circle is complete. What was lost in Genesis is restored in Revelation. The Holy City, New Jerusalem, descends from heaven to the earth, and God Himself tabernacles with men forever.",
+            "The eternal home of the redeemed is not floating in space—it is the New Earth where righteousness dwells, with access to the Tree of Life forever (Rev 21-22).",
+            "Revelation 21:1-7; Revelation 22:1-5; Isaiah 65:17-25; Romans 8:19-23"
+        ),
+        _ => new("Discover God's eternal Kingdom blueprint.", "The truth of Scripture versus human traditions.", "Acts 17:11")
+    };
+}
+
+

@@ -1,0 +1,106 @@
+@page "/meet-the-caci"
+
+<SeoHead Title="CACI - Meet the CACI"
+         Description="Meet the Covenant Apostolic Congregations Intl. A network of Acts 2:38, Spirit-Filled believers."
+         CanonicalUrl="https://caci.life/meet-the-caci" />
+
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header">
+            <h1>Meet the CACI</h1>
+            <div class="divider"></div>
+        </div>
+        <p>Covenant Apostolics are Acts 2:38, Spirit-Filled believers who honor God's original 7th Day Sabbath and
+            celebrate the great festivals found in the scriptures. We are linked through a rapidly expanding network
+            of congregations, bible study groups, and ministers.</p>
+        <p>The twentieth century brought great light back into Christianity. Several scripturally focused movements
+            began to resist the pagan influences of Rome. Among these are millions who have discovered the true 7th
+            Day Sabbath, rejected the deeply pagan celebrations of Christmas and Easter (Solstice & Equinox), and
+            reestablished the New Covenant practice of observing biblical feast days "regarding them unto the Lord".
+        </p>
+        <p>Add to that the Apostolic Faith movement embracing the Biblical gifts of the Spirit, Spirit-filled
+            worship, and the "Acts 2:38" message. What has emerged is a vibrant, Spirit-filled group of believers
+            who are passionately connected to the Messiah and boldly living out the culture of His coming Kingdom!
+            Our passion is to experience and share the Authentic Gospel of the Kingdom around the world.</p>
+
+        @* <div class="beliefs-container">
+            <!-- Sidebar / Menu -->
+            <div class="beliefs-menu">
+                @foreach (var belief in Beliefs)
+                {
+                    <button class="belief-btn @(SelectedBelief == belief ? "active" : "")"
+                            @onclick="() => SelectBelief(belief)">
+                        @belief.Title
+                    </button>
+                }
+            </div>
+
+            <!-- Content Area -->
+            <div class="belief-content">
+                @if (SelectedBelief != null)
+                {
+                    <h2>@SelectedBelief.Title</h2>
+                    @SelectedBelief.Content
+                }
+            </div>
+        </div> *@
+    </div>
+</section>
+
+@code {
+    private record Belief(string Title, RenderFragment Content);
+    private Belief? SelectedBelief { get; set; }
+    private List<Belief> Beliefs { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        Beliefs = new List<Belief>
+        {
+            new Belief("Not Rabbinic...", @<text>
+                <p>The Messianic movement is often more about pretending to be Jewish than discovering the original Apostolic Faith.</p>
+                <p>Many things that both Jesus and the Apostles sternly taught against are commonly celebrated in Messianic groups. Why? Simply because they are false traditions embraced by Rabbinic Judaism.</p>
+                <p>For example;</p>
+                <p>The Scriptures reprimand Israel for adopting the Star as her symbol. This star has no biblical connection to David, but rather is called in the bible 'The star of your god Remphan' Acts 7:43</p>
+                <p>Also, the Apostle Paul taught that men should never cover their heads in Apostolic Assemblies, when praying or addressing the congregation. Yet, wearing the Rabbinic 'yarmulke' is common among Messianics.</p>
+                <p>The origin of the word yarmulke is "Yaar" which means "to fear", and "Mulke" which is the name of the pagan god "Molek" and can be interpreted as king.</p>
+                <p>While the Yaar-Mulke (Fear Molek) cap is certainly not Torah compliant, it is common among the non-biblical traditions of Rabbinic Judaism. Therefore it is a beloved emblem in Messianic circles.</p>
+                <p>Another example is the Rabbinic renaming of Yom Teruah (Day of Trumpets) as Rosh Hashana (Head of the Year).</p>
+                <p>This tradition moved the New Year from springtime near April, to the fall in late September.</p>
+                <p>This is significant because God Himself had set the “First month of the year” to be in spring when things begin to show life and turn green. [Exodus 12:2]</p>
+                <p>This is yet another example of the willingness of the Messianic movement to ignore Scripture in order to embrace anything that connects to Judaism.</p>
+                <p>It is important to understand that “Judaism” and the “Jewish People” are not the same thing. We, along with Jesus, reject the man-made “religion” of Judaism, while praying for and loving the “Jewish People” who have been trapped by it.</p>
+            </text>),
+
+            new Belief("Not Daughters of Rome...", @<text>
+                <p>Because the CACI ordains 'Bishops', a common misconception is that these titles must have some connection to Rome. However, Apostle, Bishop, Elder, & Minister are all titles used by the Original Apostolic Church in the New Testament. They are therefore the property of the True Apostolic Church today.</p>
+                <p>Many are unaware that Jesus Himself is called both “Apostle” and “Bishop” in scripture. [Hebrews 3:1 / 1 Peter 2:25]</p>
+                <p>The original Apostolic Faith was eventually hidden by Rome and its pagan clergy. Through Rome's influence, pagan sun worshiping rituals were mixed into Christianity which can't be found celebrated by the believers anywhere in the New Testament record.</p>
+                <p>The form of Christianity that followed is a hybrid of an ancient Mystery religion wrapped around the Christian narrative.</p>
+                <p>We embrace the Original Faith once delivered to the Saints.</p>
+            </text>),
+
+            new Belief("Not Hyper Charismatic...", @<text>
+                <p>Covenant Apostolics embrace the Biblical Gifts of the Spirit.</p>
+                <p>However, we never embrace the “Hollywood” style showmanship which demeans doctrinal truth in favor of supernatural experiences.</p>
+                <p>There has been a constant and aggressive devaluing of sound biblical doctrine among many in the Hyper Charismatic movement. Often, any insistence on true doctrine is re-labeled as a “Religious Spirit”. The fact is, such an accusation is a diversion from accountability to Biblical Apostolic Orthodoxy.</p>
+                <p>We have a deep love for biblical/doctrinal truth as well as a sincere reverence for the biblical gifts of the Spirit.</p>
+                <p>In this, we embrace both Spirit AND Truth, and do not find them antagonist one toward another.</p>
+            </text>),
+
+            new Belief("Not Traditional Churchianity...", @<text>
+                <p>Covenant Apostolics wholeheartedly believe in “justification by faith”, and we don’t believe that our salvation is in anyway dependent upon our ability to keep any law.</p>
+                <p>In these matters we agree. However, virtually all traditional versions of Churchianity have abandoned the original Apostolic Faith and embraced the calendar and symbols of Papal Roman.</p>
+                <p>While most traditional denominations would consider themselves Non Roman Catholic, the fact remains that in honor of Rome's annual Feasts and Sunday veneration, the entire traditional religious world continues to bow the knee.</p>
+                <p>Covenant Apostolics have made a complete break from this system and have been grafted back into the root of the good olive tree of Israel.</p>
+            </text>)
+        };
+
+        SelectedBelief = Beliefs.FirstOrDefault();
+    }
+
+    private void SelectBelief(Belief belief)
+    {
+        SelectedBelief = belief;
+        
+    }
+}

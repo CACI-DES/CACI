@@ -1,0 +1,362 @@
+﻿@page "/congregation/{Slug}"
+@layout CongregationLayout
+@using CACI_Life.Core.Domain.Congregations
+@using CACI_Life.Features.Congregations.Queries
+@inject ICongregationService CongregationService
+@inject TenantContext TenantContext
+@inject GetHomeDataQuery Query
+
+<CongregationSeoHead Title="@($"{_profile.CongregationName} | Apostolic Sabbath Assembly — {_profile.RegionDescription}")"
+         Description="@($"{_profile.CongregationName} is a whole Bible, Spirit-filled Apostolic Sabbath-keeping congregation {_profile.RegionDescription}. Upholding Acts 2:38, Torah written on hearts, biblical feasts, and the coming Kingdom of God.")"
+         Path="@($"/congregation/{_profile.UrlSlug}")" />
+
+<!-- 1. HERO SECTION -->
+<section class="hero relative overflow-hidden py-20 md:py-28 text-center text-white">
+    <div class="max-w-5xl mx-auto px-4 relative z-10">
+        <span class="badge uppercase tracking-widest mb-4 bg-white/20 text-white border border-white/30 text-xs py-1.5 px-4 rounded-full">
+            @_profile.Subtitle
+        </span>
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight mb-4">
+            @_profile.CongregationName
+        </h1>
+        <p class="text-xl md:text-2xl text-caci-tone3 font-head italic mb-6">
+            &ldquo;@_profile.HeroTagline&rdquo;
+        </p>
+        <p class="text-base sm:text-lg text-slate-100 max-w-3xl mx-auto leading-relaxed mb-10">
+            @(!string.IsNullOrWhiteSpace(_profile.WelcomeMessage) ? _profile.WelcomeMessage : "We are a body of Spirit-filled believers striving for the authentic First Century Apostolic faith. Proclaiming the Gospel of the Kingdom, walking in the Law written on hearts, and honoring God's seventh-day Sabbath and holy appointed times.")
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-4">
+            <a class="btn-primary !bg-white !text-caci-minister hover:!bg-slate-100 font-bold px-7 py-3.5 shadow-xl text-base" href="@($"/congregation/{_profile.UrlSlug}/connect?from=Home%20Hero")">
+                Connect With Us
+            </a>
+            <a class="btn-secondary !bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold px-6 py-3.5 text-base" href="@($"/congregation/{_profile.UrlSlug}/what-we-believe")">
+                What We Believe
+            </a>
+            <a class="btn-primary !bg-[#C8102E] !text-white hover:!bg-red-700 font-bold px-6 py-3.5 shadow-lg text-base" href="@($"/congregation/{_profile.UrlSlug}/bible-studies")">
+                Bible Studies &rarr;
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- 2. STANDING ANNOUNCEMENTS -->
+@if (_data.Announcements.Count > 0)
+{
+    <section class="max-w-6xl mx-auto px-4 -mt-8 relative z-20" aria-label="Announcements">
+        <div class="grid gap-4 md:grid-cols-@Math.Min(_data.Announcements.Count, 3)">
+            @foreach (var a in _data.Announcements)
+            {
+                <div class="card p-6 border-l-4 border-l-caci-blue shadow-lg">
+                    <span class="@(a.Priority >= 100 ? "badge badge-urgent" : "badge")">@a.BadgeText</span>
+                    <h2 class="text-xl font-bold mt-2 text-caci-blue">@a.Title</h2>
+                    <MarkdownView Content="@a.NoticeMarkdown" CssClass="prose prose-slate prose-sm mt-2" />
+                </div>
+            }
+        </div>
+    </section>
+}
+
+<!-- 3. ELDERSHIP & NETWORK FELLOWSHIP -->
+<section class="py-16 md:py-20 bg-white border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="grid lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-7 space-y-4">
+                <span class="badge uppercase tracking-wider">A Word from the Ministry</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-caci-blue leading-tight">
+            &ldquo;@_profile.HeroTagline&rdquo;
+                </h2>
+                <div class="section-rule my-3"></div>
+                <p class="text-slate-700 text-base leading-relaxed">
+                    <strong>@_profile.CongregationName</strong> stands as a beacon of reverence, biblical order, and spiritual authority under the pastoral leadership of <strong>@_profile.PastorName</strong>. 
+                    We are dedicated to preaching the unadulterated message that Jesus and the Apostles taught: 
+                    <strong>the restoration of the Kingdom of God on earth</strong>, the redemption found in the Name of Jesus Christ (Acts 2:38), and the beauty of His Law written on the hearts of believers.
+                </p>
+                <p class="text-slate-700 text-base leading-relaxed">
+                    @_profile.RegionDescription Our assembly meets weekly on the seventh-day Sabbath for worship, prayer, and scriptural discipleship.
+                </p>
+                <p class="text-slate-700 text-base leading-relaxed">
+                    We are an aligned constituent fellowship of <strong>Covenant Apostolic Congregations International (CACI)</strong>, operating in unity with the national Apostolic Council to bring <em>"All The Word to All The World."</em>
+                </p>
+                <div class="pt-2 flex flex-wrap items-center gap-4">
+                    <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe")" class="btn-primary text-sm py-3 px-6">
+                        Explore Our Beliefs
+                    </a>
+                    <a href="@($"/congregation/{_profile.UrlSlug}/connect?from=Home%20Eldership%20Section")" class="btn-secondary text-sm py-3 px-6">
+                        Meet With An Elder
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Emblem & Network Plate -->
+            <div class="lg:col-span-5">
+                <div class="card p-8 bg-gradient-to-br from-slate-50 via-white to-blue-50/50 border border-slate-200 shadow-xl text-center space-y-6">
+                    <div class="w-28 h-28 mx-auto rounded-2xl bg-white p-3 shadow-md border border-slate-200 flex items-center justify-center">
+                        <img src="@_profile.EffectiveLogo" alt="@_profile.CongregationName" class="max-h-20 w-auto" />
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-caci-blue">@_profile.CongregationName</h3>
+                        <p class="text-sm text-caci-tone2 font-semibold mt-1">@_profile.Subtitle</p>
+                        @if (!string.IsNullOrWhiteSpace(_profile.PastorName))
+                        {
+                            <p class="text-xs text-slate-500 font-medium mt-1">Pastoral Leadership: @_profile.PastorName</p>
+                        }
+                    </div>
+                    <blockquote class="italic text-slate-700 text-sm border-l-4 border-l-caci-purple pl-4 text-left">
+                        "All scripture is given by inspiration of God, and is profitable for doctrine, for reproof, for correction, for instruction in righteousness."
+                        <footer class="mt-1 font-bold text-xs text-caci-minister not-italic">— 2 Timothy 3:16</footer>
+                    </blockquote>
+                    <div class="pt-4 border-t border-slate-200 flex items-center justify-center gap-4">
+                        <img src="/logos/CACI_Logo.png" alt="CACI Network" class="h-10 w-auto opacity-90" />
+                        <span class="text-xs text-slate-500 font-semibold text-left">Affiliated Assembly of<br><strong class="text-slate-800">CACI International</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. THE 4 PILLARS -->
+<section class="py-16 md:py-24 bg-[#001F5C] text-white">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="text-center max-w-3xl mx-auto mb-14">
+            <span class="badge uppercase tracking-wider bg-white/10 text-[#A4BDDD] border border-white/20 mb-3">
+                Our Mission &middot; Acts 2:42 Pattern
+            </span>
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-white mb-4">
+                The Apostolic Pillars
+            </h2>
+            <div class="section-rule mx-auto my-4 bg-amber-400"></div>
+            <p class="text-slate-200 text-base md:text-lg leading-relaxed mb-6">
+                Foundational principles that guide our worship, our structure, and our global outreach.
+            </p>
+            <blockquote class="bg-white/10 rounded-2xl p-5 border-l-4 border-l-amber-400 text-left max-w-2xl mx-auto">
+                <p class="italic text-sm sm:text-base text-slate-100">
+                    "And they continued stedfastly in the apostles' doctrine and fellowship, and in breaking of bread, and in prayers."
+                </p>
+                <footer class="mt-2 text-xs font-bold text-amber-300 not-italic uppercase tracking-widest">— Acts 2:42 · The 4 Pillars of the Apostolic Faith</footer>
+            </blockquote>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach (var pillar in CaciCardPresets.Pillars)
+            {
+                <div class="pillar-card p-6 bg-white text-slate-800 border-t-4 @pillar.BorderClass hover:-translate-y-1 transition-all">
+                    <div class="card-body !p-0">
+                        <div class="card-icon">
+                            <i class="@pillar.IconClass"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-caci-blue mb-2">@pillar.Title</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            @pillar.Description
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="mt-12 text-center">
+            <a href="@($"/congregation/{_profile.UrlSlug}/what-we-believe#why-apostolic")" class="btn-primary !bg-amber-400 !text-slate-900 hover:!bg-amber-300 font-bold px-8 py-3.5 shadow-lg">
+                Learn More About the 4 Pillars &rarr;
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- 5. PREACHING THE KINGDOM — THE 4 KEYS -->
+<section class="py-16 md:py-24 bg-slate-50 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="text-center max-w-3xl mx-auto mb-14">
+            <span class="badge mb-3">Our Message &middot; Matthew 6:10</span>
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-caci-blue mb-3">
+                Preaching the Kingdom
+            </h2>
+            <div class="section-rule mx-auto my-3"></div>
+            <p class="text-slate-600 text-base md:text-lg leading-relaxed mb-6">
+                Jesus came to fulfill what the prophets declared: not merely an escape from earth, but God’s righteous Kingdom restored over all the Earth.
+            </p>
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 border-l-4 border-l-[#C8102E] shadow-sm max-w-2xl mx-auto text-left">
+                <blockquote class="italic text-slate-800 text-base">
+                    "Thy kingdom come. Thy will be done in earth, as it is in heaven. - Matthew 6:10"
+                </blockquote>
+                <p class="text-xs font-bold text-caci-minister mt-2 uppercase tracking-widest">— The 4 Keys of the Kingdom</p>
+            </div>
+        </div>
+
+        <div class="preaching-grid">
+            @foreach (var key in CaciCardPresets.Keys)
+            {
+                <a href="@($"/congregation/{_profile.UrlSlug}/4keys#keys-grid")" class="preaching-card group">
+                    <div class="card-icon">
+                        <i class="@key.IconClass"></i>
+                    </div>
+                    <div class="preaching-overlay">
+                        <h3>
+                            <span class="key-word">@key.KeyWord</span>
+                            <span class="key-subtitle">@key.KeySubtitle</span>
+                        </h3>
+                        @if (!string.IsNullOrWhiteSpace(key.Description))
+                        {
+                            <p class="key-description">@key.Description</p>
+                        }
+                    </div>
+                </a>
+            }
+        </div>
+
+        <div class="mt-12 text-center">
+            <a href="@($"/congregation/{_profile.UrlSlug}/4keys")" class="btn-primary font-bold px-8 py-3.5 shadow-lg">
+                Explore the 4 Keys Full Study &rarr;
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- 6. 3 WAYS TO GET INVOLVED -->
+<section class="py-16 md:py-24 bg-white border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="text-center max-w-3xl mx-auto mb-14">
+            <span class="badge mb-3">Take Your Next Step</span>
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-caci-blue mb-3">
+                3 Ways To Get Involved
+            </h2>
+            <div class="section-rule mx-auto my-3"></div>
+            <p class="text-slate-600 text-base md:text-lg">
+                Connect with our local assembly or study with us online.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Way 1 -->
+            <div class="card p-6 md:p-8 flex flex-col justify-between hover:shadow-xl transition-all border-t-4 border-t-caci-blue">
+                <div>
+                    <span class="text-xs font-mono font-bold tracking-widest text-caci-blue uppercase bg-blue-50 px-3 py-1 rounded-md">
+                        Step #1
+                    </span>
+                    <h3 class="text-2xl font-bold text-caci-blue mt-4 mb-2">
+                        Online &amp; In-Home Bible Study
+                    </h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                        Walk through the 12 Foundations and 4 Keys one-on-one or in an interactive small group with @_profile.PastorName. In-person across @_profile.City and surrounding regions, or online worldwide.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <a href="@($"/congregation/{_profile.UrlSlug}/bible-studies")" class="btn-primary text-xs py-3 px-3 justify-center">
+                        Explore Studies
+                    </a>
+                    <a href="@($"/congregation/{_profile.UrlSlug}/connect?topic=Bible+Study")" class="btn-secondary text-xs py-3 px-3 justify-center">
+                        Request Study
+                    </a>
+                </div>
+            </div>
+
+            <!-- Way 2 -->
+            <div class="card p-6 md:p-8 flex flex-col justify-between hover:shadow-xl transition-all border-t-4 border-t-[#C8102E]">
+                <div>
+                    <span class="text-xs font-mono font-bold tracking-widest text-[#C8102E] uppercase bg-red-50 px-3 py-1 rounded-md">
+                        Step #2
+                    </span>
+                    <h3 class="text-2xl font-bold text-caci-blue mt-4 mb-2">
+                        Weekly Sabbath Celebration
+                    </h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-1">
+                        <strong>~ On The 7th Day ~</strong>
+                    </p>
+                    <p class="text-xs text-caci-tone2 font-semibold mb-1">
+                        @_profile.ServiceSchedule
+                    </p>
+                    <p class="text-xs text-slate-500 font-medium mb-3">
+                        @(!string.IsNullOrWhiteSpace(_profile.FullAddress) ? _profile.FullAddress : $"{_profile.City}, {_profile.State}") &middot; In-Person &amp; Livestream
+                    </p>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                        Spirit-filled contemporary worship with ancient roots and authentic apostolic preaching.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <a href="@($"/congregation/{_profile.UrlSlug}/connect?topic=Sabbath+Visit")" class="btn-primary !bg-[#C8102E] text-xs py-3 px-4 justify-center">
+                        Plan a Sabbath Visit
+                    </a>
+                    @if (!string.IsNullOrWhiteSpace(_profile.LivestreamUrl))
+                    {
+                        <a href="@_profile.LivestreamUrl" target="_blank" rel="noopener" class="btn-secondary text-xs py-3 px-3 justify-center">
+                            Watch Live
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Way 3 -->
+            <div class="card p-6 md:p-8 flex flex-col justify-between hover:shadow-xl transition-all border-t-4 border-t-caci-purple">
+                <div>
+                    <span class="text-xs font-mono font-bold tracking-widest text-caci-purple uppercase bg-purple-50 px-3 py-1 rounded-md">
+                        Step #3
+                    </span>
+                    <h3 class="text-2xl font-bold text-caci-blue mt-4 mb-2">
+                        Biblical Feasts &amp; Convocations
+                    </h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        Join our fellowship for the annual appointed times of Leviticus 23 and national corporate traveling feast convocations.
+                    </p>
+                    @if (_data.NextFeast is { } feast)
+                    {
+                        <div class="bg-purple-50 rounded-xl p-3 border border-purple-200 mb-6 text-xs text-purple-900">
+                            <strong>Upcoming Feast:</strong> @feast.FeastName (@FeastDates(feast))
+                            @if (!string.IsNullOrWhiteSpace(feast.AssemblyInstructions))
+                            {
+                                <p class="mt-1 font-semibold text-purple-800">Assembly Notice: @feast.AssemblyInstructions</p>
+                            }
+                        </div>
+                    }
+                </div>
+                <a href="@($"/congregation/{_profile.UrlSlug}/calendar")" class="btn-primary !bg-caci-purple text-xs py-3 px-4 justify-center">
+                    View Feasts &amp; Calendar
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 7. BOTTOM CONNECT SECTION -->
+<section class="py-16 md:py-20 bg-white text-center">
+    <div class="max-w-4xl mx-auto px-4 space-y-6">
+        <span class="badge uppercase tracking-wider">Connect With Us</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-caci-blue">
+            We Would Love to Hear From You
+        </h2>
+        <div class="section-rule mx-auto my-3"></div>
+        <p class="text-slate-600 text-base max-w-2xl mx-auto leading-relaxed">
+            Whether you have questions about the Sabbath, the 4 Keys, or want to join us for worship in @_profile.City, our ministry is here for you.
+        </p>
+        <div class="pt-4 flex flex-wrap justify-center gap-4">
+            <a class="btn-primary px-8 py-3.5 text-base shadow-lg" href="@($"/congregation/{_profile.UrlSlug}/connect?from=Home%20Page%20Bottom%20CTA")">
+                Begin a Conversation
+            </a>
+            <a class="btn-secondary px-8 py-3.5 text-base" href="@($"/congregation/{_profile.UrlSlug}/calendar")">
+                Community Calendar
+            </a>
+        </div>
+    </div>
+</section>
+
+@code {
+    [Parameter] public string Slug { get; set; } = string.Empty;
+
+    private CongregationProfile _profile = new();
+    private HomeData _data = HomeData.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Slug))
+        {
+            TenantContext.SetSlug(Slug);
+        }
+        _profile = await CongregationService.GetCurrentAsync();
+        _data = await Query.ExecuteAsync();
+    }
+
+    private static string FeastDates(HomeFeastDto f) =>
+        f.EndUtc.Date - f.StartUtc.Date <= TimeSpan.FromDays(1)
+            ? f.StartUtc.ToString("MMMM d, yyyy")
+            : $"{f.StartUtc:MMMM d} - {f.EndUtc.AddDays(-1):MMMM d, yyyy}";
+}
+
+

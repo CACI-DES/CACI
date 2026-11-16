@@ -1,0 +1,210 @@
+@page "/feast-dates"
+@rendermode InteractiveServer
+
+<SeoHead Title="CACI - Biblical Feasts"
+         Description="A Brief Overview of The Apostolic Festivals: Passover, Pentecost, Trumpets, Atonement, and Tabernacles."
+         CanonicalUrl="https://caci.life/feast-dates" />
+
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header">
+            <h1>A Brief Overview of The Apostolic Festivals</h1>
+            <div class="divider"></div>
+            <p>Throughout the New Testament writings we see the Apostles celebrating and teaching the faith from the original Biblical festivals including Passover, Firstfruits, and Pentecost. At no point do we read that they adopted a different calendar or set of festivals.</p>
+        </div>
+
+        <div class="festivals-container">
+            <!-- Sidebar / Menu -->
+            <div class="festivals-menu">
+                @foreach (var festival in Festivals.Where(f => f.IsVisibleInMenu))
+                {
+                    <button class="festival-btn @(SelectedFestival == festival ? "active" : "")"
+                            @onclick="() => SelectFestival(festival)">
+                        @festival.Title
+                    </button>
+                }
+            </div>
+
+            <!-- Content Area -->
+            <div class="festival-content">
+                @if (SelectedFestival != null)
+                {
+                    <h2>@SelectedFestival.Title</h2>
+                    @SelectedFestival.Content
+                }
+            </div>
+        </div>
+        <div class="feast-note">
+            <p><i class="fas fa-info-circle" style="color: var(--caci-primary-blue); margin-right: 10px;"></i>
+                All dates are calculated according to the recognized Covenant Calendar of the CACI
+                Ecclesiastical Body. Observance begins at sunset on the date specified for the evening preceding
+                the Holy Day. Please consult your local congregational calendar for precise service times and
+                location information.</p>
+        </div>
+    </div>
+</section>
+
+@code {
+    private record Festival(string Title, RenderFragment Content, bool IsVisibleInMenu = true);
+    private Festival? SelectedFestival { get; set; }
+    private List<Festival> Festivals { get; set; } = new();
+
+
+    protected override void OnInitialized()
+    {
+        Festivals = new List<Festival>
+        {
+            new Festival("Overview & Calculation", @<text>
+                <p>Below are the biblical festivals as calculated by the CACI Apostolic Council. To arrive at these dates, we use the "first light" of the New Moon to find the 1st day of the new month. After finding the 1st day, we count to the day of the month recorded in the Torah (14th, 15th, 10th, Etc).</p>
+                <p>The dates promoted by Rabbinic Judaism are no longer calculated according to Torah. They are often 24 to 48 hours off in an attempt to align more seamlessly to the western calendar. The result is, the festivals often will not reflect the correct placement of the Moon as they do when calculated according to scripture. To address this, rabbinic tradition has extended many celebrations by adding additional days to the festival.</p>
+                <p>It is important to note the dates below may be altered slightly if the moon is actually sighted 24 hours before or after the expected date. Also, the dates may shift by a complete month in the event that the barley in Israel is not green in time for Aviv. This is not unusual, occurring every few years.</p>
+            </text>),
+
+            new Festival("Biblical New Year", @<text>
+                <!-- <p><strong>Sun Eve March 30th</strong><br /><em>(Not a Moed)</em></p> -->
+                <p>The Biblical New Year is not January. The bible teaches that the month of "Abib"(March-April) begins the year. Abib literally means "green barley ears". This references the stage of barley maturity in Israel just before the harvest. We know that the month of the barley harvest is always the beginning of the biblical year. Thus, the Creator's New Year speaks of life and fruitfulness rather than ice and the bitter cold.</p>
+                <p>This harvest is in the beautiful spring of the year and announces the celebration of Passover & the First Fruits wave offering. Once the barley is determined to be "abib", the following new moon begins the NEW YEAR. The harvest will begin later in this month. This year there have been multiple reports of "abib" barley in time for the March 11th New Moon.</p>
+            </text>),
+
+            new Festival("Passover Meal", @<text>
+                <!-- <p><strong>Sun April 13th</strong><br /></p> -->
+                <p><em>Meal Eaten In The Evening</em></p>
+                <p>The elements of the Biblical Passover speak directly to our Messiah.</p>
+                <ul class="styled-list">
+                    <li>Spotless lamb</li>
+                    <li>Unleavened (without sin)</li>
+                    <li>Bitter Herbs (the bitterness of sin & slavery)</li>
+                    <li>Rescued from the Death Angel</li>
+                </ul>
+            </text>),
+
+            new Festival("Unleavened Bread", @<text>
+                <p>The 7 Days of Unleavened Bread were first celebrated beginning the night of the first Passover as Israel was being rescued and separated from Egyptian bondage. During this 7 days, YHWH literally removed from Israel the leaven of Egypt. Since then, each spring God's people have thoroughly searched their homes to remove leaven for a week following the Passover.</p>
+                <p>The Apostles would teach that during this festival early Apostolic Believers were to search for a different kind of "leaven"; malice and wickedness. We were to eat a different kind of "unleavened bread"; truth and sincerity.</p>
+                <div class="read-more-wrapper">
+                    <button class="read-more-link" @onclick='() => SelectFestival(Festivals.First(f => f.Title.Contains("Perspective")))'>
+                        Read Apostolic Perspective &rarr;
+                    </button>
+                </div>
+            </text>),
+
+            new Festival("Unleavened Bread - Apostolic Perspective", @<text>
+                <div class="perspective-card">
+                    <p class="perspective-subtitle">A Covenant Apostolic Perspective</p>
+                    <div class="perspective-divider"></div>
+                    
+                    <p>The 7 days of unleavened bread begin on the night of the Passover meal. Under the Old Covenant, the Israelites were to completely remove all leaven from their homes and foods for 7 days.</p>
+
+                    <div class="scripture-box">
+                        <p><strong>Leviticus 23:6-8</strong><br />“And on the fifteenth day of the same month is the feast of unleavened bread unto the LORD: seven days you must eat unleavened bread”</p>
+                    </div>
+
+                    <div class="scripture-box">
+                        <p><strong>Exodus 12:15</strong><br />“Seven days shall you eat unleavened bread; even the first day you shall put away leaven out of your houses”</p>
+                    </div>
+
+                    <h3>How does this translate to the Covenant Apostolic Believer under the New Covenant?</h3>
+                    <p>While we are surrounded by Messianic/Torah Observant groups who insist that we are required to obey these mitzvot as “literal”, we believe the point of the New Covenant is to lift them out of the literal and reveal the greater “Spiritual” lesson that they were intended to teach.</p>
+                    
+                    <div class="light-card">
+                        <p>It is interesting to note that so many who insist on a literal requirement, themselves don't keep any of the “lamb mitzvot" as literal. For example, they don't...</p>
+                        <ul class="styled-list">
+                            <li>Choose a lamb on the 10th day</li>
+                            <li>Bring it into their homes</li>
+                            <li>Kill it on the 14th day</li>
+                            <li>They don't care if it's a male, a year old, spotted, or had broken bones.</li>
+                        </ul>
+                    </div>
+
+                    <p>So, while we may choose to avoid “literal” leaven as an object lesson, we believe in our Covenant we are to look for a different kind of leaven.</p>
+
+                    <div class="scripture-box highlight">
+                        <p><strong>1Cor 5:8</strong><br /><em>Therefore let us keep the feast, not with old leaven, neither with the leaven of malice and wickedness; but with the unleavened bread of sincerity and truth.</em></p>
+                    </div>
+
+                    <p>This shows that Apostolic teaching elevated the Torah to its true meaning. It shows the greater "Spiritual" meaning of the Torah mitzvot.</p>
+
+                    <h3>Ways to observe the Days of Unleavened Bread…</h3>
+                    <div class="observation-steps">
+                        <div class="step">
+                            <span class="step-num">1</span>
+                            <div class="step-content">
+                                <strong>Avoid leaven as an object lesson:</strong>
+                                <p>Through this, you will become aware of how very diligent you must be, if you are going to avoid “wickedness” and “malice” in our daily lives. Ultimately we will all fail. We will need Messiah to remove our leaven.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">2</span>
+                            <div class="step-content">
+                                <strong>Take notice how often leaven is present this week:</strong>
+                                <p>Call it out at every meal, and in every item. Through this, you will become aware of how very diligent you must be, if you are going to avoid “wickedness” and “malice” in our daily lives.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">3</span>
+                            <div class="step-content">
+                                <strong>Notice the changes needed:</strong>
+                                <p>Finally, notice the many dietary, and preparation changes that will need to take place if you are going to eat only the unleavened bread of “sincerity” and “truth”.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="perspective-footer">
+                        <h3>Conclusion...</h3>
+                        <p>The Covenant Apostolic Perspective concerning the Feast of Unleavened bread is the same as that of the first Apostles… We continue to celebrate the feast, but under our better covenant, we do not consider ourselves bound to the “letter of the law”. We are learning to remove “wickedness”, not “wonder bread”.</p>
+                    </div>
+                </div>
+            </text>, false),
+
+            new Festival("Feast of Weeks - Firstfruits", @<text>
+                <!-- <p><strong>Sunday April 20th</strong><br /></p> -->
+                <p><em>(Begins the Feast of Weeks & The Count Down To Pentecost)</em></p>
+                <p>This is the day it was discovered that Messiah had resurrected and was no longer in the tomb. It is the day that the very first of the spring harvest was to be waved before YHWH. Thus, Messiah is the very first to have ever been risen to immortality.</p>
+                <p><strong>John 20:1,16-17</strong><br />The first day of the week cometh Mary Magdalene early, when it was yet dark, and seeth the stone taken away from the sepulchre... Jesus saith unto her, Mary. She turned herself, and saith unto him, Rabboni; which is to say, Master. Jesus saith unto her, Touch me not; for I am not yet ascended to my Father</p>
+            </text>),
+
+            new Festival("Feast of Weeks - Pentecost", @<text>
+                <!-- <p><strong>Sunday June 8th</strong><br /></p> -->
+                <p><em>(Ends the Feast of Weeks)</em></p>
+                <p>More Info To Come...</p>
+            </text>),
+
+            new Festival("Trumpets", @<text>
+                <!-- <p><strong>Possibly Monday, Sep 22nd, But Likely Tuesday, Sep 23rd At Sunset</strong><br /></p> -->
+                <p><em>(Depending on the Sighted Moon in Israel)</em></p>
+                <p>Yom Teruah - The Day of Trumpets. Celebrates The 2nd Coming of Messiah.</p>
+                <p><strong>Revelation 11:15</strong><br />And the seventh angel sounded; and there were great voices in heaven, saying, The kingdoms of this world are become the kingdoms of our Lord, and of his Christ; and he shall reign for ever and ever.</p>
+            </text>),
+
+            new Festival("Atonement", @<text>
+                <!-- <p><strong>Thursday Evening, Oct 2nd - Friday Evening, Oct 3rd</strong><br /></p> -->
+                <p><em>CACI International Day of Prayer</em></p>
+                <p>The Sacrifice of YHWH is Chosen & Azazel is Rejected, Bound, and Cast Out. Israel chooses Messiah at His Return.</p>
+                <p><strong>Zechariah 12:10</strong><br />They shall look upon me whom they have pierced, and they shall mourn , as one mourneth for his only son.</p>
+                <p><strong>Azazel is Bound and Cast Out - Revelation 20:1-3</strong><br />And I saw an angel come down from heaven, having the key of the bottomless pit and a great chain in his hand. And he laid hold on the dragon, that old serpent, which is the Devil, and Satan, and bound him a thousand years, And cast him into the bottomless pit</p>
+            </text>),
+
+            new Festival("Tabernacles", @<text>
+                <!-- <p><strong>Tue, Oct 7th - Tue, Oct 14th At Sunset</strong><br /></p> -->
+                <p><em>7 Days of Sukkot</em></p>
+                <p>This 7 Day Festival looks both back in history as well as forward prophetically. As we look back we see Israel in the wilderness, free from Egypt, but not yet possesing their full inheritance. During this time they lived in temporary structures made of brush and tree limbs. These were called Sukkot (tabernacles).</p>
+                <p>This represented a temporary kingdom structure as Israel "learned" how to govern under the Direction of YHWH Himself. Prophetically this festival points to the coming Millenial Reign when those from the 1st Ressurection will learn to govern under King Yshua before the Coming Eternal Kingdom.</p>
+            </text>),
+
+            new Festival("The 8th Day", @<text>
+                <!-- <p><strong>Tue, Oct 14th - Wed, Oct 15th At Sunset</strong><br /></p> -->
+                <p><em>"The Last Great Day"</em></p>
+                <p>The Earth Made NEW & The Eternal Kingdom Begins... The Citizens Now Raised In The 2nd Resurrection Are Welcomed By The Reigning Bride of The 1st Resurrection 1,000 Years Earlier...</p>
+                <p><strong>Revelation 21:5-6, 22:17</strong><br />And he that sat upon the throne said, Behold, I make all things new... I will give unto him that is athirst of the fountain of the water of life freely... the Spirit and the Bride say, Come... And let him that is athirst come. And whosoever will, let him take the water of life freely.</p>
+            </text>)
+        };
+
+        SelectedFestival = Festivals.FirstOrDefault();
+    }
+
+    private void SelectFestival(Festival festival)
+    {
+        SelectedFestival = festival;
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,57 @@
+<div class="@CardClass" @onclick="HandleClick">
+    <h4 class="mb-2 text-3xl font-bold text-medium">@Level</h4>
+    <p class="mb-4 text-4xl font-extrabold text-white">$@Price</p>
+    
+    <ul class="flex-grow space-y-3 text-sm @(IsDark ? "text-gray-200" : "text-gray-700")">
+        @if (Benefits != null)
+        {
+            foreach (var benefit in Benefits)
+            {
+                <li class="list-disc ml-4">@benefit</li>
+            }
+        }
+    </ul>
+
+    @if (ShowCta)
+    {
+        <div class="mt-6 text-center">
+            <button class="@ButtonClass">
+                @(IsSelected ? "Selected" : "Select")
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string Level { get; set; } = string.Empty;
+    [Parameter] public decimal Price { get; set; }
+    [Parameter] public List<string>? Benefits { get; set; }
+    [Parameter] public bool IsSelected { get; set; }
+    [Parameter] public bool ShowCta { get; set; } = true;
+    [Parameter] public bool IsDark { get; set; } = true;
+    [Parameter] public EventCallback<SponsorSelectionArgs> OnSelect { get; set; }
+
+    private async Task HandleClick()
+    {
+        if (OnSelect.HasDelegate)
+        {
+            await OnSelect.InvokeAsync(new SponsorSelectionArgs { Level = Level, Price = Price });
+        }
+    }
+
+    private string CardClass => 
+        $"flex h-full flex-col rounded-xl border-t-4 p-6 shadow-2xl transition duration-300 transform " +
+        $"{(IsDark ? "bg-gray-700" : "bg-white border-medium")} " +
+        $"{(ShowCta ? "cursor-pointer" : "")} " +
+        $"{(IsSelected ? "border-yellow-400 scale-[1.05] ring-4 ring-yellow-400 ring-opacity-50" : "border-medium hover:scale-[1.03]")}";
+
+    private string ButtonClass => 
+        $"inline-block rounded px-6 py-2 font-bold " +
+        $"{(IsSelected ? "bg-yellow-400 text-gray-900" : "bg-gray-600 text-white hover:bg-gray-500")}";
+
+    public class SponsorSelectionArgs
+    {
+        public string Level { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+    }
+}

@@ -1,0 +1,260 @@
+@page "/what-we-believe"
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager NavigationManager
+
+<SeoHead Title="CACI - What We Believe"
+         Description="Our fundamental beliefs: The Holy Bible, One God, Humanity, Salvation, The Torah, The Sabbath, The Festivals, and The Kingdom of God."
+         CanonicalUrl="https://caci.life/what-we-believe" />
+
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header">
+            <h1>What We Believe</h1>
+            <div class="divider"></div>
+            <p>While the Covenant Apostolic Congregations International maintain an open creed, these statements
+                preserve its theological heritage, and present its latest and best understanding of Scripture.</p>
+        </div>
+
+        <div class="beliefs-container">
+            <!-- Sidebar / Menu -->
+            <div class="beliefs-menu">
+                @foreach (var belief in Beliefs)
+                {
+                    <a class="belief-btn @(SelectedBelief == belief ? "active" : "")"
+                       href="what-we-believe?tab=@Uri.EscapeDataString(belief.Title)"
+                       style="text-decoration: none; display: block; text-align: left;">
+                        @belief.Title
+                    </a>
+                }
+            </div>
+
+            <!-- Content Area -->
+            <div class="belief-content">
+                @if (SelectedBelief != null)
+                {
+                    <h2>@SelectedBelief.Title</h2>
+                    @SelectedBelief.Content
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private record Belief(string Title, RenderFragment Content);
+    private Belief? SelectedBelief { get; set; }
+    private List<Belief> Beliefs { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        Beliefs = new List<Belief>
+        {
+            new Belief("The Holy Bible", @<text>
+                <p>The Bible, consisting of the Old and New Testaments, is God’s inspired Word. Inerrant in its original
+                writing, the Bible is the only authoritative and infallible rule of faith and conduct for humanity.</p>
+            </text>),
+
+            new Belief("One God", @<text>
+                <p>The sovereign deity of the universe is YHWH the "I AM", who is to be worshiped in spirit and in truth. He
+                is the eternal, infinite, holy, self-existent Spirit who created, sustains, rules, redeems, and judges
+                His creation. He is one in nature, essence and being. God, who is one in person, has manifested (or made
+                Himself known) in Scripture as Father in creation, as Son in redemption, and as Holy Spirit in
+                emanation.​</p>
+
+                <h3>God the Father...</h3>
+                <p>God the Father of whom are all things, whom no one has seen nor can see, reigns in the heavens and
+                transcends our complete knowing. He is revealed as our loving heavenly Father. Ultimately, God the
+                Father will restore perfect harmony to all creation through Messiah and reign eternally over the
+                redeemed.</p>
+
+                <h3>Jesus the Son...</h3>
+                <p>Jesus Christ is declared by the Angel Gabriel to be Emmanuel - “God With Us”, and by the Apostle Paul to
+                be "God manifested in the flesh" (I Tim 3:16). According to John the Apostle, Jesus was the "WORD
+                (Logos) made flesh" who in the beginning was with God, and was God. All things were made by him; and
+                without him was not any thing made that was made. Born of the virgin Mary by the power of the Holy
+                Spirit of God, He became the only "begotten" Son. In His Son-ship He "took on the seed of Abraham" and
+                was "made like unto his brethren". In that God is not a man, the scripture declares that God was "in
+                Christ" reconciling the world unto Himself. As the Son, He humbled Himself to be subordinate to the
+                Father and, obedient unto death. He lived without sin, died as an atoning sacrifice for our sin and not
+                His own, was entombed for three full days and three full nights, resurrected Himself bodily, ascended to
+                the glory He had before, reigns as Lord in heaven, and will return to earth as judge and King.</p>
+
+                <h3>The Holy Spirit...</h3>
+                <p>The Holy Spirit is the promised divine helper. The Ruach HaKodesh (Holy Spirit) literally translated is
+                "Holy Breath" and is God’s presence and power in the world indwelling believers. Thus the Holy Spirit is
+                not a seperate eternal person “IN” the Godhead, but is rather the Spirit of God Himself. By His Holy
+                Spirit, God inspired and illuminates the Scriptures; convicts and regenerates sinners; sanctifies,
+                teaches, comforts, guides, and preserves believers; and empowers them for service.</p>
+            </text>),
+
+            new Belief("Humanity, Satan, Sin, & Death", @<text>
+                <p>Humanity was created in the image of God: sinless, though not naturally immortal. Through Adam and Eve’s
+                disobedience, all human beings became sinners by nature and by choice. The penalty for our sin is
+                alienation from God, physical death (without consciousness) and, ultimately eternal death for those who
+                do not receive the salvation offered by Messiah. It was Satan, the adversary of God, who tempted our
+                first parents in the garden. The Devil is still capable of transforming himself into an angel of light
+                but will finally be destroyed in the lake of fire.</p>
+            </text>),
+
+            new Belief("Humanity, Messiah, Salvation, & Life", @<text>
+                <p>Sinful humanity may be saved from the penalty of eternal death and receive eternal life instead.
+                Atonement for sins, with its attendant promise of eternal life, comes through Messiah’s death, burial,
+                and resurrection on our behalf. We are able to connect to these three elements through…</p>
+
+                <h3>The Death – Repentance:</h3>
+                <p>We believe that repentance is initiated through Godly sorrow, and is a call to turn from sin and mortify
+                the deeds of the flesh.</p>
+
+                <h3>The Burial - Water Baptism:</h3>
+                <p>We believe Scriptural water baptism to be sacramental for the "remission of sins" and is commanded in the
+                scriptures to be done in the singular "Name" of the Messiah, rather than the nameless trinitarian
+                titles.</p>
+
+                <h3>The Resurrection – Infilling of the Holy Spirit:</h3>
+                <p>We believe that true believers are filled by the Holy Spirit in the same way as the first Believers in
+                Acts. Thus, evidenced by the supernatural gifts of the Spirit. (Acts 10:44-46)​</p>
+            </text>),
+
+            new Belief("The Congregation", @<text>
+                <p>The Congregation in Scripture is a spiritual body of believers who hold the faith of Jesus and keep the
+                commandments of God. Under the lordship of Messiah and the authority of His Word, the Congregation is
+                His Government of Kings and Priests, and exists universally and locally for purposes of worshiping God,
+                preaching the Kingdom, nurturing believers, and serving humanity. All Saints should participate in this
+                mission by service to others and fellowship with believers.</p>
+            </text>),
+
+            new Belief("The Torah", @<text>
+                <p>Torah means "instructions". As such, God's Torah (Genesis - Deuteronomy) contains both the 10 Commandment
+                Law of God as well as the Scrolls of the Book of the Law that was added. These timeless, divine lessons
+                for victorious living express the beautiful Law and Culture of God’s Kingdom to His Covenant People.</p>
+
+                <h3>HOW IS GOD'S TORAH CONSTRUCTED</h3>
+                <p>The Torah is perfectly built from two (2) major components; "God's Law of Ten Commandments" ~AND~ the
+                added “Book of the Law of Moses”.</p>
+                <p>2 Chronicles 33:8<br>Take heed to do all that I have commanded them, according to the whole law ~AND~ the
+                statutes and the ordinances by the hand of Moses.</p>
+                <p>These two components are essential to understanding Torah's application under the New Covenant.</p>
+                <p>To distinguish God's 10 Commandments from the Book of the Law is NOT to diminish the value of the Torah
+                in the life of the believer, but rather to distinguish that which is the "eternally unalterable law" (10
+                Commandments) from that which contained "shadows, penalties, and symbolisms" which would be elevated as
+                spiritual applications in the New Covenant (ie Levitical Sacrifices, Literal Circumcision, Etc.).</p>
+
+                <h3>THE GIVING OF TORAH</h3>
+                <p>Many believers are unaware that the Torah was given in two separate stages. This knowledge parallels its
+                application in the New Covenant. That which was given first (The 10 Commandments) remains the foundation
+                of God's Moral Code, and that which was added later to address transgression (The Book of the Law)
+                prophetically shadows the redemptive work of Messiah and reveals the beautiful culture of His Kingdom
+                (festivals, celebrations, foods, & customs).</p>
+                <p>Let us examine these unfolding stages...</p>
+                <p>First... The 10 Commandments alone were spoken audibly by God, and the Bible says "And He added no more".
+                These had been, and always will be, the eternal foundation of God's Moral Character and standard of
+                righteousness. They have not been altered by Calvary.</p>
+                <p>Then, while Moses was on the mountain receiving the written set of 10 Commandments, Israel transgressed
+                and began worshiping idols of Golden Calves. This infuriated Moses and he threw down the two tables of
+                stones shattering them.</p>
+                <p>After this transgression of Israel, God called Moses back onto the mountain where he gave him a
+                re-written set of His 10 Commandments, but this time God had Moses write onto scrolls a "Book of the
+                Law" which was "added because of the transgression". (Gal 3:19).</p>
+                <p>These "added" laws were beautifully constructed with symbolism that would reveal the work of the Messiah,
+                and contain object lessons for righteous and spiritual living. These have been elevated by Calvary to
+                reveal Messiah, and have taken on their "New and Living" application under the New Covenant.</p>
+                <p>Understanding these two components allows the New Testament Believer to perfectly harmonize the writings
+                of the Apostles concerning the Law. </p>
+                <p>The Apostles without exception uphold the integrity and literal application of God's 10 Commandment Law
+                as our Christian expression of love both toward God and Others. Thus, the New Covenant Disciple is
+                taught to honor God's 10 Commandments as a RESULT not as a MEANS of Grace. </p>
+                <p>1 John 5:2<br>By this we know that we love the children of God, when we love God, and keep his
+                commandments.</p>
+                <p>At the same time, the Apostles do not abandon the Book of the Law of Moses, but rather from this portion
+                of Torah they lift all of their spiritual lessons and allegories. They speak of "spiritual"
+                circumcision, "spiritual" sacrifices, and a "spiritual" temple. These elements are not absent in the New
+                Covenant, they are elevated and made spiritual and therefore are upheld in a superior way.</p>
+                <p>1 Peter 2:5<br>Ye also, as lively stones, are built up a spiritual house, an holy priesthood, to offer up
+                spiritual sacrifices, acceptable to God by Jesus Christ.</p>
+            </text>),
+
+            new Belief("The Sabbath", @<text>
+                <p>The seventh-day Sabbath is God’s gift to humanity from creation, was written into the Ten Commandments by
+                God’s own finger, kept and taught by Jesus, and observed by the early apostolic assemblies. A memorial
+                of both creation and redemption, the Sabbath should be faithfully celebrated by believers now as a day
+                of rest, worship, and well-doing.</p>
+            </text>),
+
+            new Belief("The Appointed Festivals (Moedim)", @<text>
+                <p>The annual feasts of YHWH are moedim (divine appointments) throughout the year. They mark the prophetic
+                sequence of specific events in God's redemptive plan, and stand in stark opposition to the pagan
+                festivals of Mystery Babylon. They were observed by Apostolic example throughout the New Testament
+                record. They will be observed in the coming millennial Kingdom of Jesus Christ, and are celebrated by
+                His faithful Congregation in the present era.</p>
+            </text>),
+
+            new Belief("Christian Living", @<text>
+                <p>Christians are called to holiness in thought, word, and deed and to express faith in Christ through
+                devotion to God and godly interaction with others. As a result — not a cause — of redemption, believers
+                should ...</p>
+                <ol class="styled-list">
+                    <li>Develop their relationship with God through Bible reading and study, prayer, fasting, worship, and
+                        obedience;</li>
+                    <li>Help relieve the physical and spiritual needs of humanity by compassionate social action and gospel
+                        witness;</li>
+                    <li>Oppose pride, envy, indolence, lust, covetousness, and other evils in the spirit;</li>
+                    <li>Refuse immoral amusements and practices such as pornography, sexual immorality, and homosexuality in
+                        the flesh; </li>
+                    <li>Maintain scriptural distinction between the male and female gender in appearance, apparel, and
+                        demeanor.</li>
+                    <li>Observe these Bible principles: give tithe and freewill offerings for the support of the
+                        congregation and its gospel ministry; avoid intermixing Christianity with extra-biblical practices
+                        as in the common observances of Sunday, Christmas, Easter, Lent, and any other holidays which were
+                        originally celebrations to the pagan gods and therefore have no place in the culture of the Kingdom.
+                        As kings and priests in the coming Kingdom of Jesus Christ it is our place to teach the Biblical
+                        celebrations given in scripture. These Holy Days are understood in greater clarity in our covenant
+                        and rehearse God's great plan of Salvation.</li>
+                </ol>
+            </text>),
+
+            new Belief("Sacraments", @<text>
+                <p>According to scripture, two NT sacraments are connected to the remission of sin. They are water baptism
+                exclusively in the Name of the Messiah (as appropriately spoken in any language) and subsequently the
+                Blood of the New Covenant which we celebrate through the cup which we bless. Both Sacraments are wrapped
+                in the scriptural phrase “for the remission of sins” (Acts 2:38 & Mat 26:28). Thus, the Church has
+                remission in the Water and in the Blood of the New Covenant (1 John 5:6). Initially through water
+                baptism and subsequently through the cup.</p>
+            </text>),
+
+            new Belief("The Kingdom of God", @<text>
+                <p>The kingdom of God is realized in three phases:</p>
+
+                <h3>The Present Kingdom...</h3>
+                <p>The spiritual kingdom exists now as God rules in the hearts of obedient believers. This kingdom was
+                announced and revealed through the prophets and the ministry of our Lord Jesus Christ. We surrender to
+                this kingdom when we turn from sin to serve God through faith in Jesus Christ.</p>
+                <p>Presently the Kingdom reigns in us though we do not yet reign in the Kingdom.</p>
+
+                <h3>The Millennial Kingdom...</h3>
+                <p>Jesus will return to earth in power and glory to resurrect the righteous dead in the first resurrection
+                (immediately after the tribulation), bestow immortality and eternal life upon the resurrected and the
+                living righteous.. This great Sabbath Rest of one thousand years will be a universal kingdom in which
+                all principalities, powers, and enemies are overcome. During this age, the Messianic promises to Israel
+                and the Oaths to Abraham, Isaac, Jacob and David will be fully realized. At the end of the thousand
+                years, the rest of the dead will be resurrected, judged before the great white throne, and the wicked
+                will suffer annihilation in the second death.</p>
+
+                <h3>The Eternal Kingdom...</h3>
+                <p>After the annihilation of the final rebellion, God’s eternal kingdom will last through ages without end.
+                God will dwell with the redeemed in the heaven and earth made new where no disappointment, defilement,
+                or death can enter and where righteousness and peace will prevail forever.</p>
+            </text>)
+        };
+
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("tab", out var tabValue))
+        {
+            var tabStr = tabValue.ToString();
+            SelectedBelief = Beliefs.FirstOrDefault(t => t.Title.Equals(tabStr, StringComparison.OrdinalIgnoreCase)) ?? Beliefs.FirstOrDefault();
+        }
+        else
+        {
+            SelectedBelief = Beliefs.FirstOrDefault();
+        }
+    }
+}

@@ -1,0 +1,1208 @@
+/* --- BRAND VARIABLES (From CACI_Branding.md) --- */
+:root {
+    /* Primary Colors */
+    --caci-primary-blue: #174477;
+    --member-white: #FFFFFF;
+
+    /* Secondary & Accent Colors */
+    --minister-blue: #001F5C;
+    /* For Minister Materials / Links */
+    --elder-red: #C8102E;
+    /* For Urgent Highlights / Give Button */
+    --bishop-purple: #47306D;
+    /* For Section Dividers / Gradients */
+    --standard-gray: #5A5A5A;
+    /* Neutral UI elements */
+
+    /* Tonal Blue System */
+    --tone-mid: #6696C5;
+    /* Tone 2 for Button Hover State */
+    --tone-highlight: #A4BDDD;
+    --light-bg: #F8F9FA;
+
+    /* Fonts */
+    --font-heading: 'Playfair Display', Georgia, serif;
+    --font-body: 'Montserrat', 'Helvetica Neue', sans-serif;
+}
+
+/* --- GLOBAL RESET & BASE STYLES --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    color: #333;
+    line-height: 1.6;
+    background-color: var(--member-white);
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+/* Headings: Playfair Display */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+    color: var(--caci-primary-blue);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+h1:focus {
+    outline: none;
+}
+
+p {
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+    /* Montserrat Regular for body text */
+}
+
+a {
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* --- UTILITIES & LAYOUT --- */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.section-padding {
+    padding: 80px 0;
+}
+
+.minister-blue {
+    background-color: var(--minister-blue);
+}
+
+.elder-red {
+    background-color: var(--elder-red);
+}
+
+.bishop-purple {
+    background-color: var(--bishop-purple);
+}
+
+.standard-gray {
+    background-color: var(--standard-gray);
+}
+
+.tone-mid {
+    background-color: var(--tone-mid);
+}
+
+.tone-highlight {
+    background-color: var(--tone-highlight);
+}
+
+.light-bg {
+    background-color: var(--light-bg);
+}
+
+.caci-primary-blue {
+    background-color: var(--caci-primary-blue);
+}
+
+/* --- BUTTONS: CACI Primary Blue for Primary CTA --- */
+.btn {
+    display: inline-block;
+    padding: 14px 32px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+/* Primary CTA Button: CACI Primary Blue background */
+.btn-primary {
+    background-color: var(--caci-primary-blue);
+    color: var(--member-white);
+}
+
+/* Button Hover State: Tone 2 Mid-Tone */
+.btn-primary:hover {
+    background-color: var(--tone-mid);
+    box-shadow: 0 4px 15px rgba(23, 68, 119, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Outline Button for Hero Section */
+.btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--member-white);
+    color: var(--member-white);
+}
+
+.btn-outline:hover {
+    background-color: var(--member-white);
+    color: var(--caci-primary-blue);
+}
+
+/* --- HEADER & NAVIGATION --- */
+.top-bar {
+    background-color: var(--minister-blue);
+    color: var(--member-white);
+    padding: 8px 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.top-bar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-bar-links a {
+    color: var(--member-white);
+    margin-left: 15px;
+    font-size: 0.9rem;
+    /* Links use Minister Blue or Member White on dark backgrounds */
+}
+
+header.site-header,
+header:has(.nav-container) {
+    background-color: var(--member-white);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-symbol-img {
+    height: 60px;
+    width: auto;
+}
+
+/* Fonts for Logo text are fixed branding elements */
+.logo-text {
+    /* Simulating Frutiger Bold */
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--caci-primary-blue);
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.logo-sub {
+    /* Simulating Bodega Sans Black */
+    font-size: 0.65rem;
+    color: var(--standard-gray);
+    letter-spacing: 2px;
+    margin-top: 3px;
+    text-transform: uppercase;
+}
+
+.main-nav ul {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.main-nav a {
+    color: var(--caci-primary-blue);
+    font-weight: 600;
+    /* Montserrat SemiBold for UI links */
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 0;
+    position: relative;
+}
+
+/* Link Hover: Underline in Elder Red */
+.main-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--elder-red);
+    transition: width 0.3s;
+}
+
+.main-nav a:hover::after {
+    width: 100%;
+}
+
+.give-link {
+    color: var(--elder-red) !important;
+}
+
+.give-link:hover::after {
+    background-color: var(--caci-primary-blue);
+}
+
+.mobile-menu-btn {
+    display: none;
+    font-size: 1.5rem;
+    color: var(--caci-primary-blue);
+    cursor: pointer;
+}
+
+.main-nav .dropdown {
+    position: relative;
+}
+
+.main-nav .submenu {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* --- HERO SECTION --- */
+.hero-section {
+    position: relative;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--member-white);
+    /* Background is now handled by the <video> and .video-overlay in Home.razor */
+    /* background:
+        linear-gradient(rgba(23, 68, 119, 0.55),
+            rgba(0, 31, 92, 0.65)
+        ); */
+    /* The rest of the background properties follow the gradient */
+    /* url('../images/images/photo_2025-11-28_07-22-45.jpg') no-repeat center center/cover;
+    animation: changeBackground 20s infinite; */
+}
+
+@keyframes changeBackground {
+    0% {
+        /* Apply the gradient overlay here as well */
+        background-image:
+            linear-gradient(rgba(23, 68, 119, 0.55), rgba(0, 31, 92, 0.65)),
+            url('../images/images/photo_2025-11-28_07-22-45.jpg');
+    }
+
+    10% {
+        /* Apply the gradient overlay here as well */
+        background-image:
+            linear-gradient(rgba(23, 68, 119, 0.55), rgba(0, 31, 92, 0.65)),
+            url('../images/images/photo_2025-11-28_07-22-45.jpg');
+    }
+
+    30% {
+        /* Apply the gradient overlay here as well */
+        background-image:
+            linear-gradient(rgba(23, 68, 119, 0.55), rgba(0, 31, 92, 0.65)),
+            url('../images/images/photo_2025-11-28_09-52-04.jpg');
+    }
+
+    50% {
+        /* Apply the gradient overlay to the second image */
+        background-image:
+            linear-gradient(rgba(23, 68, 119, 0.55), rgba(0, 31, 92, 0.65)),
+            url('../images/images/TallitPrayer.jpg');
+    }
+
+    70% {
+        /* Apply the gradient overlay here as well */
+        background-image:
+            linear-gradient(rgba(23, 68, 119, 0.55), rgba(0, 31, 92, 0.65)),
+            url('../images/images/CACI_EFC_2025.jpg');
+    }
+
+    90% {
+        /* Apply the gradient overlay here as well */
+        background-image:
+            linear-gradient(rgba(23, 68, 119, 0.55), rgba(0, 31, 92, 0.665)),
+            url('../images/images/CACI_Tabernacles_2025.jpg');
+    }
+
+    100% {
+        /* Apply the gradient overlay here as well */
+        background-image:
+            linear-gradient(rgba(23, 68, 119, 0.55), rgba(0, 31, 92, 0.665)),
+            url('../images/images/CACI_Tabernacles_2025.jpg');
+    }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    padding: 0 20px;
+}
+
+.hero-subtitle {
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: var(--tone-highlight);
+    font-weight: 700;
+}
+
+.hero-title {
+    /* font-size: 3.5rem; */
+    font-size: calc(2vw + 2vh + 1vmin);
+    color: var(--member-white);
+    margin-bottom: 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* --- MISSION SECTION --- */
+.mission-section {
+    background-color: var(--member-white);
+    position: relative;
+}
+
+.divider {
+    height: 3px;
+    width: 80px;
+    background-color: var(--bishop-purple);
+    /* Section Divider color */
+    margin-bottom: 25px;
+}
+
+.mission-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 50px;
+    align-items: center;
+}
+
+.mission-text p {
+    font-size: 1.05rem;
+    color: var(--standard-gray);
+}
+
+.read-history-link {
+    color: var(--caci-primary-blue);
+    font-weight: 700;
+    border-bottom: 2px solid var(--bishop-purple);
+    padding-bottom: 2px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+/* Mission Quote Box */
+.mission-stat-box {
+    background-color: var(--caci-primary-blue);
+    color: var(--member-white);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 15px 40px rgba(23, 68, 119, 0.2);
+    position: relative;
+}
+
+/* Blockquote Style (Sacred & Elevated) */
+.mission-quote {
+    font-family: var(--font-body);
+    font-style: italic;
+    /* Montserrat Italic */
+    font-size: 1.5rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+    z-index: 2;
+    font-weight: 400;
+    /* Emulating the Minister Blue line on a dark background */
+    border-left: 5px solid var(--tone-highlight);
+}
+
+.source-text {
+    opacity: 0.8;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+/* --- CARDS SECTION (Pillars) --- */
+.pillars-section {
+    /* Gradient using Primary Blue and Bishop Purple */
+    background: linear-gradient(135deg, var(--caci-primary-blue), var(--bishop-purple));
+    color: white;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.section-header .divider {
+    margin: 0 auto 25px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+}
+
+.card {
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, border-color 0.3s;
+    border-bottom: 3px solid transparent;
+    border-top: 3px solid var(--minister-blue);
+    /* Subtle blue line for structure */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 31, 92, 0.15);
+    border-color: var(--elder-red);
+    /* Subtle accent on hover */
+}
+
+.card-body {
+    padding: 30px;
+    text-align: center;
+}
+
+/* Iconography Style: Simple, flat, filled */
+.card-icon {
+    width: 50px;
+    height: 50px;
+    background-color: var(--caci-primary-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin: 0px auto 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-family: var(--font-body);
+    /* Montserrat SemiBold for card titles */
+    font-weight: 600;
+    color: var(--minister-blue);
+    text-align: center;
+}
+
+.card p {
+    font-size: 0.95rem;
+    color: var(--standard-gray);
+    margin-bottom: 0;
+}
+
+.cta-card-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    background-color: var(--minister-blue);
+    color: var(--member-white);
+    border-color: var(--minister-blue);
+}
+
+.cta-card-link .card-body {
+    padding: 30px;
+}
+
+.cta-card-link h3,
+.cta-card-link p {
+    color: var(--member-white) !important;
+}
+
+.cta-card-link i {
+    font-size: 2rem;
+    margin-top: 15px;
+}
+
+/* --- LEADERSHIP SECTION --- */
+.leadership-section {
+    /* Gradient using Primary Blue and Bishop Purple */
+    background: var(--light-bg);
+    color: var(--minister-blue);
+    text-align: left;
+}
+
+.leadership-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    align-items: center;
+}
+
+.leadership-content {
+    max-width: 800px;
+    text-align: center;
+}
+
+.leadership-content .divider {
+    margin: 0 auto 25px;
+}
+
+.leadership-content h2 {
+    color: white;
+    font-size: 2.8rem;
+}
+
+.leadership-content p {
+    color: var(--minister-blue);
+    /* Lighter tone for contrast */
+}
+
+
+.leadership-title {
+    color: var(--bishop-purple);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: block;
+}
+
+/* --- MINISTRY SECTION --- */
+.ministry-section {
+    background-color: var(--light-bg);
+    padding: 100px 0;
+}
+
+.ministry-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-top: 60px;
+    justify-items: center;
+}
+
+/* On Mobile, Order: Bishop (1), Elder, Minister */
+.ministry-card.bishop {
+    order: -1;
+}
+
+.ministry-card {
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.ministry-card img {
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+    font-size: 1rem;
+}
+
+.ministry-card h3 {
+    font-family: var(--font-heading);
+    color: var(--caci-primary-blue);
+    font-size: 1.5rem;
+}
+
+.ministry-card.minister,
+.ministry-card.elder,
+.ministry-card.bishop {
+    width: 80%;
+}
+
+.ministry-card.bishop {
+    transform: scale(1);
+}
+
+/* --- FOOTER --- */
+/* Styles moved to components/Layout/Footer.razor.css */
+
+/* --- RESPONSIVE --- */
+@media (max-width: 992px) {
+    .mission-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mission-stat-box {
+        margin-top: 30px;
+    }
+
+    .nav-container {
+        padding: 10px 0;
+    }
+}
+
+@media (min-width: 768px) {
+    .main-nav .submenu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--member-white);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        padding: 10px 0;
+        z-index: 1001;
+    }
+
+    .main-nav .dropdown:hover .submenu {
+        display: block;
+    }
+
+    .main-nav .submenu li {
+        width: 200px;
+    }
+
+    .main-nav .submenu a {
+        padding: 10px 20px;
+        display: block;
+        color: var(--caci-primary-blue);
+    }
+
+    .leadership-grid {
+        grid-template-columns: 1.5fr .5fr;
+        text-align: left;
+    }
+
+    .ministry-grid {
+        grid-template-columns: 1fr 1.2fr 1fr;
+        /* Minister | Bishop | Elder */
+        align-items: center;
+    }
+
+    /* Reset order for desktop so it follows HTML structure or grid placement */
+    .ministry-card.bishop {
+        order: initial;
+    }
+
+    .ministry-card.minister,
+    .ministry-card.elder {
+        width: 100%;
+    }
+
+    .ministry-card.bishop {
+        width: 100%;
+        transform: scale(1.1);
+    }
+}
+
+@media (max-width: 992px) {
+    .hero {
+        height: 70vh;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .main-nav {
+        display: none;
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        /* Align dynamically below the header */
+        left: 0;
+        background: var(--member-white);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+    }
+
+    .main-nav ul {
+        flex-direction: column;
+        gap: 0;
+        padding: 10px 0;
+    }
+
+    .main-nav.active {
+        display: block;
+    }
+
+    .main-nav li {
+        border-bottom: 1px solid #eee;
+    }
+
+    .main-nav a {
+        padding: 20px 25px;
+        display: block;
+        width: 100%;
+        font-size: 1.1rem;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+        padding: 10px;
+        font-size: 1.8rem;
+    }
+
+    .top-bar-content {
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Mobile Dropdown Styles */
+    .main-nav .submenu {
+        display: none;
+        position: static;
+        background: var(--light-bg);
+        padding-left: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+    }
+
+    .main-nav .submenu.mobile-open {
+        display: block !important;
+        max-height: 500px;
+        transition: max-height 0.4s ease-in;
+    }
+
+    .main-nav .submenu li {
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .main-nav .submenu li:last-child {
+        border-bottom: none;
+    }
+
+    .main-nav .submenu a {
+        padding: 15px 35px;
+        font-size: 1rem;
+        color: var(--minister-blue);
+        background-color: #f0f4f8;
+    }
+
+    .dropdown-toggle i {
+        transition: transform 0.3s ease;
+        margin-left: 5px;
+    }
+
+    .dropdown-toggle i.rotate-180 {
+        transform: rotate(180deg);
+    }
+
+    /* Prevent desktop hover on mobile */
+    .main-nav .dropdown:hover .submenu {
+        display: none;
+    }
+}
+
+/* --- TIMELINE STYLES for Our History page --- */
+.timeline-section {
+    background-color: var(--tone-highlight);
+    color: var(--standard-gray);
+}
+
+.timeline-title {
+    text-align: center;
+    color: var(--standard-gray);
+    font-size: 2.5rem;
+}
+
+.timeline {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    background-color: var(--bishop-purple);
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -3px;
+}
+
+.timeline-container {
+    padding: 10px 40px;
+    position: relative;
+    background-color: inherit;
+    width: 50%;
+}
+
+.timeline-container.left {
+    left: 0;
+}
+
+.timeline-container.right {
+    left: 50%;
+}
+
+.timeline-container::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    right: -17px;
+    background-color: white;
+    border: 4px solid var(--elder-red);
+    top: 15px;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.right::after {
+    left: -16px;
+}
+
+.timeline-content {
+    padding: 20px 30px;
+    background-color: white;
+    position: relative;
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 768px) {
+    .timeline::after {
+        left: 31px;
+    }
+
+    .timeline-container {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+    }
+
+    .timeline-container.right {
+        left: 0%;
+    }
+
+    .timeline-container.left::after,
+    .timeline-container.right::after {
+        left: 15px;
+        right: auto;
+    }
+}
+
+.styled-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.styled-list li {
+    background: #f8f9fa;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-left: 5px solid var(--minister-blue);
+}
+
+/* --- GET INVOLVED SECTION --- */
+.get-involved-section {
+    background-color: var(--caci-primary-blue);
+    color: var(--member-white);
+    text-align: center;
+}
+
+.get-involved-section h2 {
+    color: var(--member-white);
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+}
+
+.involved-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.involved-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Semi-transparent white */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.involved-card:hover {
+    transform: translateY(-10px);
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.involved-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: fill;
+    object-position: top;
+}
+
+.involved-content {
+    padding: 30px;
+}
+
+.involved-content h3 {
+    color: var(--member-white);
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-style: italic;
+}
+
+.involved-content p {
+    color: #ddd;
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+}
+
+.btn-accent {
+    background-color: var(--elder-red);
+    color: var(--member-white);
+    border: none;
+    padding: 12px 30px;
+    font-weight: 700;
+    border-radius: 50px;
+    /* Rounded pill shape */
+    transition: background-color 0.3s ease;
+}
+
+.btn-accent:hover {
+    background-color: #a00d25;
+    /* Darker red */
+    transform: scale(1.05);
+}
+
+/* --- PREACHING THE KINGDOM SECTION --- */
+.preaching-section {
+    background-color: var(--light-bg);
+    text-align: center;
+}
+
+.preaching-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+}
+
+.preaching-card {
+    position: relative;
+    height: 350px;
+    overflow: hidden;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.preaching-card:hover {
+    transform: translateY(-10px);
+}
+
+.preaching-card img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    display: block;
+}
+
+.preaching-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 30px 20px;
+}
+
+.key-icon {
+    width: 60px;
+    height: 250px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.preaching-overlay h3 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.preaching-overlay .key-word {
+    color: #D4AF37;
+    /* Metallic gold */
+    font-weight: 700;
+    display: block;
+    font-style: italic;
+}
+
+.preaching-overlay .key-subtitle {
+    color: var(--member-white);
+    font-size: 1.2rem;
+    font-weight: 400;
+    display: block;
+    margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+    .preaching-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.preaching-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    /* transition: transform 0.3s; */
+    /* Removed image dependency, adding background/border styling instead */
+    background: var(--light-bg);
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 30px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.preaching-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    border-color: var(--caci-primary-blue);
+}
+
+.preaching-card .card-icon {
+    /* Reusing the card-icon style but ensuring it's positioned correctly */
+    margin: 0 auto 20px;
+    width: 70px;
+    height: 70px;
+    font-size: 1.8rem;
+    background-color: var(--bishop-purple);
+    /* Taking a different color to distinguish from pillars */
+}
+
+.preaching-overlay {
+    /* Resetting overlay styles since it's no longer an overlay on an image */
+    position: relative;
+    background: transparent;
+    padding: 0;
+    display: block;
+}
+
+.preaching-overlay h3 {
+    color: var(--minister-blue);
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.preaching-overlay .key-word {
+    color: var(--caci-primary-blue);
+    font-weight: 700;
+    display: block;
+    font-style: normal;
+    font-size: 1.2rem;
+}
+
+.preaching-overlay .key-subtitle {
+    color: var(--standard-gray);
+    font-size: 1rem;
+    font-weight: 400;
+    display: block;
+    margin-top: 5px;
+}
+
+/* --- 4 KEYS GRID LAYOUT --- */
+.keys-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* Mobile: 1 per row */
+    gap: 30px;
+    margin-top: 30px;
+}
+
+/* Medium Screens (Tablets): 2 per row */
+@media (min-width: 768px) {
+    .keys-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Large Screens (Desktops): 4 per row */
+@media (min-width: 1200px) {
+    .keys-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* --- 12 FOUNDATIONS GRID LAYOUT --- */
+.foundations-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* Mobile: 1 per row */
+    gap: 60px;
+    margin-top: 30px;
+}
+
+/* Medium Screens (Tablets): 2 per row */
+/* @media (min-width: 768px) {
+    .foundations-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+} */
+
+/* Large Screens (Desktops): 4 per row */
+@media (min-width: 1200px) {
+    .foundations-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
