@@ -18,23 +18,103 @@
 
 /* Primary CTA: Primary Blue, white Montserrat SemiBold, hover Tone 2 */
 .btn-primary {
-    display: inline-flex; align-items: center; gap: .5rem;
-    background: var(--caci-blue); color: #fff !important;
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    background: var(--caci-blue); color: #ffffff !important;
     font-family: var(--font-body); font-weight: 600;
     padding: .8rem 1.6rem; border-radius: .5rem; border: 0; cursor: pointer;
     text-decoration: none; transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
     box-shadow: 0 4px 14px rgba(23, 68, 119, .25);
 }
-.btn-primary:hover { background: var(--caci-tone2); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(23, 68, 119, .25); }
+.btn-primary:hover { 
+    background: var(--caci-tone2); 
+    color: #ffffff !important; 
+    transform: translateY(-1px); 
+    box-shadow: 0 8px 20px rgba(23, 68, 119, .25); 
+}
 
 .btn-secondary {
-    display: inline-flex; align-items: center; gap: .5rem;
-    background: #fff; color: var(--caci-blue) !important;
-    font-weight: 600; padding: .8rem 1.6rem; border-radius: .5rem;
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    background: #ffffff; color: var(--caci-blue) !important;
+    font-family: var(--font-body); font-weight: 600; padding: .8rem 1.6rem; border-radius: .5rem;
     border: 2px solid var(--caci-blue); text-decoration: none;
-    transition: background-color .2s ease, color .2s ease;
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease;
 }
-.btn-secondary:hover { background: var(--caci-tone3); }
+.btn-secondary:hover { 
+    background: var(--caci-blue); 
+    color: #ffffff !important; 
+    border-color: var(--caci-blue); 
+}
+
+/* High-contrast and specialized button variants */
+.btn-white, 
+a.btn-white,
+.btn-primary.btn-white,
+a.btn-primary.btn-white {
+    background-color: #ffffff !important;
+    color: #001F5C !important;
+    border: 1px solid rgba(255, 255, 255, 0.9) !important;
+}
+.btn-white:hover,
+a.btn-white:hover,
+.btn-primary.btn-white:hover,
+a.btn-primary.btn-white:hover {
+    background-color: #f1f5f9 !important;
+    color: #174477 !important;
+}
+
+.btn-amber, 
+a.btn-amber,
+.btn-primary.btn-amber,
+a.btn-primary.btn-amber {
+    background-color: #f59e0b !important;
+    color: #0f172a !important;
+    border: 1px solid #d97706 !important;
+}
+.btn-amber:hover,
+a.btn-amber:hover,
+.btn-primary.btn-amber:hover,
+a.btn-primary.btn-amber:hover {
+    background-color: #d97706 !important;
+    color: #0f172a !important;
+}
+
+.btn-red, 
+a.btn-red,
+.btn-primary.btn-red,
+a.btn-primary.btn-red {
+    background-color: var(--caci-red) !important;
+    color: #ffffff !important;
+    border: 1px solid var(--caci-red) !important;
+}
+.btn-red:hover,
+a.btn-red:hover,
+.btn-primary.btn-red:hover,
+a.btn-primary.btn-red:hover {
+    background-color: #a60d25 !important;
+    color: #ffffff !important;
+}
+
+.btn-hero-secondary, 
+a.btn-hero-secondary,
+.btn-secondary.btn-hero-secondary,
+a.btn-secondary.btn-hero-secondary {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    font-family: var(--font-body); font-weight: 600; padding: .8rem 1.6rem; border-radius: .5rem;
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border: 2px solid rgba(255, 255, 255, 0.5) !important;
+    text-decoration: none;
+    transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+}
+.btn-hero-secondary:hover,
+a.btn-hero-secondary:hover,
+.btn-secondary.btn-hero-secondary:hover,
+a.btn-secondary.btn-hero-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.28) !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+    transform: translateY(-1px);
+}
 
 /* Scripture / formal quotes: Montserrat italic, thin Minister Blue left rule */
 blockquote, .scripture-quote {
