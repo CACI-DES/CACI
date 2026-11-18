@@ -1,7 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /Account/
-Disallow: /documents-on-demand
 
 Sitemap: https://caci.life/sitemap.xml

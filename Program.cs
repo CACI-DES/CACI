@@ -216,9 +216,8 @@ app.MapGet("/sitemap.xml", async (IConfiguration configuration) =>
         ("https://caci.life/what-we-believe", "monthly", "0.8"),
         ("https://caci.life/our-history", "monthly", "0.7"),
         ("https://caci.life/ministry", "monthly", "0.8"),
-        ("https://4keys.caci.life/", "weekly", "0.9"),
+        ("https://caci.life/4keys", "weekly", "0.9"),
         ("https://caci.life/4KeysInfo", "weekly", "0.8"),
-        ("https://caci.life/4keys", "weekly", "0.8"),
         ("https://caci.life/4PillarsInfo", "weekly", "0.8"),
         ("https://caci.life/pillars", "weekly", "0.8"),
         ("https://caci.life/12Foundations", "weekly", "0.8"),
@@ -285,17 +284,15 @@ app.MapGet("/sitemap.xml", async (IConfiguration configuration) =>
         sb.AppendLine("    <changefreq>weekly</changefreq>");
         sb.AppendLine("    <priority>0.8</priority>");
         sb.AppendLine("  </url>");
-
-        // Subdomain route (https://{Slug}.caci.life/)
-        sb.AppendLine("  <url>");
-        sb.AppendLine($"    <loc>{System.Security.SecurityElement.Escape($"https://{slug}.caci.life/")}</loc>");
-        sb.AppendLine("    <changefreq>weekly</changefreq>");
-        sb.AppendLine("    <priority>0.9</priority>");
-        sb.AppendLine("  </url>");
     }
     sb.AppendLine("</urlset>");
 
     return Results.Content(sb.ToString(), "application/xml; charset=utf-8");
 }).AllowAnonymous();
+
+// Explicit permissive robots.txt endpoint
+app.MapGet("/robots.txt", () =>
+    Results.Content("User-agent: *\nAllow: /\n\nSitemap: https://caci.life/sitemap.xml\n", "text/plain; charset=utf-8")
+).AllowAnonymous();
 
 app.Run();
