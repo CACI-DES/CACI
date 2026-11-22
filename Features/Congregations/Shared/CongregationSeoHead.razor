@@ -141,7 +141,7 @@
         {
             ["@type"] = "Organization",
             ["name"] = SiteName,
-            ["logo"] = new Dictionary<string, object?> { ["@type"] = "ImageObject", ["url"] = BaseUrl + "/" + _profile.EffectiveLogo.TrimStart('/') }
+            ["logo"] = new Dictionary<string, object?> { ["@type"] = "ImageObject", ["url"] = ImageUrl }
         }
     }, JsonOptions);
 
