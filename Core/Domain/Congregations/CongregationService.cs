@@ -60,8 +60,8 @@ public sealed class CongregationService(
                 profile.CaciBaseUrl = (configuration.GetValue<string>("Congregation:CaciBaseUrl") ?? "https://caci.life").TrimEnd('/');
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(10))
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(30))
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(2));
 
                 cache.Set(cacheKey, profile, cacheEntryOptions);
                 return profile;
@@ -111,8 +111,8 @@ public sealed class CongregationService(
                 profile.CaciBaseUrl = (configuration.GetValue<string>("Congregation:CaciBaseUrl") ?? "https://caci.life").TrimEnd('/');
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(10))
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(30))
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(2));
 
                 cache.Set(cacheKey, profile, cacheEntryOptions);
                 return profile;
