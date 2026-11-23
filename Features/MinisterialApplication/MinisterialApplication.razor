@@ -1,0 +1,1308 @@
+@page "/ministerial-application"
+@page "/apply"
+@rendermode InteractiveServer
+
+@using System.Text.Json
+@using CACI_Life.Features.MinisterialApplication
+@inject MinisterialApplicationService AppService
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+<PageTitle>Ministerial Ordination &amp; Credential Application | CACI</PageTitle>
+
+<div class="bg-slate-900 text-slate-100 min-h-screen py-10 px-4 sm:px-6 lg:px-8 font-sans">
+    <div class="max-w-4xl mx-auto space-y-8">
+        
+        <!-- HEADER -->
+        <div class="text-center space-y-4 border-b border-white/10 pb-8">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-caci-blue/30 border border-caci-tone2/30 text-caci-tone3 text-xs uppercase tracking-widest font-bold">
+                CACI Apostolic Presbytery
+            </div>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+                Ministerial Ordination &amp; Credential Application
+            </h1>
+            <p class="text-sm md:text-base text-slate-300 max-w-3xl mx-auto leading-relaxed">
+                The CACI Ministerial Ordination is not to be seen as a &ldquo;one-time&rdquo; event but rather a <em>living Covenant</em>. 
+                This Apostolic laying on of hands is an ancient Holy Order resting upon generations unbroken from the Eternal Head of the Church, Y&rsquo;shuah Messiah.
+            </p>
+        </div>
+
+        <!-- SAVE / RESUME FLOATING STATUS BAR -->
+        <div class="bg-slate-950/80 border border-white/10 rounded-xl p-4 shadow-xl backdrop-blur flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="space-y-1.5 flex-1 min-w-[200px]">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold uppercase tracking-wider text-caci-tone3">Application Progress</span>
+                    <span class="font-mono font-bold text-white">@_completionPercentage% Completed</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                    <div class="bg-gradient-to-r from-caci-blue to-emerald-500 h-2.5 rounded-full transition-all duration-300" style="width: @(_completionPercentage)%"></div>
+                </div>
+                <div class="flex items-center gap-2 text-[11px] text-slate-400">
+                    @if (_isAutosaving)
+                    {
+                        <span class="text-caci-tone3 animate-pulse flex items-center gap-1">
+                            <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            Saving draft...
+                        </span>
+                    }
+                    else if (!string.IsNullOrEmpty(_lastSavedTime))
+                    {
+                        <span class="text-emerald-400 flex items-center gap-1">
+                            ✓ Saved @(_lastSavedTime)
+                        </span>
+                    }
+                    @if (!string.IsNullOrEmpty(_draftKey))
+                    {
+                        <span>&bull;</span>
+                        <span class="font-mono text-slate-300">Resume Code: <strong class="text-amber-400">@_draftKey</strong></span>
+                    }
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button type="button" @onclick="OpenResumeModal" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-white/10 transition-colors">
+                    Resume Saved Draft
+                </button>
+                <button type="button" @onclick="SaveDraftExplicitlyAsync" class="px-3.5 py-2 bg-caci-blue hover:bg-caci-tone2 text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors shadow">
+                    Save &amp; Get Code
+                </button>
+            </div>
+        </div>
+
+        @if (_isSubmittedSuccess)
+        {
+            <!-- SUBMITTED SUCCESS SCREEN -->
+            <div class="bg-slate-950 border border-emerald-500/40 rounded-2xl p-8 sm:p-12 text-center space-y-6 shadow-2xl">
+                <div class="w-20 h-20 bg-emerald-500/10 border-2 border-emerald-500 rounded-full flex items-center justify-center mx-auto text-emerald-400">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                </div>
+                <h2 class="text-3xl font-extrabold text-white">Application Successfully Submitted</h2>
+                <p class="text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
+                    Thank you, <strong class="text-white">@_data.FullName</strong>. Your CACI Ministerial Credential Application has been formally submitted to the Apostolic Council and Credential Committee.
+                </p>
+                <div class="bg-slate-900 border border-white/10 rounded-xl p-5 max-w-md mx-auto text-left text-xs space-y-2 font-mono">
+                    <div><span class="text-slate-400">Applicant:</span> <span class="text-white font-bold">@_data.FullName</span></div>
+                    <div><span class="text-slate-400">Target Office:</span> <span class="text-emerald-400 font-bold">@_data.CredentialLevelApplyingFor</span></div>
+                    <div><span class="text-slate-400">Submission Date:</span> <span class="text-slate-300">@DateTime.UtcNow.ToString("MMMM dd, yyyy HH:mm") UTC</span></div>
+                    <div><span class="text-slate-400">Email Confirmation Sent To:</span> <span class="text-amber-300 font-bold">@_data.Email</span></div>
+                </div>
+                <p class="text-xs text-slate-400">
+                    A copy of your submission has been emailed to you. The CACI leadership team will review your application and reach out regarding next steps.
+                </p>
+                <div class="pt-4 flex flex-wrap justify-center gap-4">
+                    <button type="button" onclick="window.print()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold uppercase tracking-wider rounded-lg border border-white/10 transition-all">
+                        Print Confirmation
+                    </button>
+                    <a href="/" class="px-6 py-2.5 bg-caci-blue hover:bg-caci-tone2 text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-all shadow">
+                        Return to Home
+                    </a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- STEPPER NAV -->
+            <div class="overflow-x-auto pb-2">
+                <div class="flex items-center justify-between min-w-[700px] border-b border-white/10 pb-3">
+                    @for (int i = 1; i <= 8; i++)
+                    {
+                        var stepNum = i;
+                        var isCurrent = _currentStep == stepNum;
+                        var isPast = _currentStep > stepNum;
+                        <button type="button" @onclick="() => GoToStep(stepNum)"
+                                class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider transition-colors px-2 py-1 rounded @(isCurrent ? "text-caci-tone3 font-bold bg-white/5" : (isPast ? "text-emerald-400 hover:text-white" : "text-slate-500 hover:text-slate-300"))">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono font-bold @(isCurrent ? "bg-caci-blue text-white" : (isPast ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-slate-800 text-slate-400"))">
+                                @(isPast ? "✓" : stepNum.ToString())
+                            </span>
+                            <span>@GetStepTitle(stepNum)</span>
+                        </button>
+                        @if (i < 8)
+                        {
+                            <span class="text-slate-700">&bull;</span>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- STEP CONTENT CARDS -->
+            <div class="bg-slate-950 border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+
+                <!-- STEP 1: PERSONAL & CONTACT -->
+                @if (_currentStep == 1)
+                {
+                    <div class="space-y-6">
+                        <div class="border-b border-white/10 pb-3">
+                            <h2 class="text-xl font-bold text-white">Stage 1: Applicant Information</h2>
+                            <p class="text-xs text-slate-400 mt-1">Please provide your legal contact details for credential records.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-caci-tone3 mb-1.5 uppercase tracking-wider">Your Full Name *</label>
+                                <input type="text" @bind="_data.FullName" @bind:event="oninput" @bind:after="TriggerAutoSave" placeholder="First Middle Last"
+                                       class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-caci-tone2" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-caci-tone3 mb-1.5 uppercase tracking-wider">Phone Number *</label>
+                                <input type="tel" @bind="_data.Phone" @bind:event="oninput" @bind:after="TriggerAutoSave" placeholder="(555) 123-4567"
+                                       class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-caci-tone2" />
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-caci-tone3 mb-1.5 uppercase tracking-wider">Date of Birth *</label>
+                                <input type="date" value="@_data.DateOfBirth" @onchange="@((ChangeEventArgs e) => { _data.DateOfBirth = e.Value?.ToString() ?? string.Empty; TriggerAutoSave(); })"
+                                       class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-caci-tone2" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-caci-tone3 mb-1.5 uppercase tracking-wider">Email Address *</label>
+                                <input type="email" @bind="_data.Email" @bind:event="oninput" @bind:after="TriggerAutoSave" placeholder="pastor@example.org"
+                                       class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-caci-tone2" />
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-caci-tone3 mb-1.5 uppercase tracking-wider">Street Address *</label>
+                                <input type="text" @bind="_data.StreetAddress" @bind:event="oninput" @bind:after="TriggerAutoSave" placeholder="123 Kingdom Way"
+                                       class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-caci-tone2" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-caci-tone3 mb-1.5 uppercase tracking-wider">City / State / Zip *</label>
+                                <input type="text" @bind="_data.CityStateZip" @bind:event="oninput" @bind:after="TriggerAutoSave" placeholder="Springfield, MO 65802"
+                                       class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-caci-tone2" />
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- STEP 2: CREDENTIAL LEVEL & OFFICE -->
+                @if (_currentStep == 2)
+                {
+                    <div class="space-y-6">
+                        <div class="border-b border-white/10 pb-3">
+                            <h2 class="text-xl font-bold text-white">Stage 2: Credential Certificate Level</h2>
+                            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                The CACI Ministry recognizes the three first-century offices of <strong>Bishops</strong> (Regional Superintendents), <strong>Ordained Elders</strong> (Local Pastors &amp; Sr. Ministry), and <strong>Appointed Ministers</strong> (Assistants &amp; Diakonia).
+                            </p>
+                        </div>
+
+                        <!-- Present Status -->
+                        <div>
+                            <label class="block text-xs font-bold text-caci-tone3 mb-2 uppercase tracking-wider">Present Ministerial Status *</label>
+                            <div class="space-y-2">
+                                @foreach (var opt in PresentStatusOptions)
+                                {
+                                    <label class="flex items-start gap-3 p-3 rounded-lg border @(_data.PresentMinisterialStatus == opt ? "border-caci-tone2 bg-caci-blue/20" : "border-white/5 bg-slate-900/60 hover:bg-slate-900") cursor-pointer transition">
+                                        <input type="radio" name="presentStatus" value="@opt" checked="@(_data.PresentMinisterialStatus == opt)"
+                                               @onchange="() => { _data.PresentMinisterialStatus = opt; TriggerAutoSave(); }" class="mt-0.5 text-caci-blue" />
+                                        <span class="text-xs text-slate-200">@opt</span>
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Certificate Level Target -->
+                        <div>
+                            <label class="block text-xs font-bold text-caci-tone3 mb-2 uppercase tracking-wider">Credential Level Applying For *</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                @foreach (var lvl in new[] { "Bishop", "Ordained Elder", "Appointed Minister" })
+                                {
+                                    <button type="button" @onclick="() => { _data.CredentialLevelApplyingFor = lvl; TriggerAutoSave(); }"
+                                            class="p-4 rounded-xl border text-center transition-all @(_data.CredentialLevelApplyingFor == lvl ? "border-caci-tone2 bg-caci-blue/30 text-white font-bold ring-2 ring-caci-tone2" : "border-white/10 bg-slate-900/80 text-slate-300 hover:bg-slate-900")">
+                                        <div class="text-sm font-bold uppercase tracking-wider">@lvl</div>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Bishop Details if selected -->
+                        @if (_data.CredentialLevelApplyingFor == "Bishop")
+                        {
+                            <div class="bg-purple-950/30 border border-purple-500/30 rounded-xl p-5 space-y-3">
+                                <h3 class="text-xs font-bold uppercase tracking-widest text-purple-300">Bishop (District or Regional Overseer) Criteria</h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    You may only apply as a Bishop at the request of the CACI Apostolic Council. Bishops are consecrated by the laying on of hands of no less than two CACI Bishops in Apostolic Succession.
+                                </p>
+                                <div class="space-y-2 pt-2">
+                                    @foreach (var opt in BishopOptions)
+                                    {
+                                        <label class="flex items-start gap-3 p-2.5 rounded border border-white/5 bg-slate-900 cursor-pointer">
+                                            <input type="radio" name="bishopOpt" value="@opt" checked="@(_data.BishopOption == opt)"
+                                                   @onchange="() => { _data.BishopOption = opt; TriggerAutoSave(); }" class="mt-0.5" />
+                                            <span class="text-xs text-slate-200">@opt</span>
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Elder Details if selected -->
+                        @if (_data.CredentialLevelApplyingFor == "Ordained Elder")
+                        {
+                            <div class="bg-amber-950/30 border border-amber-500/30 rounded-xl p-5 space-y-4">
+                                <h3 class="text-xs font-bold uppercase tracking-widest text-amber-300">Ordained Elder (Congregational Overseers) Criteria</h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    You may only apply as an Elder after serving two years as a CACI Minister, or when connecting an existing Congregation of which you are Pastor, with the endorsement of your CACI District Bishop.
+                                </p>
+                                <div class="space-y-2">
+                                    <label class="block text-[11px] font-bold text-amber-200 uppercase">Select Role Type:</label>
+                                    @foreach (var opt in ElderOptions)
+                                    {
+                                        <label class="flex items-start gap-3 p-2.5 rounded border border-white/5 bg-slate-900 cursor-pointer">
+                                            <input type="radio" name="elderOpt" value="@opt" checked="@(_data.ElderOption == opt)"
+                                                   @onchange="() => { _data.ElderOption = opt; TriggerAutoSave(); }" class="mt-0.5" />
+                                            <span class="text-xs text-slate-200">@opt</span>
+                                        </label>
+                                    }
+                                </div>
+                                <div class="space-y-2 pt-2">
+                                    <label class="block text-[11px] font-bold text-amber-200 uppercase">Check All That Apply:</label>
+                                    @foreach (var q in ElderQualificationOptions)
+                                    {
+                                        var isChecked = _data.ElderQualifications.Contains(q);
+                                        <label class="flex items-start gap-3 p-2 rounded bg-slate-900/60 cursor-pointer text-xs">
+                                            <input type="checkbox" checked="@isChecked"
+                                                   @onchange="(e) => ToggleElderQual(q, (bool?)e.Value ?? false)" class="rounded mt-0.5" />
+                                            <span class="text-slate-200">@q</span>
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Minister Details if selected -->
+                        @if (_data.CredentialLevelApplyingFor == "Appointed Minister")
+                        {
+                            <div class="bg-blue-950/30 border border-blue-500/30 rounded-xl p-5 space-y-3">
+                                <h3 class="text-xs font-bold uppercase tracking-widest text-blue-300">Appointed Minister Criteria</h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    For those working with their local Bishop/Eldership in areas such as house church, small group, men's, women's, youth, music, prison ministry, or beginning ministry training.
+                                </p>
+                                <div class="space-y-2 pt-1">
+                                    @foreach (var opt in MinisterOptions)
+                                    {
+                                        <label class="flex items-start gap-3 p-2.5 rounded border border-white/5 bg-slate-900 cursor-pointer">
+                                            <input type="radio" name="minOpt" value="@opt" checked="@(_data.MinisterOption == opt)"
+                                                   @onchange="() => { _data.MinisterOption = opt; TriggerAutoSave(); }" class="mt-0.5" />
+                                            <span class="text-xs text-slate-200">@opt</span>
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-2">
+                            <div>
+                                <label class="block text-xs font-bold text-caci-tone3 mb-1.5 uppercase tracking-wider">Length in Present Ministry *</label>
+                                <input type="text" @bind="_data.PresentMinistryDuration" @bind:event="oninput" @bind:after="TriggerAutoSave" placeholder="e.g. 3 years"
+                                       class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-caci-tone2" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-caci-tone3 mb-1.5 uppercase tracking-wider">Pastor's Name *</label>
+                                <input type="text" @bind="_data.PastorName" @bind:event="oninput" @bind:after="TriggerAutoSave" placeholder="e.g. Elder John Smith"
+                                       class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-caci-tone2" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-caci-tone3 mb-1.5 uppercase tracking-wider">Is Pastor Supportive? *</label>
+                                <select @bind="_data.PastorSupport" @bind:after="TriggerAutoSave"
+                                        class="w-full bg-slate-900 border border-white/10 rounded-lg px-3 py-2.5 text-white text-xs focus:outline-none focus:border-caci-tone2">
+                                    <option value="">-- Choose Option --</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                    <option value="I am uncertain">I am uncertain</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- STEP 3: FAMILY & CONVERSION -->
+                @if (_currentStep == 3)
+                {
+                    <div class="space-y-6">
+                        <div class="border-b border-white/10 pb-3">
+                            <h2 class="text-xl font-bold text-white">Stage 3: Family Status &amp; Conversion Experience</h2>
+                            <p class="text-xs text-slate-400 mt-1">Biblical standards of family life and the New Testament conversion experience.</p>
+                        </div>
+
+                        <!-- Family -->
+                        <div class="space-y-4">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-caci-tone3">Family Status</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Marital Status *</label>
+                                    <select @bind="_data.MaritalStatus" @bind:after="TriggerAutoSave"
+                                            class="w-full bg-slate-900 border border-white/10 rounded px-3 py-2 text-white text-xs">
+                                        <option value="">-- Select --</option>
+                                        <option value="Single">Single</option>
+                                        <option value="Married">Married</option>
+                                        <option value="Widowed">Widowed</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Spouse Name (if married)</label>
+                                    <input type="text" @bind="_data.SpouseName" @bind:event="oninput" @bind:after="TriggerAutoSave" placeholder="Spouse's Name"
+                                           class="w-full bg-slate-900 border border-white/10 rounded px-3 py-2 text-white text-xs" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Anniversary (if married)</label>
+                                    <input type="text" @bind="_data.AnniversaryDate" @bind:event="oninput" @bind:after="TriggerAutoSave" placeholder="MM/DD/YYYY"
+                                           class="w-full bg-slate-900 border border-white/10 rounded px-3 py-2 text-white text-xs" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Spouse Supportive?</label>
+                                    <select @bind="_data.SpouseSupportive" @bind:after="TriggerAutoSave"
+                                            class="w-full bg-slate-900 border border-white/10 rounded px-3 py-2 text-white text-xs">
+                                        <option value="">-- Select --</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Conversion -->
+                        <div class="space-y-4 pt-4 border-t border-white/10">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-caci-tone3">Conversion Experience</h3>
+
+                            <div class="space-y-2">
+                                <label class="block text-xs text-slate-200 font-semibold leading-relaxed">
+                                    Have you experienced the Bible standard of full conversion through repentance from sin, baptism in water by immersion in the name of the Lord Jesus Christ for the remission of sins, and the New Testament Baptism of the Holy Spirit with scriptural signs and manifestations? (Acts 2:38, 1 Cor 12:7-11, Gal 5:22) *
+                                </label>
+                                <div class="flex gap-4">
+                                    @foreach (var opt in new[] { "Yes", "No" })
+                                    {
+                                        <label class="inline-flex items-center gap-2 text-xs text-white cursor-pointer">
+                                            <input type="radio" name="actsConv" value="@opt" checked="@(_data.Acts238Standard == opt)"
+                                                   @onchange="() => { _data.Acts238Standard = opt; TriggerAutoSave(); }" />
+                                            <span>@opt</span>
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 pt-2">
+                                <label class="block text-xs text-slate-200 font-semibold leading-relaxed">
+                                    Were you fully immersed in water exclusively in the Name of Jesus Christ (or its linguistic equivalent)? *
+                                </label>
+                                <div class="flex gap-4">
+                                    @foreach (var opt in new[] { "Yes", "No", "I am not sure" })
+                                    {
+                                        <label class="inline-flex items-center gap-2 text-xs text-white cursor-pointer">
+                                            <input type="radio" name="waterBap" value="@opt" checked="@(_data.WaterBaptismJesusName == opt)"
+                                                   @onchange="() => { _data.WaterBaptismJesusName = opt; TriggerAutoSave(); }" />
+                                            <span>@opt</span>
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 pt-2">
+                                <label class="block text-xs text-slate-200 font-semibold leading-relaxed">
+                                    Have you received the infilling of the Holy Spirit with initial evidence of speaking in tongues as the Spirit gives the utterance? *
+                                </label>
+                                <div class="flex gap-4">
+                                    @foreach (var opt in new[] { "Yes", "No", "I am not sure." })
+                                    {
+                                        <label class="inline-flex items-center gap-2 text-xs text-white cursor-pointer">
+                                            <input type="radio" name="holySpir" value="@opt" checked="@(_data.HolySpiritTonguesEvidence == opt)"
+                                                   @onchange="() => { _data.HolySpiritTonguesEvidence = opt; TriggerAutoSave(); }" />
+                                            <span>@opt</span>
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- STEP 4: REPUTATION & INTEGRITY -->
+                @if (_currentStep == 4)
+                {
+                    <div class="space-y-6">
+                        <div class="border-b border-white/10 pb-3">
+                            <h2 class="text-xl font-bold text-white">Stage 4: Your Reputation &amp; Background</h2>
+                            <p class="text-xs text-slate-400 mt-1">A bishop/elder/minister must be blameless and of good report (1 Tim 3:7).</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            @foreach (var item in ReputationQuestions)
+                            {
+                                var currentVal = GetReputationValue(item.Key);
+                                <div class="p-3.5 bg-slate-900/80 rounded-lg border border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <span class="text-xs text-slate-200 max-w-xl">@item.Question *</span>
+                                    <div class="flex items-center gap-4 flex-shrink-0">
+                                        <label class="inline-flex items-center gap-1.5 text-xs text-white cursor-pointer">
+                                            <input type="radio" name="@item.Key" value="Yes" checked="@(currentVal == "Yes")"
+                                                   @onchange='() => SetReputationValue(item.Key, "Yes")' />
+                                            <span>Yes</span>
+                                        </label>
+                                        <label class="inline-flex items-center gap-1.5 text-xs text-white cursor-pointer">
+                                            <input type="radio" name="@item.Key" value="No" checked="@(currentVal == "No")"
+                                                   @onchange='() => SetReputationValue(item.Key, "No")' />
+                                            <span>No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- STEP 5: THE 4 KEYS OF THE KINGDOM -->
+                @if (_currentStep == 5)
+                {
+                    <div class="space-y-6">
+                        <div class="border-b border-white/10 pb-3">
+                            <h2 class="text-xl font-bold text-white">Stage 5: The CACI Message &mdash; The 4 Keys of The Kingdom</h2>
+                            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                No fellowship can survive without doctrinal unity. Covenant Apostolics seek a worldwide ministry committed to working together in teaching the doctrines of the Original 1st Century Apostolic Faith.
+                            </p>
+                        </div>
+
+                        <!-- Key 1 -->
+                        <div class="bg-slate-900/90 border border-white/10 rounded-xl p-5 space-y-3">
+                            <span class="text-xs font-bold uppercase tracking-widest text-caci-tone3">Key #1 &bull; The Coming Kingdom</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                The CACI presents the scriptural Messiah who is our coming King who will restore all things, regenerate the Earth, remove the wicked, establish His Eternal Kingdom in the Earth, and reign with His elect over all Nations as Kings and Priests.
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Rating (1 to 5 Scale) *</label>
+                                    <input type="range" min="1" max="5" @bind="_data.Key1Rating" @bind:after="TriggerAutoSave" class="w-full accent-caci-tone2" />
+                                    <span class="text-xs font-mono text-caci-tone3 font-bold">Rating: @_data.Key1Rating / 5</span>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Level of Understanding *</label>
+                                    <select @bind="_data.Key1Understanding" @bind:after="TriggerAutoSave" class="w-full bg-slate-950 border border-white/10 rounded px-2.5 py-1.5 text-xs text-white">
+                                        <option value="">-- Choose Understanding --</option>
+                                        @foreach (var opt in UnderstandingOptions) { <option value="@opt">@opt</option> }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Key 2 -->
+                        <div class="bg-slate-900/90 border border-white/10 rounded-xl p-5 space-y-3">
+                            <span class="text-xs font-bold uppercase tracking-widest text-caci-tone3">Key #2 &bull; The Law of The Kingdom</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                The Apostles without exception uphold the integrity and literal application of God's 10 Commandment Law as our Christian expression of love toward God and Others (written upon hearts).
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Rating (1 to 5 Scale) *</label>
+                                    <input type="range" min="1" max="5" @bind="_data.Key2Rating" @bind:after="TriggerAutoSave" class="w-full accent-caci-tone2" />
+                                    <span class="text-xs font-mono text-caci-tone3 font-bold">Rating: @_data.Key2Rating / 5</span>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Level of Understanding *</label>
+                                    <select @bind="_data.Key2Understanding" @bind:after="TriggerAutoSave" class="w-full bg-slate-950 border border-white/10 rounded px-2.5 py-1.5 text-xs text-white">
+                                        <option value="">-- Choose Understanding --</option>
+                                        @foreach (var opt in UnderstandingOptions) { <option value="@opt">@opt</option> }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-white/5">
+                                <div>
+                                    <label class="block text-xs text-slate-300 font-medium mb-1">Do you teach &amp; observe 7th Day Sabbath (4th Commandment)? *</label>
+                                    <div class="flex gap-4">
+                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k2sab" value="Yes" checked="@(_data.Observe7thDaySabbath == "Yes")" @onchange='() => { _data.Observe7thDaySabbath = "Yes"; TriggerAutoSave(); }' /> Yes</label>
+                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k2sab" value="No" checked="@(_data.Observe7thDaySabbath == "No")" @onchange='() => { _data.Observe7thDaySabbath = "No"; TriggerAutoSave(); }' /> No</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 font-medium mb-1">Do you regularly attend a weekly Sunday service?</label>
+                                    <div class="flex gap-4">
+                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k2sun" value="Yes" checked="@(_data.AttendWeeklySundayService == "Yes")" @onchange='() => { _data.AttendWeeklySundayService = "Yes"; TriggerAutoSave(); }' /> Yes</label>
+                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k2sun" value="No" checked="@(_data.AttendWeeklySundayService == "No")" @onchange='() => { _data.AttendWeeklySundayService = "No"; TriggerAutoSave(); }' /> No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Key 3 -->
+                        <div class="bg-slate-900/90 border border-white/10 rounded-xl p-5 space-y-3">
+                            <span class="text-xs font-bold uppercase tracking-widest text-caci-tone3">Key #3 &bull; The Culture of The Kingdom</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Our celebrations are the cultural Festivals of Torah given by God in scripture rather than nonbiblical pagan traditions.
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Rating (1 to 5 Scale) *</label>
+                                    <input type="range" min="1" max="5" @bind="_data.Key3Rating" @bind:after="TriggerAutoSave" class="w-full accent-caci-tone2" />
+                                    <span class="text-xs font-mono text-caci-tone3 font-bold">Rating: @_data.Key3Rating / 5</span>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Level of Understanding *</label>
+                                    <select @bind="_data.Key3Understanding" @bind:after="TriggerAutoSave" class="w-full bg-slate-950 border border-white/10 rounded px-2.5 py-1.5 text-xs text-white">
+                                        <option value="">-- Choose Understanding --</option>
+                                        @foreach (var opt in UnderstandingOptions) { <option value="@opt">@opt</option> }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="pt-2 border-t border-white/5">
+                                <label class="block text-xs text-slate-300 font-medium mb-1">Do you believe and teach the spiritual application of Torah to be beneficial in the life of the New Testament Believer? *</label>
+                                <div class="flex gap-4">
+                                    <label class="text-xs text-white cursor-pointer"><input type="radio" name="k3torah" value="Yes" checked="@(_data.TorahSpiritualApplication == "Yes")" @onchange='() => { _data.TorahSpiritualApplication = "Yes"; TriggerAutoSave(); }' /> Yes</label>
+                                    <label class="text-xs text-white cursor-pointer"><input type="radio" name="k3torah" value="No" checked="@(_data.TorahSpiritualApplication == "No")" @onchange='() => { _data.TorahSpiritualApplication = "No"; TriggerAutoSave(); }' /> No</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Key 4 -->
+                        <div class="bg-slate-900/90 border border-white/10 rounded-xl p-5 space-y-3">
+                            <span class="text-xs font-bold uppercase tracking-widest text-caci-tone3">Key #4 &bull; The Gospel of The Kingdom</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                A 2nd Exodus of Blood-Water-Spirit: Repentance (Blood), Water Baptism by immersion exclusively in the Name (Water), and Holy Spirit Infilling (Spirit).
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Rating (1 to 5 Scale) *</label>
+                                    <input type="range" min="1" max="5" @bind="_data.Key4Rating" @bind:after="TriggerAutoSave" class="w-full accent-caci-tone2" />
+                                    <span class="text-xs font-mono text-caci-tone3 font-bold">Rating: @_data.Key4Rating / 5</span>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Level of Understanding *</label>
+                                    <select @bind="_data.Key4Understanding" @bind:after="TriggerAutoSave" class="w-full bg-slate-950 border border-white/10 rounded px-2.5 py-1.5 text-xs text-white">
+                                        <option value="">-- Choose Understanding --</option>
+                                        @foreach (var opt in UnderstandingOptions) { <option value="@opt">@opt</option> }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="space-y-3 pt-2 border-t border-white/5">
+                                <div>
+                                    <label class="block text-xs text-slate-300 font-medium mb-1">Do you believe, practice, and teach the full conversion standard of Acts 2:38? *</label>
+                                    <div class="flex gap-4">
+                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k4conv" value="Yes" checked="@(_data.FullConversionStandard == "Yes")" @onchange='() => { _data.FullConversionStandard = "Yes"; TriggerAutoSave(); }' /> Yes</label>
+                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k4conv" value="No" checked="@(_data.FullConversionStandard == "No")" @onchange='() => { _data.FullConversionStandard = "No"; TriggerAutoSave(); }' /> No</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 font-medium mb-1">Which best describes your view of The Name? *</label>
+                                    <div class="space-y-1.5">
+                                        @foreach (var v in NameViewOptions)
+                                        {
+                                            <label class="flex items-start gap-2.5 p-2 rounded bg-slate-950 cursor-pointer text-xs">
+                                                <input type="radio" name="k4name" value="@v" checked="@(_data.ViewOfTheName == v)"
+                                                       @onchange="() => { _data.ViewOfTheName = v; TriggerAutoSave(); }" class="mt-0.5" />
+                                                <span class="text-slate-300">@v</span>
+                                            </label>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- STEP 6: THE 4 PILLARS -->
+                @if (_currentStep == 6)
+                {
+                    <div class="space-y-6">
+                        <div class="border-b border-white/10 pb-3">
+                            <h2 class="text-xl font-bold text-white">Stage 6: The CACI Mission &mdash; The 4 Pillars of The Apostolic Faith (Acts 2:42)</h2>
+                            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                Restoration of the original apostolic church pattern across doctrine, fellowship, communion, and spiritual prayer.
+                            </p>
+                        </div>
+
+                        <!-- Pillar 1 -->
+                        <div class="bg-slate-900/90 border border-white/10 rounded-xl p-5 space-y-3">
+                            <span class="text-xs font-bold uppercase tracking-widest text-caci-tone3">1st Pillar &bull; The Apostles' Doctrine</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">Teaching Torah as spiritually revealed under the New Covenant.</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Rating (1 to 5) *</label>
+                                    <input type="range" min="1" max="5" @bind="_data.Pillar1Rating" @bind:after="TriggerAutoSave" class="w-full accent-caci-tone2" />
+                                    <span class="text-xs font-mono text-caci-tone3 font-bold">@_data.Pillar1Rating / 5</span>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Level of Understanding *</label>
+                                    <select @bind="_data.Pillar1Understanding" @bind:after="TriggerAutoSave" class="w-full bg-slate-950 border border-white/10 rounded px-2.5 py-1.5 text-xs text-white">
+                                        <option value="">-- Choose Understanding --</option>
+                                        @foreach (var opt in UnderstandingOptions) { <option value="@opt">@opt</option> }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pillar 2 -->
+                        <div class="bg-slate-900/90 border border-white/10 rounded-xl p-5 space-y-3">
+                            <span class="text-xs font-bold uppercase tracking-widest text-caci-tone3">2nd Pillar &bull; The Apostles' Fellowship</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">Unbroken structure of rightly ordained and linked Bishops and Elders.</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Rating (1 to 5) *</label>
+                                    <input type="range" min="1" max="5" @bind="_data.Pillar2Rating" @bind:after="TriggerAutoSave" class="w-full accent-caci-tone2" />
+                                    <span class="text-xs font-mono text-caci-tone3 font-bold">@_data.Pillar2Rating / 5</span>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Level of Understanding *</label>
+                                    <select @bind="_data.Pillar2Understanding" @bind:after="TriggerAutoSave" class="w-full bg-slate-950 border border-white/10 rounded px-2.5 py-1.5 text-xs text-white">
+                                        <option value="">-- Choose Understanding --</option>
+                                        @foreach (var opt in UnderstandingOptions) { <option value="@opt">@opt</option> }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pillar 3 -->
+                        <div class="bg-slate-900/90 border border-white/10 rounded-xl p-5 space-y-3">
+                            <span class="text-xs font-bold uppercase tracking-widest text-caci-tone3">3rd Pillar &bull; The Apostolic Breaking of Bread</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">Apostolic sacramental authority in Baptism, Bread &amp; Cup, Laying on of Hands, and Anointing the Sick.</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Rating (1 to 5) *</label>
+                                    <input type="range" min="1" max="5" @bind="_data.Pillar3Rating" @bind:after="TriggerAutoSave" class="w-full accent-caci-tone2" />
+                                    <span class="text-xs font-mono text-caci-tone3 font-bold">@_data.Pillar3Rating / 5</span>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Level of Understanding *</label>
+                                    <select @bind="_data.Pillar3Understanding" @bind:after="TriggerAutoSave" class="w-full bg-slate-950 border border-white/10 rounded px-2.5 py-1.5 text-xs text-white">
+                                        <option value="">-- Choose Understanding --</option>
+                                        @foreach (var opt in UnderstandingOptions) { <option value="@opt">@opt</option> }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pillar 4 -->
+                        <div class="bg-slate-900/90 border border-white/10 rounded-xl p-5 space-y-3">
+                            <span class="text-xs font-bold uppercase tracking-widest text-caci-tone3">4th Pillar &bull; Apostolic Prayer</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">Spiritual conduit through which the Holy Spirit presides with authentic spiritual gifts.</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Rating (1 to 5) *</label>
+                                    <input type="range" min="1" max="5" @bind="_data.Pillar4Rating" @bind:after="TriggerAutoSave" class="w-full accent-caci-tone2" />
+                                    <span class="text-xs font-mono text-caci-tone3 font-bold">@_data.Pillar4Rating / 5</span>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Level of Understanding *</label>
+                                    <select @bind="_data.Pillar4Understanding" @bind:after="TriggerAutoSave" class="w-full bg-slate-950 border border-white/10 rounded px-2.5 py-1.5 text-xs text-white">
+                                        <option value="">-- Choose Understanding --</option>
+                                        @foreach (var opt in UnderstandingOptions) { <option value="@opt">@opt</option> }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- STEP 7: THE MINISTERIAL COVENANT -->
+                @if (_currentStep == 7)
+                {
+                    <div class="space-y-6">
+                        <div class="border-b border-white/10 pb-3">
+                            <h2 class="text-xl font-bold text-white">Stage 7: Your Covenant &amp; Commitments</h2>
+                            <p class="text-xs text-slate-400 mt-1">Please confirm your agreement with the governing principles of the CACI fellowship.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            @foreach (var cov in CovenantQuestions)
+                            {
+                                var val = GetCovenantValue(cov.Key);
+                                <div class="p-3.5 bg-slate-900/80 rounded-lg border border-white/5 space-y-2">
+                                    <p class="text-xs text-slate-200 leading-relaxed">@cov.Question *</p>
+                                    <div class="flex gap-4">
+                                        @foreach (var opt in cov.Options)
+                                        {
+                                            <label class="inline-flex items-center gap-1.5 text-xs text-white cursor-pointer">
+                                                <input type="radio" name="@cov.Key" value="@opt" checked="@(val == opt)"
+                                                       @onchange="() => SetCovenantValue(cov.Key, opt)" />
+                                                <span>@opt</span>
+                                            </label>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- STEP 8: ADDITIONAL CONSIDERATIONS & REVIEW/SUBMIT -->
+                @if (_currentStep == 8)
+                {
+                    <div class="space-y-6">
+                        <div class="border-b border-white/10 pb-3">
+                            <h2 class="text-xl font-bold text-white">Stage 8: Additional Considerations &amp; Formal Submission</h2>
+                            <p class="text-xs text-slate-400 mt-1">Final personal reflections, completion review, and submission.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-caci-tone3 mb-1.5 uppercase tracking-wider">Why do you feel led to seek affiliation with the CACI? *</label>
+                                <textarea @bind="_data.WhyAffiliationWithCaci" @bind:event="oninput" @bind:after="TriggerAutoSave" rows="4" placeholder="Share your calling and heart for Covenant Apostolic fellowship..."
+                                          class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-caci-tone2"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-caci-tone3 mb-1.5 uppercase tracking-wider">What would you like the CACI to know further about you or your Ministry? (Optional)</label>
+                                <textarea @bind="_data.AdditionalInformation" @bind:event="oninput" @bind:after="TriggerAutoSave" rows="3" placeholder="Any background, testimony, or ministry focus..."
+                                          class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-caci-tone2"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- VALIDATION AUDIT CHECK -->
+                        <div class="pt-6 border-t border-white/10 space-y-4">
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-white flex items-center justify-between">
+                                <span>Application Completion Status</span>
+                                <span class="font-mono text-xs @(_missingFields.Count == 0 ? "text-emerald-400" : "text-amber-400")">
+                                    @(_missingFields.Count == 0 ? "All Required Fields Completed (Ready to Submit)" : $"{_missingFields.Count} Incomplete Fields Remaining")
+                                </span>
+                            </h3>
+
+                            @if (_missingFields.Count > 0)
+                            {
+                                <div class="bg-amber-950/40 border border-amber-500/30 rounded-xl p-4 text-xs space-y-2">
+                                    <span class="font-bold text-amber-300">Please complete the following required fields before submitting:</span>
+                                    <ul class="list-disc list-inside text-slate-300 grid grid-cols-1 sm:grid-cols-2 gap-1 font-mono text-[11px]">
+                                        @foreach (var mf in _missingFields)
+                                        {
+                                            <li>@mf</li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-4 text-xs text-emerald-200">
+                                    ✓ All required fields have been satisfied. You are ready to formally sign and submit your application to the CACI Apostolic Council.
+                                </div>
+                            }
+
+                            <!-- SUBMIT BUTTON -->
+                            <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <span class="text-xs text-slate-400">
+                                    By submitting, you certify that all statements made herein are true and accurate to the best of your knowledge.
+                                </span>
+                                <button type="button" @onclick="SubmitApplicationAsync" disabled="@(_isSubmitting || _missingFields.Count > 0)"
+                                        class="px-8 py-3.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-extrabold uppercase tracking-widest text-xs rounded-xl shadow-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                                    @(_isSubmitting ? "Submitting Application..." : "Submit Formal Application")
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- STEPPER FOOTER BUTTONS -->
+                <div class="pt-6 border-t border-white/10 flex items-center justify-between">
+                    <button type="button" @onclick="PrevStep" disabled="@(_currentStep == 1)"
+                            class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg border border-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                        &larr; Previous Step
+                    </button>
+                    @if (_currentStep < 8)
+                    {
+                        <button type="button" @onclick="NextStep"
+                                class="px-5 py-2 bg-caci-blue hover:bg-caci-tone2 text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors shadow">
+                            Next Step &rarr;
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- RESUME CODE MODAL -->
+        @if (_showResumeModal)
+        {
+            <div class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+                <div class="bg-slate-900 border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                        <h3 class="text-base font-bold text-white">Resume Saved Application</h3>
+                        <button type="button" @onclick="() => _showResumeModal = false" class="text-slate-400 hover:text-white">&times;</button>
+                    </div>
+                    <p class="text-xs text-slate-300">
+                        Enter your 8-character Resume Code or the email address used when saving your draft.
+                    </p>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-1 uppercase">Resume Code</label>
+                            <input type="text" @bind="_inputResumeCode" placeholder="e.g. ABC123XYZ"
+                                   class="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white font-mono uppercase text-sm" />
+                        </div>
+                        <div class="text-center text-xs text-slate-500">&mdash; OR &mdash;</div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-1 uppercase">Email Address</label>
+                            <input type="email" @bind="_inputResumeEmail" placeholder="pastor@example.org"
+                                   class="w-full bg-slate-950 border border-white/10 rounded px-3 py-2 text-white text-sm" />
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(_resumeError))
+                    {
+                        <p class="text-xs text-red-400 font-mono">⚠️ @_resumeError</p>
+                    }
+                    <div class="pt-2 flex justify-end gap-2">
+                        <button type="button" @onclick="() => _showResumeModal = false" class="px-4 py-2 bg-slate-800 text-slate-300 text-xs rounded">Cancel</button>
+                        <button type="button" @onclick="ExecuteResumeDraftAsync" class="px-4 py-2 bg-caci-blue hover:bg-caci-tone2 text-white text-xs font-bold uppercase rounded">
+                            Load Draft
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- SHARE / SAVE CODE MODAL -->
+        @if (_showCodeShareModal)
+        {
+            <div class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+                <div class="bg-slate-900 border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                        <h3 class="text-base font-bold text-white">Draft Saved Successfully</h3>
+                        <button type="button" @onclick="() => _showCodeShareModal = false" class="text-slate-400 hover:text-white">&times;</button>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Your application draft has been saved. Use this code to resume on any device:
+                    </p>
+                    <div class="text-center py-4 bg-slate-950 rounded-xl border border-white/5">
+                        <span class="text-2xl font-mono font-bold tracking-widest text-amber-400">@_draftKey</span>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Direct Resume Link</label>
+                        <input type="text" readonly value="@GetResumeUrl()"
+                               class="w-full bg-slate-950 border border-white/10 rounded px-2.5 py-1.5 text-xs font-mono text-emerald-400 select-all" />
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(_data.Email))
+                    {
+                        <button type="button" @onclick="EmailResumeCodeAsync" disabled="@_isSendingEmail"
+                                class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded border border-white/10 transition-colors">
+                            @(_isSendingEmail ? "Sending Email..." : $"Email This Code to {_data.Email}")
+                        </button>
+                    }
+                    @if (!string.IsNullOrEmpty(_shareModalMsg))
+                    {
+                        <p class="text-xs text-emerald-400 text-center font-mono">@_shareModalMsg</p>
+                    }
+                    <div class="pt-2 flex justify-end">
+                        <button type="button" @onclick="() => _showCodeShareModal = false" class="px-5 py-2 bg-caci-blue hover:bg-caci-tone2 text-white text-xs font-bold uppercase rounded">
+                            Done
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "resume")]
+    public string? QueryResumeKey { get; set; }
+
+    private MinisterialApplicationData _data = new();
+    private int _recordId = 0;
+    private string _draftKey = string.Empty;
+    private int _currentStep = 1;
+    private int _completionPercentage = 0;
+    private List<string> _missingFields = new();
+    private bool _isAutosaving;
+    private string? _lastSavedTime;
+    private bool _isSubmitting;
+    private bool _isSubmittedSuccess;
+
+    private bool _showResumeModal;
+    private string _inputResumeCode = string.Empty;
+    private string _inputResumeEmail = string.Empty;
+    private string? _resumeError;
+
+    private bool _showCodeShareModal;
+    private bool _isSendingEmail;
+    private string? _shareModalMsg;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(QueryResumeKey))
+        {
+            await LoadDraftByKeyAsync(QueryResumeKey);
+        }
+        else
+        {
+            // Check local storage for existing draft
+            await LoadFromLocalStorageAsync();
+        }
+        UpdateCompletionStatus();
+    }
+
+    private void UpdateCompletionStatus()
+    {
+        var result = AppService.CalculateCompletion(_data);
+        _completionPercentage = result.Percentage;
+        _missingFields = result.MissingFields;
+    }
+
+    private async Task TriggerAutoSave()
+    {
+        UpdateCompletionStatus();
+        _isAutosaving = true;
+        try
+        {
+            // 1. Save to local storage
+            var json = JsonSerializer.Serialize(_data);
+            await JS.InvokeVoidAsync("localStorage.setItem", "caci_minister_app_draft", json);
+            if (!string.IsNullOrEmpty(_draftKey))
+            {
+                await JS.InvokeVoidAsync("localStorage.setItem", "caci_minister_app_key", _draftKey);
+            }
+
+            // 2. Persist to DB if applicant has entered at least a name or email
+            if (!string.IsNullOrWhiteSpace(_data.FullName) || !string.IsNullOrWhiteSpace(_data.Email))
+            {
+                var record = await AppService.SaveDraftAsync(_data, _draftKey, _currentStep);
+                _recordId = record.Id;
+                _draftKey = record.DraftKey;
+            }
+
+            _lastSavedTime = DateTime.Now.ToString("h:mm tt");
+        }
+        catch
+        {
+            // Silently handle transient auto-save failures
+        }
+        finally
+        {
+            _isAutosaving = false;
+        }
+    }
+
+    private async Task SaveDraftExplicitlyAsync()
+    {
+        _shareModalMsg = null;
+        if (string.IsNullOrWhiteSpace(_data.FullName) && string.IsNullOrWhiteSpace(_data.Email))
+        {
+            _data.FullName = "Draft Applicant";
+        }
+
+        var record = await AppService.SaveDraftAsync(_data, _draftKey, _currentStep);
+        _recordId = record.Id;
+        _draftKey = record.DraftKey;
+        _lastSavedTime = DateTime.Now.ToString("h:mm tt");
+
+        await JS.InvokeVoidAsync("localStorage.setItem", "caci_minister_app_key", _draftKey);
+        _showCodeShareModal = true;
+    }
+
+    private async Task EmailResumeCodeAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_data.Email) || string.IsNullOrWhiteSpace(_draftKey)) return;
+        _isSendingEmail = true;
+        try
+        {
+            await AppService.SendResumeLinkEmailAsync(_data.Email, _draftKey, GetResumeUrl());
+            _shareModalMsg = $"Code sent to {_data.Email}!";
+        }
+        catch (Exception ex)
+        {
+            _shareModalMsg = $"Error sending email: {ex.Message}";
+        }
+        finally
+        {
+            _isSendingEmail = false;
+        }
+    }
+
+    private string GetResumeUrl() => $"{Navigation.BaseUri.TrimEnd('/')}/ministerial-application?resume={_draftKey}";
+
+    private void OpenResumeModal()
+    {
+        _inputResumeCode = string.Empty;
+        _inputResumeEmail = string.Empty;
+        _resumeError = null;
+        _showResumeModal = true;
+    }
+
+    private async Task ExecuteResumeDraftAsync()
+    {
+        _resumeError = null;
+        MinisterialApplicationRecord? record = null;
+
+        if (!string.IsNullOrWhiteSpace(_inputResumeCode))
+        {
+            record = await AppService.GetByDraftKeyAsync(_inputResumeCode.Trim());
+        }
+        else if (!string.IsNullOrWhiteSpace(_inputResumeEmail))
+        {
+            record = await AppService.GetLatestDraftByEmailAsync(_inputResumeEmail.Trim());
+        }
+        else
+        {
+            _resumeError = "Please enter either a resume code or email address.";
+            return;
+        }
+
+        if (record == null)
+        {
+            _resumeError = "No matching application draft was found. Please check your code or email.";
+            return;
+        }
+
+        _recordId = record.Id;
+        _draftKey = record.DraftKey;
+        _data = record.GetData();
+        _currentStep = Math.Clamp(record.CurrentStep, 1, 8);
+        UpdateCompletionStatus();
+
+        _showResumeModal = false;
+        _lastSavedTime = record.UpdatedAtUtc.ToLocalTime().ToString("h:mm tt");
+    }
+
+    private async Task LoadDraftByKeyAsync(string key)
+    {
+        var record = await AppService.GetByDraftKeyAsync(key);
+        if (record != null)
+        {
+            _recordId = record.Id;
+            _draftKey = record.DraftKey;
+            _data = record.GetData();
+            _currentStep = Math.Clamp(record.CurrentStep, 1, 8);
+            _lastSavedTime = record.UpdatedAtUtc.ToLocalTime().ToString("h:mm tt");
+        }
+    }
+
+    private async Task LoadFromLocalStorageAsync()
+    {
+        try
+        {
+            var savedKey = await JS.InvokeAsync<string?>("localStorage.getItem", "caci_minister_app_key");
+            if (!string.IsNullOrWhiteSpace(savedKey))
+            {
+                await LoadDraftByKeyAsync(savedKey);
+                return;
+            }
+
+            var savedJson = await JS.InvokeAsync<string?>("localStorage.getItem", "caci_minister_app_draft");
+            if (!string.IsNullOrWhiteSpace(savedJson))
+            {
+                var parsed = JsonSerializer.Deserialize<MinisterialApplicationData>(savedJson);
+                if (parsed != null)
+                {
+                    _data = parsed;
+                }
+            }
+        }
+        catch
+        {
+            // Ignore browser storage access failures
+        }
+    }
+
+    private async Task SubmitApplicationAsync()
+    {
+        UpdateCompletionStatus();
+        if (_missingFields.Count > 0)
+        {
+            return;
+        }
+
+        _isSubmitting = true;
+        try
+        {
+            // Ensure record exists
+            if (_recordId == 0)
+            {
+                var record = await AppService.SaveDraftAsync(_data, _draftKey, 8);
+                _recordId = record.Id;
+                _draftKey = record.DraftKey;
+            }
+
+            await AppService.SubmitApplicationAsync(_recordId, _data);
+            
+            // Clean local storage
+            await JS.InvokeVoidAsync("localStorage.removeItem", "caci_minister_app_draft");
+            await JS.InvokeVoidAsync("localStorage.removeItem", "caci_minister_app_key");
+
+            _isSubmittedSuccess = true;
+        }
+        catch (Exception ex)
+        {
+            _missingFields.Add($"Submission failed: {ex.Message}");
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    private void GoToStep(int step)
+    {
+        _currentStep = step;
+        UpdateCompletionStatus();
+    }
+
+    private void NextStep()
+    {
+        if (_currentStep < 8)
+        {
+            _currentStep++;
+            _ = TriggerAutoSave();
+        }
+    }
+
+    private void PrevStep()
+    {
+        if (_currentStep > 1)
+        {
+            _currentStep--;
+        }
+    }
+
+    private string GetStepTitle(int step) => step switch
+    {
+        1 => "1. Contact",
+        2 => "2. Office",
+        3 => "3. Family",
+        4 => "4. Integrity",
+        5 => "5. 4 Keys",
+        6 => "6. 4 Pillars",
+        7 => "7. Covenant",
+        8 => "8. Review",
+        _ => ""
+    };
+
+    private void ToggleElderQual(string item, bool isChecked)
+    {
+        if (isChecked && !_data.ElderQualifications.Contains(item))
+            _data.ElderQualifications.Add(item);
+        else if (!isChecked && _data.ElderQualifications.Contains(item))
+            _data.ElderQualifications.Remove(item);
+        _ = TriggerAutoSave();
+    }
+
+    private string GetReputationValue(string key) => key switch
+    {
+        "CriminalLitigation" => _data.CriminalLitigation,
+        "SexualMisconduct" => _data.SexualMisconduct,
+        "PayDebtsTimely" => _data.PayDebtsTimely,
+        "CountCostBeforeDebt" => _data.CountCostBeforeDebt,
+        "RefrainProfanitySocialMedia" => _data.RefrainProfanitySocialMedia,
+        "SecretSocietiesRacistGroups" => _data.SecretSocietiesRacistGroups,
+        "ConsentBackgroundCheck" => _data.ConsentBackgroundCheck,
+        _ => ""
+    };
+
+    private void SetReputationValue(string key, string val)
+    {
+        switch (key)
+        {
+            case "CriminalLitigation": _data.CriminalLitigation = val; break;
+            case "SexualMisconduct": _data.SexualMisconduct = val; break;
+            case "PayDebtsTimely": _data.PayDebtsTimely = val; break;
+            case "CountCostBeforeDebt": _data.CountCostBeforeDebt = val; break;
+            case "RefrainProfanitySocialMedia": _data.RefrainProfanitySocialMedia = val; break;
+            case "SecretSocietiesRacistGroups": _data.SecretSocietiesRacistGroups = val; break;
+            case "ConsentBackgroundCheck": _data.ConsentBackgroundCheck = val; break;
+        }
+        _ = TriggerAutoSave();
+    }
+
+    private string GetCovenantValue(string key) => key switch
+    {
+        "FulfillObligations" => _data.FulfillObligations,
+        "DisputeResolutionBiblicalNoLawsuit" => _data.DisputeResolutionBiblicalNoLawsuit,
+        "SurrenderCredentialsIfRevoked" => _data.SurrenderCredentialsIfRevoked,
+        "AdhereCodeOfEthics" => _data.AdhereCodeOfEthics,
+        "BiblicalSubmissionLeadership" => _data.BiblicalSubmissionLeadership,
+        "UnityNonFundamentals" => _data.UnityNonFundamentals,
+        "UnityRestoredMinisters" => _data.UnityRestoredMinisters,
+        "AnnualConvocationParticipation" => _data.AnnualConvocationParticipation,
+        "StudyCaciTeachings" => _data.StudyCaciTeachings,
+        "CounselBeforePublicDifferenceOrResignation" => _data.CounselBeforePublicDifferenceOrResignation,
+        "CounselBeforeAdoptingOutsideDoctrine" => _data.CounselBeforeAdoptingOutsideDoctrine,
+        _ => ""
+    };
+
+    private void SetCovenantValue(string key, string val)
+    {
+        switch (key)
+        {
+            case "FulfillObligations": _data.FulfillObligations = val; break;
+            case "DisputeResolutionBiblicalNoLawsuit": _data.DisputeResolutionBiblicalNoLawsuit = val; break;
+            case "SurrenderCredentialsIfRevoked": _data.SurrenderCredentialsIfRevoked = val; break;
+            case "AdhereCodeOfEthics": _data.AdhereCodeOfEthics = val; break;
+            case "BiblicalSubmissionLeadership": _data.BiblicalSubmissionLeadership = val; break;
+            case "UnityNonFundamentals": _data.UnityNonFundamentals = val; break;
+            case "UnityRestoredMinisters": _data.UnityRestoredMinisters = val; break;
+            case "AnnualConvocationParticipation": _data.AnnualConvocationParticipation = val; break;
+            case "StudyCaciTeachings": _data.StudyCaciTeachings = val; break;
+            case "CounselBeforePublicDifferenceOrResignation": _data.CounselBeforePublicDifferenceOrResignation = val; break;
+            case "CounselBeforeAdoptingOutsideDoctrine": _data.CounselBeforeAdoptingOutsideDoctrine = val; break;
+        }
+        _ = TriggerAutoSave();
+    }
+
+    // Static Option Lists matching Google Form 1:1
+    private static readonly string[] PresentStatusOptions = new[]
+    {
+        "I am not affiliated with any organization.",
+        "I am seeking to transfer my ministerial credentials from another organization or fellowship to the CACI",
+        "I am a member of a CACI congregation applying for ministerial credentials with the CACI",
+        "I presently hold ministerial credentials with the CACI and am applying for a different certificate level"
+    };
+
+    private static readonly string[] BishopOptions = new[]
+    {
+        "I have been asked by the CACI Apostolic Council to serve as a Regional Bishop (District Superintendent).",
+        "I am presently the Overseer of multiple Congregations, Elders, or Ministries and would like to be considered as a Bishop in Fellowship with the CACI"
+    };
+
+    private static readonly string[] ElderOptions = new[]
+    {
+        "(Pastors) I pastor a local congregation.",
+        "(Associate / Assistant Pastor) I am a seasoned minister serving on the pastoral staff.",
+        "(Non-Pastoral) I am a seasoned minister who is being recommended to serve as an Elder."
+    };
+
+    private static readonly string[] ElderQualificationOptions = new[]
+    {
+        "I have served no less than two years as a CACI Minister",
+        "I am connecting an existing congregation, of which I am Pastor, to the CACI",
+        "I have the recommendation and endorsement of my CACI District Bishop"
+    };
+
+    private static readonly string[] MinisterOptions = new[]
+    {
+        "I am serving as a minister in a local assembly and would like to be appointed by the CACI",
+        "I would like to begin training for the ministry"
+    };
+
+    private static readonly string[] UnderstandingOptions = new[]
+    {
+        "I fully embrace this Key",
+        "I would like more information in this area.",
+        "I don't understand this Key to the level to embrace it at this time"
+    };
+
+    private static readonly string[] NameViewOptions = new[]
+    {
+        "I believe the Name must only be spoken in some version of a Hebrew pronunciation. (Yahweh/Yahovah/Yahwah/etc)",
+        "I believe the name Jesus is a pagan counterfeit and should be avoided.",
+        "I believe that the Name maintains its power even when translated, transliterated, or pronounced in any language."
+    };
+
+    private record RepQuestion(string Key, string Question);
+    private static readonly RepQuestion[] ReputationQuestions = new[]
+    {
+        new RepQuestion("CriminalLitigation", "Are you presently in criminal litigation?"),
+        new RepQuestion("SexualMisconduct", "Have you ever been convicted of criminal sexual misconduct?"),
+        new RepQuestion("PayDebtsTimely", "Do you faithfully pay your debts in a timely manner?"),
+        new RepQuestion("CountCostBeforeDebt", "Do you diligently count the cost before making a debt to be sure you have sufficient to finish paying until it is paid in full?"),
+        new RepQuestion("RefrainProfanitySocialMedia", "Do you refrain from profanity, and crude humor including posts on social media?"),
+        new RepQuestion("SecretSocietiesRacistGroups", "Do you participate in any way with any secret societies, or racist groups?"),
+        new RepQuestion("ConsentBackgroundCheck", "Do you consent to a background check?")
+    };
+
+    private record CovQuestion(string Key, string Question, string[] Options);
+    private static readonly CovQuestion[] CovenantQuestions = new[]
+    {
+        new CovQuestion("FulfillObligations", "Do you accept, and will you faithfully fulfill the obligations of ministry as expected by the CACI fellowship to the best of your abilities?", new[] { "Yes", "No", "Maybe" }),
+        new CovQuestion("DisputeResolutionBiblicalNoLawsuit", "Do you agree to follow biblical principles for resolving any dispute with the CACI body, a CACI leader, or another CACI member, rather than by a lawsuit? (Matthew 18:15-18; 1 Corinthians 6:1-7)", new[] { "Yes", "No" }),
+        new CovQuestion("SurrenderCredentialsIfRevoked", "If your credentials are revoked by the CACI, do you agree to surrender them peacefully and immediately along with your title and accept that ordination succession is surrendered and deemed null and void?", new[] { "Yes", "No" }),
+        new CovQuestion("AdhereCodeOfEthics", "Will you faithfully adhere to the CACI Ministerial Code of Ethics?", new[] { "Yes", "No" }),
+        new CovQuestion("BiblicalSubmissionLeadership", "Do you agree to work in biblical submission with the leadership of the CACI?", new[] { "Yes", "No" }),
+        new CovQuestion("UnityNonFundamentals", "Do you agree to work in unity with other Ministers who may not hold your same views on doctrinal matters outside of the Fundamental Doctrinal Statement of the CACI?", new[] { "Yes", "No" }),
+        new CovQuestion("UnityRestoredMinisters", "Do you agree to work in unity with restored Ministers within the CACI?", new[] { "Yes", "No" }),
+        new CovQuestion("AnnualConvocationParticipation", "Will you endeavor to participate in at least one CACI Convocation annually?", new[] { "Yes", "No" }),
+        new CovQuestion("StudyCaciTeachings", "Do you agree to study the Covenant Apostolic teachings until you sufficiently understand them and are proficient at presenting them?", new[] { "Yes", "No" }),
+        new CovQuestion("CounselBeforePublicDifferenceOrResignation", "In the event that you do not agree with a CACI Doctrinal position, do you agree to counsel sincerely at length with your Bishop on the matter before declaring your difference publicly or resigning?", new[] { "Yes", "No" }),
+        new CovQuestion("CounselBeforeAdoptingOutsideDoctrine", "In the event that you begin to consider doctrines outside the CACI Doctrinal position, do you agree to counsel sincerely at length with your Bishop on the matter before adopting the new doctrine?", new[] { "Yes", "No" })
+    };
+}

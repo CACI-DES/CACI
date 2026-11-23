@@ -14,6 +14,7 @@ using CACI_Life.Features.Discovery;
 using CACI_Life.Features.Events;
 using CACI_Life.Features.Email;
 using CACI_Life.Features.SEO.Services;
+using CACI_Life.Features.MinisterialApplication;
 using CACI.Core.Domain.Funnels;
 using CACI_Life.Core.Domain.Congregations;
 using CACI_Life.Features.Congregations.Commands;
@@ -55,6 +56,8 @@ builder.Services.AddScoped<IGivingStripeService, GivingStripeService>();
 builder.Services.AddScoped<GivingReportService>();
 builder.Services.AddScoped<ISeoRepository, SeoRepository>();
 builder.Services.AddScoped<ISubsiteContext, SubsiteContextService>();
+builder.Services.AddScoped<IMinisterialApplicationRepository, MinisterialApplicationRepository>();
+builder.Services.AddScoped<MinisterialApplicationService>();
 
 // CACI Multi-Site Congregation Services & Queries
 builder.Services.AddHttpContextAccessor();
