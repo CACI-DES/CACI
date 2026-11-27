@@ -52,11 +52,13 @@
             </div>
         }
 
-        <EditForm Model="Model" FormName="fellowship-inquiry" OnValidSubmit="SubmitAsync" novalidate>
-            <DataAnnotationsValidator />
-            <ValidationSummary class="validation-summary mb-4" />
+        @if (Model is not null)
+        {
+            <EditForm Model="Model" FormName="fellowship-inquiry" OnValidSubmit="SubmitAsync" novalidate>
+                <DataAnnotationsValidator />
+                <ValidationSummary class="validation-summary mb-4" />
 
-            <input type="hidden" name="Model.SourceScreen" value="@Model?.SourceScreen" />
+                <input type="hidden" name="Model.SourceScreen" value="@Model.SourceScreen" />
 
             <div class="grid gap-5">
                 <div class="field">
@@ -111,6 +113,7 @@
                 </button>
             </div>
         </EditForm>
+        }
     </div>
 </section>
 

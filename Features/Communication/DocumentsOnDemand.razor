@@ -1,4 +1,6 @@
 @page "/documents-on-demand"
+@using CACI_Life.Features.SiteMedia
+@inject ISiteMediaService SiteMedia
 
 <SeoHead Title="CACI - Documents on Demand"
          Description="Download official CACI documents and letters, including the Festival Letter and Sabbath Letter."
@@ -16,7 +18,7 @@
             <!-- Festival Letter -->
             <a href="Festival%20Letter.pdf" class="document-card" download>
                 <div class="card-image-wrapper">
-                    <img src="images/FestivalLetter_Thumb.png" alt="Festival Letter" class="card-image">
+                    <img src="@SiteMediaHelper.GetUrl(_media, SiteMediaKeys.DocumentsFestivalLetterThumb)" alt="@SiteMediaHelper.GetAlt(_media, SiteMediaKeys.DocumentsFestivalLetterThumb)" onerror="@SiteMediaHelper.GetImageOnError(SiteMediaKeys.DocumentsFestivalLetterThumb)" class="card-image">
                 </div>
                 <div class="card-content">
                     <h3 class="card-title">Festival Letter</h3>
@@ -30,7 +32,7 @@
             <!-- Sabbath Letter -->
             <a href="Sabbath%20Letter.pdf" class="document-card" download>
                 <div class="card-image-wrapper">
-                    <img src="images/SabbathLetter.avif" alt="Sabbath Letter" class="card-image">
+                    <img src="@SiteMediaHelper.GetUrl(_media, SiteMediaKeys.DocumentsSabbathLetterThumb)" alt="@SiteMediaHelper.GetAlt(_media, SiteMediaKeys.DocumentsSabbathLetterThumb)" onerror="@SiteMediaHelper.GetImageOnError(SiteMediaKeys.DocumentsSabbathLetterThumb)" class="card-image">
                 </div>
                 <div class="card-content">
                     <h3 class="card-title">Sabbath Letter</h3>
@@ -43,3 +45,13 @@
         </div>
     </div>
 </section>
+
+@code {
+    private IReadOnlyDictionary<string, SiteMediaItem> _media =
+        new Dictionary<string, SiteMediaItem>(StringComparer.OrdinalIgnoreCase);
+
+    protected override async Task OnInitializedAsync()
+    {
+        _media = await SiteMedia.GetAllAsync();
+    }
+}

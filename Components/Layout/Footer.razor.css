@@ -1,7 +1,11 @@
 footer {
     /* Background image with a white overlay to maintain contrast for dark text */
-    background: linear-gradient(rgba(240, 245, 250, 0.7), rgba(240, 245, 250, 0.7)),
-        url('images/images/pexels-pixabay-41949.jpg') no-repeat center center/cover;
+    background-image: linear-gradient(rgba(240, 245, 250, 0.7), rgba(240, 245, 250, 0.7)),
+        var(--footer-bg, url('/images/images/pexels-pixabay-41949.jpg')),
+        url('/images/images/pexels-pixabay-41949.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
     padding-top: 70px;
 }
 

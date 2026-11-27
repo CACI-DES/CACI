@@ -15,6 +15,7 @@ namespace CACI_Life.Features.Identity.Services;
 public interface IAuthRepository
 {
     Task<AuthResponse> ValidateUserAsync(string email, string password);
+    Task<AuthResponse> ValidateExternalUserByEmailAsync(string email);
     Task<MinistryProfileDto?> GetProfileByEmailAsync(string email);
     Task<RequestAccessResult> RequestAccessAsync(RequestAccessModel model);
 }
@@ -97,48 +98,81 @@ public class AuthRepository : IAuthRepository
                 return new AuthResponse { Succeeded = false, ErrorMessage = "Invalid email or password." };
             }
 
-            // 3. Verify user approval status & ChurchId
-            int? userChurchId = null;
-            try
-            {
-                var meta = await connection.QueryFirstOrDefaultAsync<(bool? IsApproved, int? ChurchId)>(
-                    "SELECT IsApproved, ChurchId FROM CACI.AspNetUsers WHERE Id = @Id",
-                    new { Id = (string)user.UserId }
-                );
-
-                if (meta.IsApproved == false)
-                {
-                    return new AuthResponse 
-                    { 
-                        Succeeded = false, 
-                        ErrorMessage = "Your account is pending administrator approval. Please check back shortly." 
-                    };
-                }
-                userChurchId = meta.ChurchId;
-            }
-            catch
-            {
-                // If column doesn't exist or error, continue
-            }
-
-            string rolesList = user.RolesList ?? "";
-            var roles = rolesList.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                                 .Select(r => r.Trim())
-                                 .ToList();
-
-            return new AuthResponse
-            {
-                Succeeded = true,
-                UserId = user.UserId?.ToString(),
-                Email = user.Email,
-                ChurchId = userChurchId,
-                Roles = roles
-            };
+            return await BuildApprovedAuthResponseAsync(connection, user);
         }
         catch (Exception ex)
         {
             return new AuthResponse { Succeeded = false, ErrorMessage = $"Authentication error: {ex.Message}" };
         }
+    }
+
+    public async Task<AuthResponse> ValidateExternalUserByEmailAsync(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return new AuthResponse { Succeeded = false, ErrorMessage = "No email address returned from Google." };
+        }
+
+        try
+        {
+            using var connection = CreateConnection();
+            var user = await connection.QueryFirstOrDefaultAsync<dynamic>(
+                "dbo.Auth_usp_GetUserSecurityInfo",
+                new { Email = email.Trim() },
+                commandType: CommandType.StoredProcedure
+            );
+
+            if (user == null)
+            {
+                return new AuthResponse { Succeeded = false, ErrorMessage = "No approved CACI account matches that Google email." };
+            }
+
+            return await BuildApprovedAuthResponseAsync(connection, user);
+        }
+        catch (Exception ex)
+        {
+            return new AuthResponse { Succeeded = false, ErrorMessage = $"Authentication error: {ex.Message}" };
+        }
+    }
+
+    private static async Task<AuthResponse> BuildApprovedAuthResponseAsync(IDbConnection connection, dynamic user)
+    {
+        int? userChurchId = null;
+        try
+        {
+            var meta = await connection.QueryFirstOrDefaultAsync<(bool? IsApproved, int? ChurchId)>(
+                "SELECT IsApproved, ChurchId FROM CACI.AspNetUsers WHERE Id = @Id",
+                new { Id = (string)user.UserId }
+            );
+
+            if (meta.IsApproved == false)
+            {
+                return new AuthResponse
+                {
+                    Succeeded = false,
+                    ErrorMessage = "Your account is pending administrator approval. Please check back shortly."
+                };
+            }
+            userChurchId = meta.ChurchId;
+        }
+        catch
+        {
+            // If column doesn't exist or error, continue
+        }
+
+        string rolesList = user.RolesList ?? "";
+        var roles = rolesList.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                             .Select(r => r.Trim())
+                             .ToList();
+
+        return new AuthResponse
+        {
+            Succeeded = true,
+            UserId = user.UserId?.ToString(),
+            Email = user.Email,
+            ChurchId = userChurchId,
+            Roles = roles
+        };
     }
 
     public async Task<MinistryProfileDto?> GetProfileByEmailAsync(string email)

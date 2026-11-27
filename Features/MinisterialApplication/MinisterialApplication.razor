@@ -152,7 +152,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
                                 <label class="block text-xs font-bold text-caci-tone3 mb-1.5 uppercase tracking-wider">Date of Birth *</label>
-                                <input type="date" value="@_data.DateOfBirth" @onchange="@((ChangeEventArgs e) => { _data.DateOfBirth = e.Value?.ToString() ?? string.Empty; TriggerAutoSave(); })"
+                                <input type="date" value="@_data.DateOfBirth" @onchange="@(async (ChangeEventArgs e) => { _data.DateOfBirth = e.Value?.ToString() ?? string.Empty; await TriggerAutoSave(); })"
                                        class="w-full bg-slate-900 border border-white/10 rounded-lg px-3.5 py-2.5 text-white text-sm focus:outline-none focus:border-caci-tone2" />
                             </div>
                             <div>
@@ -196,7 +196,7 @@
                                 {
                                     <label class="flex items-start gap-3 p-3 rounded-lg border @(_data.PresentMinisterialStatus == opt ? "border-caci-tone2 bg-caci-blue/20" : "border-white/5 bg-slate-900/60 hover:bg-slate-900") cursor-pointer transition">
                                         <input type="radio" name="presentStatus" value="@opt" checked="@(_data.PresentMinisterialStatus == opt)"
-                                               @onchange="() => { _data.PresentMinisterialStatus = opt; TriggerAutoSave(); }" class="mt-0.5 text-caci-blue" />
+                                               @onchange="async () => { _data.PresentMinisterialStatus = opt; await TriggerAutoSave(); }" class="mt-0.5 text-caci-blue" />
                                         <span class="text-xs text-slate-200">@opt</span>
                                     </label>
                                 }
@@ -209,7 +209,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 @foreach (var lvl in new[] { "Bishop", "Ordained Elder", "Appointed Minister" })
                                 {
-                                    <button type="button" @onclick="() => { _data.CredentialLevelApplyingFor = lvl; TriggerAutoSave(); }"
+                                    <button type="button" @onclick="async () => { _data.CredentialLevelApplyingFor = lvl; await TriggerAutoSave(); }"
                                             class="p-4 rounded-xl border text-center transition-all @(_data.CredentialLevelApplyingFor == lvl ? "border-caci-tone2 bg-caci-blue/30 text-white font-bold ring-2 ring-caci-tone2" : "border-white/10 bg-slate-900/80 text-slate-300 hover:bg-slate-900")">
                                         <div class="text-sm font-bold uppercase tracking-wider">@lvl</div>
                                     </button>
@@ -230,7 +230,7 @@
                                     {
                                         <label class="flex items-start gap-3 p-2.5 rounded border border-white/5 bg-slate-900 cursor-pointer">
                                             <input type="radio" name="bishopOpt" value="@opt" checked="@(_data.BishopOption == opt)"
-                                                   @onchange="() => { _data.BishopOption = opt; TriggerAutoSave(); }" class="mt-0.5" />
+                                                   @onchange="async () => { _data.BishopOption = opt; await TriggerAutoSave(); }" class="mt-0.5" />
                                             <span class="text-xs text-slate-200">@opt</span>
                                         </label>
                                     }
@@ -252,7 +252,7 @@
                                     {
                                         <label class="flex items-start gap-3 p-2.5 rounded border border-white/5 bg-slate-900 cursor-pointer">
                                             <input type="radio" name="elderOpt" value="@opt" checked="@(_data.ElderOption == opt)"
-                                                   @onchange="() => { _data.ElderOption = opt; TriggerAutoSave(); }" class="mt-0.5" />
+                                                   @onchange="async () => { _data.ElderOption = opt; await TriggerAutoSave(); }" class="mt-0.5" />
                                             <span class="text-xs text-slate-200">@opt</span>
                                         </label>
                                     }
@@ -285,7 +285,7 @@
                                     {
                                         <label class="flex items-start gap-3 p-2.5 rounded border border-white/5 bg-slate-900 cursor-pointer">
                                             <input type="radio" name="minOpt" value="@opt" checked="@(_data.MinisterOption == opt)"
-                                                   @onchange="() => { _data.MinisterOption = opt; TriggerAutoSave(); }" class="mt-0.5" />
+                                                   @onchange="async () => { _data.MinisterOption = opt; await TriggerAutoSave(); }" class="mt-0.5" />
                                             <span class="text-xs text-slate-200">@opt</span>
                                         </label>
                                     }
@@ -376,7 +376,7 @@
                                     {
                                         <label class="inline-flex items-center gap-2 text-xs text-white cursor-pointer">
                                             <input type="radio" name="actsConv" value="@opt" checked="@(_data.Acts238Standard == opt)"
-                                                   @onchange="() => { _data.Acts238Standard = opt; TriggerAutoSave(); }" />
+                                                   @onchange="async () => { _data.Acts238Standard = opt; await TriggerAutoSave(); }" />
                                             <span>@opt</span>
                                         </label>
                                     }
@@ -392,7 +392,7 @@
                                     {
                                         <label class="inline-flex items-center gap-2 text-xs text-white cursor-pointer">
                                             <input type="radio" name="waterBap" value="@opt" checked="@(_data.WaterBaptismJesusName == opt)"
-                                                   @onchange="() => { _data.WaterBaptismJesusName = opt; TriggerAutoSave(); }" />
+                                                   @onchange="async () => { _data.WaterBaptismJesusName = opt; await TriggerAutoSave(); }" />
                                             <span>@opt</span>
                                         </label>
                                     }
@@ -408,7 +408,7 @@
                                     {
                                         <label class="inline-flex items-center gap-2 text-xs text-white cursor-pointer">
                                             <input type="radio" name="holySpir" value="@opt" checked="@(_data.HolySpiritTonguesEvidence == opt)"
-                                                   @onchange="() => { _data.HolySpiritTonguesEvidence = opt; TriggerAutoSave(); }" />
+                                                   @onchange="async () => { _data.HolySpiritTonguesEvidence = opt; await TriggerAutoSave(); }" />
                                             <span>@opt</span>
                                         </label>
                                     }
@@ -508,15 +508,15 @@
                                 <div>
                                     <label class="block text-xs text-slate-300 font-medium mb-1">Do you teach &amp; observe 7th Day Sabbath (4th Commandment)? *</label>
                                     <div class="flex gap-4">
-                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k2sab" value="Yes" checked="@(_data.Observe7thDaySabbath == "Yes")" @onchange='() => { _data.Observe7thDaySabbath = "Yes"; TriggerAutoSave(); }' /> Yes</label>
-                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k2sab" value="No" checked="@(_data.Observe7thDaySabbath == "No")" @onchange='() => { _data.Observe7thDaySabbath = "No"; TriggerAutoSave(); }' /> No</label>
+                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k2sab" value="Yes" checked="@(_data.Observe7thDaySabbath == "Yes")" @onchange='async () => { _data.Observe7thDaySabbath = "Yes"; await TriggerAutoSave(); }' /> Yes</label>
+                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k2sab" value="No" checked="@(_data.Observe7thDaySabbath == "No")" @onchange='async () => { _data.Observe7thDaySabbath = "No"; await TriggerAutoSave(); }' /> No</label>
                                     </div>
                                 </div>
                                 <div>
                                     <label class="block text-xs text-slate-300 font-medium mb-1">Do you regularly attend a weekly Sunday service?</label>
                                     <div class="flex gap-4">
-                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k2sun" value="Yes" checked="@(_data.AttendWeeklySundayService == "Yes")" @onchange='() => { _data.AttendWeeklySundayService = "Yes"; TriggerAutoSave(); }' /> Yes</label>
-                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k2sun" value="No" checked="@(_data.AttendWeeklySundayService == "No")" @onchange='() => { _data.AttendWeeklySundayService = "No"; TriggerAutoSave(); }' /> No</label>
+                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k2sun" value="Yes" checked="@(_data.AttendWeeklySundayService == "Yes")" @onchange='async () => { _data.AttendWeeklySundayService = "Yes"; await TriggerAutoSave(); }' /> Yes</label>
+                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k2sun" value="No" checked="@(_data.AttendWeeklySundayService == "No")" @onchange='async () => { _data.AttendWeeklySundayService = "No"; await TriggerAutoSave(); }' /> No</label>
                                     </div>
                                 </div>
                             </div>
@@ -545,8 +545,8 @@
                             <div class="pt-2 border-t border-white/5">
                                 <label class="block text-xs text-slate-300 font-medium mb-1">Do you believe and teach the spiritual application of Torah to be beneficial in the life of the New Testament Believer? *</label>
                                 <div class="flex gap-4">
-                                    <label class="text-xs text-white cursor-pointer"><input type="radio" name="k3torah" value="Yes" checked="@(_data.TorahSpiritualApplication == "Yes")" @onchange='() => { _data.TorahSpiritualApplication = "Yes"; TriggerAutoSave(); }' /> Yes</label>
-                                    <label class="text-xs text-white cursor-pointer"><input type="radio" name="k3torah" value="No" checked="@(_data.TorahSpiritualApplication == "No")" @onchange='() => { _data.TorahSpiritualApplication = "No"; TriggerAutoSave(); }' /> No</label>
+                                    <label class="text-xs text-white cursor-pointer"><input type="radio" name="k3torah" value="Yes" checked="@(_data.TorahSpiritualApplication == "Yes")" @onchange='async () => { _data.TorahSpiritualApplication = "Yes"; await TriggerAutoSave(); }' /> Yes</label>
+                                    <label class="text-xs text-white cursor-pointer"><input type="radio" name="k3torah" value="No" checked="@(_data.TorahSpiritualApplication == "No")" @onchange='async () => { _data.TorahSpiritualApplication = "No"; await TriggerAutoSave(); }' /> No</label>
                                 </div>
                             </div>
                         </div>
@@ -575,8 +575,8 @@
                                 <div>
                                     <label class="block text-xs text-slate-300 font-medium mb-1">Do you believe, practice, and teach the full conversion standard of Acts 2:38? *</label>
                                     <div class="flex gap-4">
-                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k4conv" value="Yes" checked="@(_data.FullConversionStandard == "Yes")" @onchange='() => { _data.FullConversionStandard = "Yes"; TriggerAutoSave(); }' /> Yes</label>
-                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k4conv" value="No" checked="@(_data.FullConversionStandard == "No")" @onchange='() => { _data.FullConversionStandard = "No"; TriggerAutoSave(); }' /> No</label>
+                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k4conv" value="Yes" checked="@(_data.FullConversionStandard == "Yes")" @onchange='async () => { _data.FullConversionStandard = "Yes"; await TriggerAutoSave(); }' /> Yes</label>
+                                        <label class="text-xs text-white cursor-pointer"><input type="radio" name="k4conv" value="No" checked="@(_data.FullConversionStandard == "No")" @onchange='async () => { _data.FullConversionStandard = "No"; await TriggerAutoSave(); }' /> No</label>
                                     </div>
                                 </div>
                                 <div>
@@ -586,7 +586,7 @@
                                         {
                                             <label class="flex items-start gap-2.5 p-2 rounded bg-slate-950 cursor-pointer text-xs">
                                                 <input type="radio" name="k4name" value="@v" checked="@(_data.ViewOfTheName == v)"
-                                                       @onchange="() => { _data.ViewOfTheName = v; TriggerAutoSave(); }" class="mt-0.5" />
+                                                       @onchange="async () => { _data.ViewOfTheName = v; await TriggerAutoSave(); }" class="mt-0.5" />
                                                 <span class="text-slate-300">@v</span>
                                             </label>
                                         }

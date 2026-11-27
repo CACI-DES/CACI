@@ -1,4 +1,6 @@
 @page "/study-with-us"
+@using CACI_Life.Features.SiteMedia
+@inject ISiteMediaService SiteMedia
 
 <SeoHead Title="CACI - Study With Us"
          Description="Join our Bible studies, learn the 4 Kingdom Keys, explore the 12 Foundations, and discover the 4 Pillars of Apostolic Faith."
@@ -17,8 +19,7 @@
             <a href="https://youtube.com/@@covenantapostoliccongregations" target="_blank" class="study-card">
                
                 <div class="card-image-wrapper">
-                    <!-- Placeholder placeholder for "Online Bible Study" -->
-                    <img src="images/images/OnlineBibleStudy.jpg" alt="Bible Study" class="card-image">
+                    <img src="@SiteMediaHelper.GetUrl(_media, SiteMediaKeys.StudyBibleStudyImage)" alt="@SiteMediaHelper.GetAlt(_media, SiteMediaKeys.StudyBibleStudyImage)" onerror="@SiteMediaHelper.GetImageOnError(SiteMediaKeys.StudyBibleStudyImage)" class="card-image">
                 </div>                
                 <div class="card-content">
                     <h3 class="card-title">Join us for BiWeekly Bible Study</h3>
@@ -94,3 +95,13 @@
         </div>
     </div>
 </section>
+
+@code {
+    private IReadOnlyDictionary<string, SiteMediaItem> _media =
+        new Dictionary<string, SiteMediaItem>(StringComparer.OrdinalIgnoreCase);
+
+    protected override async Task OnInitializedAsync()
+    {
+        _media = await SiteMedia.GetAllAsync();
+    }
+}

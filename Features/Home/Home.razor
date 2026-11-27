@@ -1,6 +1,8 @@
 @page "/"
+@using CACI_Life.Features.SiteMedia
 @inject NavigationManager Navigation
 @inject ISubsiteContext SubsiteContext
+@inject ISiteMediaService SiteMedia
 
 <style>
     .hero-video {
@@ -11,6 +13,7 @@
     height: 100%;
     object-fit: cover;
     z-index: 0;
+    background: url('/images/images/placeholder_video.jpg') center center / cover no-repeat;
 }
 
 .video-overlay {
@@ -47,8 +50,9 @@ overflow: hidden;
 content: "";
 position: absolute;
 top: 0; left: 0; width: 100%; height: 100%;
-background: url('images/images/Sabbath.png');
+background-image: var(--countdown-bg, url('/images/images/Sabbath.png')), url('/images/images/Sabbath.png');
 background-size: cover;
+background-position: center;
 opacity: 0.15;
 z-index: 0;
 }
@@ -110,13 +114,16 @@ else
 
 
     <section class="hero-section">
-        <!-- NEW: Video Background Test -->
-        <video autoplay muted loop playsinline class="hero-video" poster="/images/images/placeholder_video.jpg">
-            <source src="/images/images/banner1.mp4" type="video/mp4">
+        <!-- Video Background -->
+        <video @key="HeroVideoUrl" autoplay muted loop playsinline class="hero-video" poster="@HeroVideoPosterUrl">
+            <source src="@HeroVideoUrl" type="@HeroVideoMimeType">
+            @if (!string.Equals(HeroVideoUrl, HeroVideoDefaultUrl, StringComparison.OrdinalIgnoreCase))
+            {
+                <source src="@HeroVideoDefaultUrl" type="video/mp4">
+            }
             Your browser does not support the video tag.
         </video>
         <div class="video-overlay"></div>
-        <!-- END NEW -->
 
         <div class="hero-content">
             <div class="hero-subtitle">Welcome to the</div>
@@ -154,7 +161,7 @@ else
                     <a href="ministry" class="btn btn-primary">CACI Ministry</a>
                 </div>
                 <div class="leadership-image">
-                    <img src="images/images/BishopWhite_EFC2025.jpg" alt="Presiding Bishop Image">
+                    <img src="@LeadershipImageUrl" alt="@LeadershipImageAlt" onerror="@SiteMediaHelper.GetImageOnError(SiteMediaKeys.HomeLeadershipImage)">
                     <!-- <a href="https://www.youtube.com/watch?v=video_id" class="btn btn-outline">Video Message from Presiding Bishop Jesse White</a> -->
                 </div>
             </div>
@@ -292,7 +299,7 @@ else
             <div class="involved-grid">
                 <!-- Card 1 -->
                 <div class="involved-card">
-                    <img src="images/images/onlinebiblestudy.jpg" alt="Online Bible Study">
+                    <img src="@InvolvedBibleStudyUrl" alt="@InvolvedBibleStudyAlt" onerror="@SiteMediaHelper.GetImageOnError(SiteMediaKeys.HomeInvolvedBibleStudy)">
                     <div class="involved-content">
                         <h3>#1 - Online Bible Study & Fellowship</h3>
                         <p>Covenant Apostolics meet in small groups throughout the week to study and fellowship
@@ -303,7 +310,7 @@ else
 
                 <!-- Card 2 -->
                 <div class="involved-card">
-                    <img src="images/images/ElderClifton_Preaching2.jpg"  alt="Weekly Sabbath Celebration">
+                    <img src="@InvolvedSabbathUrl" alt="@InvolvedSabbathAlt" onerror="@SiteMediaHelper.GetImageOnError(SiteMediaKeys.HomeInvolvedSabbath)">
                     <div class="involved-content">
                         <h3>#2 - Weekly Sabbath Celebration</h3>
                         <p>~ On The 7th Day ~<br>Spirit Filled, Contemporary Worship<br>Ancient Roots - Apostolic Faith
@@ -314,7 +321,7 @@ else
 
             <!-- Card 3 -->
             <div class="involved-card">
-                <div class="countdown-timer">
+                <div class="countdown-timer" style="--countdown-bg: url('@SiteMediaHelper.SanitizeCssUrl(CountdownBackgroundUrl)');">
                     <div class="countdown-title">Countdown to Tabernacles</div>
                     <div class="countdown-unit">
                         <span class="countdown-value">@timeLeft.Days</span>
@@ -353,8 +360,22 @@ else
     private Timer? timer;
     private DateTime targetDate = new DateTime(2026, 9, 27, 0, 0, 0, DateTimeKind.Unspecified);
     private bool IsEventsDomain { get; set; }
+    private IReadOnlyDictionary<string, SiteMediaItem> _media =
+        new Dictionary<string, SiteMediaItem>(StringComparer.OrdinalIgnoreCase);
 
-    protected override void OnInitialized()
+    private string HeroVideoUrl => SiteMediaHelper.GetUrl(_media, SiteMediaKeys.HomeHeroVideo);
+    private string HeroVideoDefaultUrl => SiteMediaHelper.GetDefaultUrl(SiteMediaKeys.HomeHeroVideo);
+    private string HeroVideoMimeType => SiteMediaHelper.GetVideoMimeType(HeroVideoUrl);
+    private string HeroVideoPosterUrl => SiteMediaHelper.GetUrl(_media, SiteMediaKeys.HomeHeroVideoPoster);
+    private string LeadershipImageUrl => SiteMediaHelper.GetUrl(_media, SiteMediaKeys.HomeLeadershipImage);
+    private string LeadershipImageAlt => SiteMediaHelper.GetAlt(_media, SiteMediaKeys.HomeLeadershipImage);
+    private string InvolvedBibleStudyUrl => SiteMediaHelper.GetUrl(_media, SiteMediaKeys.HomeInvolvedBibleStudy);
+    private string InvolvedBibleStudyAlt => SiteMediaHelper.GetAlt(_media, SiteMediaKeys.HomeInvolvedBibleStudy);
+    private string InvolvedSabbathUrl => SiteMediaHelper.GetUrl(_media, SiteMediaKeys.HomeInvolvedSabbath);
+    private string InvolvedSabbathAlt => SiteMediaHelper.GetAlt(_media, SiteMediaKeys.HomeInvolvedSabbath);
+    private string CountdownBackgroundUrl => SiteMediaHelper.GetUrl(_media, SiteMediaKeys.HomeCountdownBackground);
+
+    protected override async Task OnInitializedAsync()
     {
         try
         {
@@ -367,6 +388,9 @@ else
         }
 
         if (SubsiteContext.IsSubsite || IsEventsDomain) return;
+
+        _media = await SiteMedia.GetAllAsync();
+
         CalculateTimeLeft();
         timer = new Timer(1000);
         timer.Elapsed += (s, e) => InvokeAsync(() =>

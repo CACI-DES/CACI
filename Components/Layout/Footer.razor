@@ -1,5 +1,8 @@
+@using CACI_Life.Features.SiteMedia
+@inject ISiteMediaService SiteMedia
+
 <!-- Footer Component -->
-<footer>
+<footer style="--footer-bg: url('@SiteMediaHelper.SanitizeCssUrl(SiteMediaHelper.GetUrl(_media, SiteMediaKeys.FooterBackgroundImage))');">
     <div class="container">
     <p class="text-center font-bold uppercase text-white">"All The Word To All The World"</p>
         <div class="footer-grid">
@@ -60,3 +63,13 @@ Semmes, AL 36575</p>
         </div>
     </div>
 </footer>
+
+@code {
+    private IReadOnlyDictionary<string, SiteMediaItem> _media =
+        new Dictionary<string, SiteMediaItem>(StringComparer.OrdinalIgnoreCase);
+
+    protected override async Task OnInitializedAsync()
+    {
+        _media = await SiteMedia.GetAllAsync();
+    }
+}

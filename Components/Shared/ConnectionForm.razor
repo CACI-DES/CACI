@@ -248,8 +248,8 @@
             {
                 await CommunicationService.SubmitBibleStudyAsync(new BibleStudySubmission
                 {
-                    Name = Model.Name,
-                    Email = Model.Email,
+                    Name = Model.Name ?? string.Empty,
+                    Email = Model.Email ?? string.Empty,
                     CityState = Model.CityState,
                     Interest = Model.Interest,
                     AboutYou = Model.AboutYou,
@@ -260,10 +260,10 @@
             {
                 await CommunicationService.SubmitContactAsync(new ContactSubmission
                 {
-                    Name = Model.Name,
-                    Email = Model.Email,
+                    Name = Model.Name ?? string.Empty,
+                    Email = Model.Email ?? string.Empty,
                     RequestType = Model.RequestType,
-                    Message = Model.Message
+                    Message = Model.Message ?? string.Empty
                 });
             }
 
