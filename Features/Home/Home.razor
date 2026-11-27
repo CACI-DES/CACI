@@ -1,8 +1,11 @@
 @page "/"
 @using CACI_Life.Features.SiteMedia
+@using CACI_Life.Features.Events
+@using CACI_Life.Features.Events.Models
 @inject NavigationManager Navigation
 @inject ISubsiteContext SubsiteContext
 @inject ISiteMediaService SiteMedia
+@inject IEventsRepository EventsRepository
 
 <style>
     .hero-video {
@@ -34,7 +37,7 @@ z-index: 2;
 
 /* Countdown Styles */
 .countdown-timer {
-height: 200px;
+height: 220px;
 background: linear-gradient(135deg, #1e3a8a 0%, #001f5c 100%);
 display: flex;
 justify-content: center;
@@ -322,7 +325,7 @@ else
             <!-- Card 3 -->
             <div class="involved-card">
                 <div class="countdown-timer" style="--countdown-bg: url('@SiteMediaHelper.SanitizeCssUrl(CountdownBackgroundUrl)');">
-                    <div class="countdown-title">Countdown to Tabernacles</div>
+                    <div class="countdown-title">@CountdownTitle</div>
                     <div class="countdown-unit">
                         <span class="countdown-value">@timeLeft.Days</span>
                         <span class="countdown-label">Days</span>
@@ -342,8 +345,8 @@ else
                 </div>
                 <div class="involved-content">
                     <h3>#3 - Biblical Feast Gathering</h3>
-                    <p><span style="color:white; font-weight: bold; font-size: 1.2rem;">Tabernacles 2026</span><br>Registration Opens July 19th 2026</p>
-                    <a href="https://cacievents.com" class="btn btn-accent">Event Info</a>
+                    <p><span style="color:white; font-weight: bold; font-size: 1.2rem;">@CountdownFeastTitle</span><br>@CountdownStatusText</p>
+                    <a href="https://cacievents.com" class="btn btn-accent">@CountdownButtonText</a>
                 </div>
             </div>
         </div>
@@ -360,6 +363,7 @@ else
     private Timer? timer;
     private DateTime targetDate = new DateTime(2026, 9, 27, 0, 0, 0, DateTimeKind.Unspecified);
     private bool IsEventsDomain { get; set; }
+    private ConferenceModel? _activeConference;
     private IReadOnlyDictionary<string, SiteMediaItem> _media =
         new Dictionary<string, SiteMediaItem>(StringComparer.OrdinalIgnoreCase);
 
@@ -375,6 +379,44 @@ else
     private string InvolvedSabbathAlt => SiteMediaHelper.GetAlt(_media, SiteMediaKeys.HomeInvolvedSabbath);
     private string CountdownBackgroundUrl => SiteMediaHelper.GetUrl(_media, SiteMediaKeys.HomeCountdownBackground);
 
+    private string CountdownTitle =>
+        !string.IsNullOrWhiteSpace(_activeConference?.CountdownLabel)
+            ? _activeConference.CountdownLabel
+            : !string.IsNullOrWhiteSpace(_activeConference?.Title)
+                ? $"Countdown to {_activeConference.Title}"
+                : "Countdown to Tabernacles";
+
+    private string CountdownFeastTitle =>
+        !string.IsNullOrWhiteSpace(_activeConference?.Title)
+            ? _activeConference.Title
+            : "Tabernacles 2026";
+
+    private string CountdownStatusText
+    {
+        get
+        {
+            if (_activeConference is null)
+            {
+                return "Registration Opens July 19th 2026";
+            }
+
+            if (_activeConference.RegistrationOpen)
+            {
+                return $"Registration Open • {_activeConference.StartDate:MMM d} – {_activeConference.EndDate:MMM d, yyyy}";
+            }
+
+            if (_activeConference.RegistrationOpensDate.HasValue)
+            {
+                return $"Registration Opens {_activeConference.RegistrationOpensDate.Value:MMMM d, yyyy}";
+            }
+
+            return $"{_activeConference.StartDate:MMMM d} – {_activeConference.EndDate:MMMM d, yyyy}";
+        }
+    }
+
+    private string CountdownButtonText =>
+        _activeConference?.RegistrationOpen == true ? "Register Now" : "Event Info";
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -389,7 +431,17 @@ else
 
         if (SubsiteContext.IsSubsite || IsEventsDomain) return;
 
-        _media = await SiteMedia.GetAllAsync();
+        var mediaTask = SiteMedia.GetAllAsync();
+        var conferenceTask = EventsRepository.GetActiveConferenceAsync();
+        await Task.WhenAll(mediaTask, conferenceTask);
+
+        _media = await mediaTask;
+        _activeConference = await conferenceTask;
+
+        if (_activeConference is not null && _activeConference.StartDate > DateTime.MinValue)
+        {
+            targetDate = DateTime.SpecifyKind(_activeConference.StartDate, DateTimeKind.Unspecified);
+        }
 
         CalculateTimeLeft();
         timer = new Timer(1000);

@@ -975,9 +975,10 @@ header:has(.nav-container) {
 
 .involved-card img {
     width: 100%;
-    height: 200px;
-    object-fit: fill;
-    object-position: top;
+    height: 220px;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
 }
 
 .involved-content {

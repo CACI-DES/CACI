@@ -13,6 +13,10 @@ public class ConferenceModel
     public string? ImageUrl { get; set; }
     public string? YoutubeLink { get; set; }
     public bool RegistrationOpen { get; set; } = true;
+    public DateTime? RegistrationOpensDate { get; set; }
+    public DateTime? RegistrationDeadline { get; set; }
+    public string? CountdownLabel { get; set; }
+    public string? MenuImageUrl { get; set; }
     public bool IsActive { get; set; } = true;
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 }
